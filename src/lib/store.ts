@@ -12,6 +12,17 @@ import { deriveTitle } from './utils'
  * The ONLY mock dependency is streamResponse from ./mockStream — to go live,
  * replace that one function with a real streaming call (see api/chat.js).
  */
+/** Model allowlist — mirrors the backend's ALLOWED_MODELS in api/chat.js. */
+export const MODELS = [
+  'mimo-v2-5',
+  'kimi-k2-7-code',
+  'glm-5.2-thinking',
+  'deepseek-v4-pro-thinking',
+  'minimax-m3',
+] as const
+
+export type ModelId = (typeof MODELS)[number]
+
 interface MiloState {
   threads: Record<string, Thread>
   threadOrder: string[]
@@ -20,6 +31,13 @@ interface MiloState {
   theme: 'light' | 'dark'
   /** Thread currently receiving a stream (at most one at a time). Not persisted. */
   streamingThreadId: string | null
+  /** Selected model — sent to the backend once the real API is wired. */
+  model: ModelId
+  /** Thinking mode toggle — forwarded to the backend once wired. */
+  thinking: boolean
+  /** Right-side workspace panel (artifacts/document/code/preview). */
+  workspaceOpen: boolean
+  workspaceWidth: number
 
   newChat: () => void
   selectThread: (id: string) => void
@@ -27,6 +45,11 @@ interface MiloState {
   deleteThread: (id: string) => void
   setSidebarOpen: (open: boolean) => void
   toggleTheme: () => void
+  setModel: (model: ModelId) => void
+  toggleThinking: () => void
+  setWorkspaceOpen: (open: boolean) => void
+  toggleWorkspace: () => void
+  setWorkspaceWidth: (width: number) => void
   sendMessage: (text: string) => void
   stopStreaming: () => void
   retryLast: () => void
@@ -82,6 +105,10 @@ export const useMiloStore = create<MiloState>()(
       sidebarOpen: true,
       theme: systemTheme(),
       streamingThreadId: null,
+      model: 'mimo-v2-5',
+      thinking: false,
+      workspaceOpen: true,
+      workspaceWidth: 400,
 
       newChat: () => set({ activeThreadId: null }),
 
@@ -117,6 +144,17 @@ export const useMiloStore = create<MiloState>()(
       setSidebarOpen: (open) => set({ sidebarOpen: open }),
 
       toggleTheme: () => set((s) => ({ theme: s.theme === 'dark' ? 'light' : 'dark' })),
+
+      setModel: (model) => set({ model }),
+
+      toggleThinking: () => set((s) => ({ thinking: !s.thinking })),
+
+      setWorkspaceOpen: (open) => set({ workspaceOpen: open }),
+
+      toggleWorkspace: () => set((s) => ({ workspaceOpen: !s.workspaceOpen })),
+
+      setWorkspaceWidth: (width) =>
+        set({ workspaceWidth: Math.min(640, Math.max(320, Math.round(width))) }),
 
       sendMessage: (text) => {
         const content = text.trim()
@@ -257,6 +295,10 @@ export const useMiloStore = create<MiloState>()(
         activeThreadId: s.activeThreadId,
         sidebarOpen: s.sidebarOpen,
         theme: s.theme,
+        model: s.model,
+        thinking: s.thinking,
+        workspaceOpen: s.workspaceOpen,
+        workspaceWidth: s.workspaceWidth,
       }),
       onRehydrateStorage: () => (state) => {
         // A stream can't survive a reload — mark interrupted messages done.

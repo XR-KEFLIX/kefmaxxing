@@ -24,16 +24,19 @@ export default {
         mono: ['"JetBrains Mono Variable"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       maxWidth: {
-        content: '720px', // reading-width column (~75 chars at 15px) — optimize for reading
+        content: '820px', // the editorial spine — reading + composer column
       },
       borderRadius: {
-        // Pill design system: exactly two named radii on top of the base scale.
-        // `pill` — composer + large pill surfaces; `bubble` — user message pills.
+        // Pill design system: named radii on top of the base scale.
+        // `pill` — composer; `bubble` — user messages; `surface` — floating objects (rail, workspace).
         pill: '28px',
         bubble: '20px',
+        surface: '20px',
       },
       boxShadow: {
         composer: 'var(--shadow-composer)',
+        // Hover elevation for cards — a gentle lift off the desk
+        card: '0 2px 10px rgba(0, 0, 0, 0.3)',
         // Restrained focus ring in accent-glow — warmth without a screenshot-bait bloom
         'composer-glow': '0 0 0 2px var(--accent-glow)',
       },
@@ -49,10 +52,16 @@ export default {
           from: { transform: 'scaleY(0)' },
           to: { transform: 'scaleY(1)' },
         },
+        // thread switching: quiet 150ms fade, motion with a purpose
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
       },
       animation: {
         blink: 'blink 1s step-end infinite',
         'grow-y': 'grow-y 150ms ease-out',
+        'fade-in': 'fade-in 150ms ease-out',
       },
     },
   },

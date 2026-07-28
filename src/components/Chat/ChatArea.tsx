@@ -49,7 +49,7 @@ export function ChatArea({ messages }: { messages: Message[] }) {
   }
 
   return (
-    <div className="relative flex-1 overflow-hidden">
+    <div className="relative flex-1 animate-fade-in overflow-hidden">
       <div ref={scrollRef} onScroll={handleScroll} className="h-full overflow-y-auto">
         <div className="mx-auto w-full max-w-content px-6 py-6">
           <MessageList messages={messages} />

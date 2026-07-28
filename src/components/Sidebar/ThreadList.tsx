@@ -40,7 +40,7 @@ export function ThreadList({
           <h2 className="px-3 pb-1 text-xs font-medium uppercase tracking-wide text-secondary">
             {group.label}
           </h2>
-          <ul>
+          <ul className="space-y-0.5">
             {group.threads.map((thread) => (
               <li key={thread.id}>
                 <ThreadItem

@@ -24,15 +24,16 @@ function toText(node: ReactNode): string {
  */
 const components: Components = {
   h1: ({ children }) => (
-    <h1 className="mb-2 mt-6 text-2xl font-semibold text-primary">{children}</h1>
+    <h1 className="mb-2 mt-7 text-[24px] font-semibold tracking-[-0.01em] text-primary first:mt-0">{children}</h1>
   ),
   h2: ({ children }) => (
-    <h2 className="mb-2 mt-6 text-xl font-semibold text-primary">{children}</h2>
+    <h2 className="mb-2 mt-6 text-[19px] font-semibold tracking-[-0.01em] text-primary first:mt-0">{children}</h2>
   ),
   h3: ({ children }) => (
-    <h3 className="mb-2 mt-6 text-base font-semibold text-primary">{children}</h3>
+    <h3 className="mb-1.5 mt-5 text-[16px] font-semibold text-primary first:mt-0">{children}</h3>
   ),
-  p: ({ children }) => <p className="my-2">{children}</p>,
+  // Prose column: ~65 characters — the editorial reading measure
+  p: ({ children }) => <p className="my-2 max-w-[65ch]">{children}</p>,
   a: ({ children, href }) => (
     <a
       href={href}
@@ -43,11 +44,11 @@ const components: Components = {
       {children}
     </a>
   ),
-  ul: ({ children }) => <ul className="my-2 list-disc space-y-1 pl-6">{children}</ul>,
-  ol: ({ children }) => <ol className="my-2 list-decimal space-y-1 pl-6">{children}</ol>,
+  ul: ({ children }) => <ul className="my-2 max-w-[65ch] list-disc space-y-1 pl-6">{children}</ul>,
+  ol: ({ children }) => <ol className="my-2 max-w-[65ch] list-decimal space-y-1 pl-6">{children}</ol>,
   li: ({ children }) => <li className="pl-1">{children}</li>,
   blockquote: ({ children }) => (
-    <blockquote className="my-3 border-l-2 border-border pl-4 text-secondary">
+    <blockquote className="my-3 max-w-[65ch] border-l-2 border-border pl-4 text-secondary">
       {children}
     </blockquote>
   ),

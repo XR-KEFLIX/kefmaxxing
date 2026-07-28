@@ -1,4 +1,4 @@
-import type { Thread } from './types'
+import type { Message, Thread } from './types'
 
 /** Tiny classnames joiner (clsx-lite, no extra dependency). */
 export function cn(...classes: Array<string | false | null | undefined>): string {
@@ -12,6 +12,42 @@ export function deriveTitle(text: string): string {
   const clean = text.trim().replace(/\s+/g, ' ')
   if (!clean) return 'New chat'
   return clean.length > 40 ? `${clean.slice(0, 40).trimEnd()}…` : clean
+}
+
+/** Compact relative time for sidebar metadata: now / 5m / 3h / 2d / 1w / date. */
+export function formatRelativeTime(ts: number): string {
+  const minutes = Math.floor((Date.now() - ts) / 60_000)
+  if (minutes < 1) return 'now'
+  if (minutes < 60) return `${minutes}m`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days}d`
+  if (days < 30) return `${Math.floor(days / 7)}w`
+  return new Date(ts).toLocaleDateString()
+}
+
+export interface CodeArtifact {
+  id: string
+  language: string
+  code: string
+}
+
+/** Extracts fenced code blocks from assistant messages — the workspace's raw material. */
+export function extractCodeBlocks(messages: Message[]): CodeArtifact[] {
+  const artifacts: CodeArtifact[] = []
+  const fence = /```([\w-]*)\n([\s\S]*?)```/g
+  for (const message of messages) {
+    if (message.role !== 'assistant') continue
+    for (const match of message.content.matchAll(fence)) {
+      artifacts.push({
+        id: `${message.id}-${artifacts.length}`,
+        language: match[1] || 'text',
+        code: match[2].replace(/\n$/, ''),
+      })
+    }
+  }
+  return artifacts
 }
 
 export interface ThreadGroup {

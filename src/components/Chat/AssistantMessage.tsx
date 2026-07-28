@@ -22,7 +22,7 @@ export function AssistantMessage({
     <div className="w-full">
       <div
         className={cn(
-          'text-[15px] leading-[1.7] text-primary',
+          'text-[16px] leading-[1.75] text-primary',
           streaming && 'streaming-inline-last',
         )}
       >

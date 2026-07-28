@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Pencil, Trash2 } from 'lucide-react'
 import type { Thread } from '../../lib/types'
-import { cn } from '../../lib/utils'
+import { cn, formatRelativeTime } from '../../lib/utils'
 import { IconButton } from '../ui/IconButton'
 
 type Mode = 'idle' | 'renaming' | 'confirming'
@@ -15,11 +15,10 @@ interface ThreadItemProps {
 }
 
 /**
- * Thread row with inline flows (no modals):
- * - Rename: pencil swaps the title for an input — Enter commits, Esc cancels, blur commits.
- * - Delete: trash swaps the row for "Delete this chat? [Delete] [Cancel]" — Esc cancels.
- * Active state: 2.5px accent bar on the left edge (grows in from center)
- * plus a neutral surface lift — a confident marker, not a faint tint.
+ * A conversation is an object, not a row: a card with a title and a metadata
+ * line (relative time + message count). Active = lifted surface + accent bar
+ * (grows in from center); hover = gentle surface lift with reveal actions.
+ * Rename/delete stay inline (no modals).
  */
 export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: ThreadItemProps) {
   const [mode, setMode] = useState<Mode>('idle')
@@ -47,10 +46,15 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
     setMode('idle')
   }
 
+  const count = thread.messages.length
+  const meta =
+    count > 0
+      ? `${formatRelativeTime(thread.updatedAt)} · ${count} messages`
+      : formatRelativeTime(thread.updatedAt)
+
   const containerClass = cn(
-    'group relative flex h-8 items-center rounded-lg pl-3 transition-colors duration-150 ease-out',
-    mode === 'idle' ? 'pr-1' : 'pr-2',
-    active ? 'bg-hover' : 'hover:bg-hover',
+    'group relative rounded-xl px-3.5 py-2.5 transition-all duration-150 ease-out',
+    active ? 'bg-hover shadow-card' : 'hover:bg-hover/70 hover:shadow-card',
   )
 
   if (mode === 'confirming') {
@@ -64,23 +68,25 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
           }
         }}
       >
-        <span className="min-w-0 flex-1 truncate text-[13px] text-primary">Delete this chat?</span>
-        {/* Destructive action: neutral chrome, meaning carried by the label */}
-        <button
-          type="button"
-          onClick={onDelete}
-          className="ml-1 shrink-0 rounded-md px-2 py-1 text-xs font-medium text-primary transition-colors duration-150 ease-out hover:bg-hover"
-        >
-          Delete
-        </button>
-        <button
-          ref={cancelRef}
-          type="button"
-          onClick={() => setMode('idle')}
-          className="shrink-0 rounded-md px-2 py-1 text-xs text-secondary transition-colors duration-150 ease-out hover:bg-hover"
-        >
-          Cancel
-        </button>
+        <span className="block truncate text-sm text-primary">Delete this chat?</span>
+        <div className="mt-1.5 flex items-center gap-1.5">
+          {/* Destructive action: neutral chrome, meaning carried by the label */}
+          <button
+            type="button"
+            onClick={onDelete}
+            className="rounded-md bg-elevated px-2 py-1 text-xs font-medium text-primary transition-colors duration-150 ease-out hover:bg-border"
+          >
+            Delete
+          </button>
+          <button
+            ref={cancelRef}
+            type="button"
+            onClick={() => setMode('idle')}
+            className="rounded-md px-2 py-1 text-xs text-secondary transition-colors duration-150 ease-out hover:bg-hover"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     )
   }
@@ -115,23 +121,23 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
       {active && (
         <span
           aria-hidden="true"
-          className="absolute left-1 top-[22.5%] h-[55%] w-[2.5px] animate-grow-y rounded-full bg-accent"
+          className="absolute left-1 top-[25%] h-[50%] w-[2.5px] animate-grow-y rounded-full bg-accent"
         />
       )}
-      <button
-        type="button"
-        onClick={onSelect}
-        aria-current={active ? 'page' : undefined}
-        className={cn(
-          'min-w-0 flex-1 truncate text-left text-sm transition-colors duration-150 ease-out',
-          active ? 'font-medium text-primary' : 'text-secondary hover:text-primary',
-        )}
-      >
-        {thread.title || 'New chat'}
+      <button type="button" onClick={onSelect} className="block w-full min-w-0 text-left">
+        <span
+          className={cn(
+            'block truncate text-sm transition-colors duration-150 ease-out',
+            active ? 'font-medium text-primary' : 'text-secondary group-hover:text-primary',
+          )}
+        >
+          {thread.title || 'New chat'}
+        </span>
+        <span className="mt-0.5 block truncate text-xs text-secondary">{meta}</span>
       </button>
 
       {/* Rename/delete — revealed on hover or keyboard focus */}
-      <div className="ml-1 hidden shrink-0 items-center gap-0.5 group-hover:flex group-focus-within:flex">
+      <div className="absolute right-1.5 top-1.5 hidden items-center gap-0.5 group-hover:flex group-focus-within:flex">
         <IconButton label="Rename chat" className="p-1 hover:text-primary" onClick={startRename}>
           <Pencil />
         </IconButton>
