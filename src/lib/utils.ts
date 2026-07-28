@@ -7,6 +7,13 @@ export function cn(...classes: Array<string | false | null | undefined>): string
 
 export type GroupLabel = 'Today' | 'Yesterday' | 'Previous 7 days' | 'Older'
 
+/** Thread title from the first user message: 40 chars max, ellipsis if cut. */
+export function deriveTitle(text: string): string {
+  const clean = text.trim().replace(/\s+/g, ' ')
+  if (!clean) return 'New chat'
+  return clean.length > 40 ? `${clean.slice(0, 40).trimEnd()}…` : clean
+}
+
 export interface ThreadGroup {
   label: GroupLabel
   threads: Thread[]

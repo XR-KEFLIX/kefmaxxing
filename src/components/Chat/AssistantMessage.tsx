@@ -11,7 +11,13 @@ import { MessageActions } from './MessageActions'
  * character (the .streaming-inline-last utility pulls the last block inline so
  * the cursor hugs the text) and the actions row is hidden.
  */
-export function AssistantMessage({ message }: { message: Message }) {
+export function AssistantMessage({
+  message,
+  onRetry,
+}: {
+  message: Message
+  onRetry?: () => void
+}) {
   const streaming = message.status === 'streaming'
 
   return (
@@ -31,7 +37,7 @@ export function AssistantMessage({ message }: { message: Message }) {
       {/* Hover (or keyboard focus) reveals copy / retry / thumbs below the message */}
       {!streaming && (
         <div className="mt-1 opacity-0 transition-opacity duration-150 ease-out group-hover:opacity-100 group-focus-within:opacity-100">
-          <MessageActions content={message.content} />
+          <MessageActions content={message.content} onRetry={onRetry} />
         </div>
       )}
     </div>

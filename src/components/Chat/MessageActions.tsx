@@ -4,14 +4,16 @@ import { IconButton } from '../ui/IconButton'
 
 interface MessageActionsProps {
   content: string
+  /** Present only on the last assistant message — removes it and re-streams. */
+  onRetry?: () => void
 }
 
 /**
  * copy / retry / thumbs row under an assistant message.
  * Copy shows a check for 1.5s on success. Thumbs are toggle-only visual state
- * (per spec, no logic). Retry is wired to real logic in Stage 3.
+ * (per spec, no logic).
  */
-export function MessageActions({ content }: MessageActionsProps) {
+export function MessageActions({ content, onRetry }: MessageActionsProps) {
   const [copied, setCopied] = useState(false)
   const [rating, setRating] = useState<'up' | 'down' | null>(null)
   const timer = useRef<number | undefined>(undefined)
@@ -33,10 +35,11 @@ export function MessageActions({ content }: MessageActionsProps) {
       <IconButton label={copied ? 'Copied' : 'Copy'} onClick={copy}>
         {copied ? <Check className="text-accent" /> : <Copy />}
       </IconButton>
-      {/* Decorative until Stage 3 */}
-      <IconButton label="Retry">
-        <RefreshCw />
-      </IconButton>
+      {onRetry && (
+        <IconButton label="Retry" onClick={onRetry}>
+          <RefreshCw />
+        </IconButton>
+      )}
       <IconButton
         label="Good response"
         aria-pressed={rating === 'up'}

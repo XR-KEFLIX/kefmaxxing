@@ -1,17 +1,32 @@
-import { useState } from 'react'
-import { Moon, PanelLeftClose, Search, Settings, SquarePen } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Moon, PanelLeftClose, Search, Settings, SquarePen, Sun } from 'lucide-react'
+import { useMiloStore } from '../../lib/store'
+import type { Thread } from '../../lib/types'
 import { IconButton } from '../ui/IconButton'
 import { ThreadList } from './ThreadList'
 
 interface SidebarProps {
-  activeThreadId: string | null
-  onSelectThread: (id: string) => void
   onCollapse: () => void
 }
 
-export function Sidebar({ activeThreadId, onSelectThread, onCollapse }: SidebarProps) {
-  // Live search is local state in Stage 1 (static data); moves to the store in Stage 3.
+export function Sidebar({ onCollapse }: SidebarProps) {
+  // Search query is ephemeral UI state; everything else lives in the store.
   const [query, setQuery] = useState('')
+
+  const threads = useMiloStore((s) => s.threads)
+  const threadOrder = useMiloStore((s) => s.threadOrder)
+  const activeThreadId = useMiloStore((s) => s.activeThreadId)
+  const theme = useMiloStore((s) => s.theme)
+  const newChat = useMiloStore((s) => s.newChat)
+  const selectThread = useMiloStore((s) => s.selectThread)
+  const renameThread = useMiloStore((s) => s.renameThread)
+  const deleteThread = useMiloStore((s) => s.deleteThread)
+  const toggleTheme = useMiloStore((s) => s.toggleTheme)
+
+  const orderedThreads = useMemo(
+    () => threadOrder.map((id) => threads[id]).filter((t): t is Thread => Boolean(t)),
+    [threads, threadOrder],
+  )
 
   return (
     <aside className="flex h-full w-[260px] flex-col border-r border-border bg-sidebar">
@@ -23,10 +38,11 @@ export function Sidebar({ activeThreadId, onSelectThread, onCollapse }: SidebarP
         </IconButton>
       </div>
 
-      {/* 2. New chat (decorative until Stage 3) */}
+      {/* 2. New chat */}
       <div className="px-4 pb-2">
         <button
           type="button"
+          onClick={newChat}
           className="flex w-full items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-primary transition-colors duration-150 ease-out hover:bg-hover"
         >
           <SquarePen className="h-4 w-4 text-secondary" />
@@ -39,6 +55,7 @@ export function Sidebar({ activeThreadId, onSelectThread, onCollapse }: SidebarP
         <div className="relative">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-secondary" />
           <input
+            id="milo-search"
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -51,13 +68,23 @@ export function Sidebar({ activeThreadId, onSelectThread, onCollapse }: SidebarP
 
       {/* 4. Thread list, grouped by date */}
       <nav aria-label="Chat history" className="flex-1 overflow-y-auto px-2 pb-2">
-        <ThreadList query={query} activeThreadId={activeThreadId} onSelect={onSelectThread} />
+        <ThreadList
+          threads={orderedThreads}
+          query={query}
+          activeThreadId={activeThreadId}
+          onSelect={selectThread}
+          onRename={renameThread}
+          onDelete={deleteThread}
+        />
       </nav>
 
-      {/* 5. Footer — theme toggle is wired in Stage 4; settings is decorative in v1 */}
+      {/* 5. Footer — theme toggle (persisted); settings is decorative in v1 */}
       <div className="flex items-center gap-1 border-t border-border p-3">
-        <IconButton label="Toggle theme">
-          <Moon />
+        <IconButton
+          label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          onClick={toggleTheme}
+        >
+          {theme === 'dark' ? <Sun /> : <Moon />}
         </IconButton>
         <IconButton label="Settings">
           <Settings />

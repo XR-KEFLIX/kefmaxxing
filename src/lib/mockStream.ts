@@ -1,14 +1,42 @@
 /**
  * Mock generation lives ONLY in this file.
  *
- * Stage 2: exports CANNED_RESPONSE, the ~500-word markdown sample used by the
- * demo conversation (rendering showcase: intro, two headings, a list, a table,
- * one TS code block, closing paragraph).
+ * streamResponse(onToken, signal) emits the canned ~500-word markdown reply
+ * (CANNED_RESPONSE: intro, two headings, a list, a table, one TS code block,
+ * closing paragraph) token-by-token — ~30 tokens/sec with 10–50ms random
+ * jitter, abortable via the AbortSignal (resolves with the partial output).
  *
- * Stage 3: adds streamResponse(onToken, signal) — token-by-token emission with
- * jitter + AbortSignal support. That is the single integration point a real
- * streaming API will replace (the real backend already exists at api/chat.js).
+ * THIS IS THE REAL-API INTEGRATION POINT: to go live, replace this one
+ * function with an SSE/fetch reader against api/chat.js — the store and UI
+ * don't change.
  */
+
+/** Word-ish token chunks (~500 tokens for the canned response). */
+function tokenize(text: string): string[] {
+  return text.match(/\S+\s*/g) ?? []
+}
+
+export function streamResponse(
+  onToken: (token: string) => void,
+  signal: AbortSignal,
+): Promise<void> {
+  const tokens = tokenize(CANNED_RESPONSE)
+  return new Promise((resolve) => {
+    let index = 0
+    const tick = (): void => {
+      if (signal.aborted || index >= tokens.length) {
+        resolve() // aborted streams keep their partial content
+        return
+      }
+      onToken(tokens[index])
+      index += 1
+      // avg ~30ms ≈ 33 tokens/sec, 10–50ms jitter per spec
+      setTimeout(tick, 10 + Math.random() * 40)
+    }
+    tick()
+  })
+}
+
 export const CANNED_RESPONSE = `A good React + TypeScript structure optimizes for one thing: how fast a new developer can find the file they need. The layouts that scale are organized around **features**, not around technical types. When every screen, hook, and test for a domain lives in one folder, the codebase stays navigable as it grows.
 
 ## Feature folders over type folders
