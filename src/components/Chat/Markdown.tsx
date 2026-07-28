@@ -33,7 +33,7 @@ const components: Components = {
     <h3 className="mb-1.5 mt-5 text-[16px] font-semibold text-primary first:mt-0">{children}</h3>
   ),
   // Prose column: ~65 characters — the editorial reading measure
-  p: ({ children }) => <p className="my-2 max-w-[65ch]">{children}</p>,
+  p: ({ children }) => <p className="my-3 max-w-[65ch]">{children}</p>,
   a: ({ children, href }) => (
     <a
       href={href}
@@ -44,8 +44,8 @@ const components: Components = {
       {children}
     </a>
   ),
-  ul: ({ children }) => <ul className="my-2 max-w-[65ch] list-disc space-y-1 pl-6">{children}</ul>,
-  ol: ({ children }) => <ol className="my-2 max-w-[65ch] list-decimal space-y-1 pl-6">{children}</ol>,
+  ul: ({ children }) => <ul className="my-3 max-w-[65ch] list-disc space-y-1.5 pl-6">{children}</ul>,
+  ol: ({ children }) => <ol className="my-3 max-w-[65ch] list-decimal space-y-1.5 pl-6">{children}</ol>,
   li: ({ children }) => <li className="pl-1">{children}</li>,
   blockquote: ({ children }) => (
     <blockquote className="my-3 max-w-[65ch] border-l-2 border-border pl-4 text-secondary">

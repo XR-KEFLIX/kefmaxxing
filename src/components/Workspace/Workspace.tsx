@@ -74,7 +74,7 @@ export function Workspace() {
   return (
     <div
       className={cn(
-        'relative ml-4 flex h-full shrink-0 flex-col overflow-hidden rounded-surface bg-sidebar shadow-composer',
+        'relative flex h-full shrink-0 flex-col bg-sidebar',
         !dragging && 'transition-[width] duration-200 ease-out',
       )}
       style={{ width }}

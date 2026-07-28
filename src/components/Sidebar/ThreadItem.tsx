@@ -53,8 +53,8 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
       : formatRelativeTime(thread.updatedAt)
 
   const containerClass = cn(
-    'group relative rounded-xl px-3.5 py-2.5 transition-all duration-150 ease-out',
-    active ? 'bg-hover shadow-card' : 'hover:bg-hover/70 hover:shadow-card',
+    'group relative rounded-xl px-3.5 py-2.5 transition-colors duration-150 ease-out',
+    active ? 'bg-hover' : 'hover:bg-hover/70',
   )
 
   if (mode === 'confirming') {

@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
+import { PanelLeftOpen, PanelRightOpen, SquarePen } from 'lucide-react'
 import { ChatArea } from './components/Chat/ChatArea'
 import { EmptyState } from './components/Chat/EmptyState'
 import { Composer } from './components/Composer/Composer'
 import { Sidebar } from './components/Sidebar/Sidebar'
 import { Workspace } from './components/Workspace/Workspace'
+import { IconButton } from './components/ui/IconButton'
 import { useMiloStore } from './lib/store'
 import type { Message } from './lib/types'
 import { cn } from './lib/utils'
@@ -11,10 +13,10 @@ import { cn } from './lib/utils'
 const NO_MESSAGES: Message[] = []
 
 /**
- * The shell — an environment, not a webpage. 16px of app-level air surrounds
- * three floating objects: the navigation rail, the open chat column (messages
- * float on open space along an 820px editorial spine), and the workspace.
- * Nothing is welded to the browser window.
+ * Classic architecture, exceptional execution: attached sidebar on the left,
+ * chat fills the rest, workspace panel docks on the right. No floating
+ * panels, no experimental layout — the quality lives in typography,
+ * spacing, states, and component craft.
  */
 export default function App() {
   const sidebarOpen = useMiloStore((s) => s.sidebarOpen)
@@ -26,6 +28,7 @@ export default function App() {
   const theme = useMiloStore((s) => s.theme)
   const activeThreadId = useMiloStore((s) => s.activeThreadId)
   const workspaceOpen = useMiloStore((s) => s.workspaceOpen)
+  const setWorkspaceOpen = useMiloStore((s) => s.setWorkspaceOpen)
   const activeMessages = useMiloStore((s) => {
     const id = s.activeThreadId
     return id && s.threads[id] ? s.threads[id].messages : undefined
@@ -60,26 +63,44 @@ export default function App() {
   const streaming = streamingThreadId !== null
 
   return (
-    <div className="flex h-full gap-4 bg-bg p-4 text-primary">
-      {/* Rail — floating object: 280px expanded, 72px collapsed */}
+    <div className="flex h-full bg-bg text-primary">
+      {/* Attached sidebar — 240px, collapses to 0 with a 200ms width transition */}
       <div
         className={cn(
-          'h-full shrink-0 transition-[width] duration-200 ease-out',
-          sidebarOpen ? 'w-[280px]' : 'w-[72px]',
+          'shrink-0 overflow-hidden transition-[width] duration-200 ease-out',
+          sidebarOpen ? 'w-[240px]' : 'w-0',
         )}
       >
-        <Sidebar />
+        <Sidebar onCollapse={() => setSidebarOpen(false)} />
       </div>
 
-      {/* Chat column + workspace */}
-      <main className="flex min-w-0 flex-1">
-        {/* Open space: messages float along the editorial spine; the hero
-            composer floats beneath, detached from the bottom by the shell's air */}
+      <main className="relative flex min-w-0 flex-1">
+        {/* Floating hamburger + new chat pair, only when the sidebar is collapsed */}
+        {!sidebarOpen && (
+          <div className="absolute left-3 top-3 z-10 flex items-center gap-1">
+            <IconButton
+              label="Open sidebar"
+              onClick={() => setSidebarOpen(true)}
+              className="bg-elevated shadow-composer hover:text-primary"
+            >
+              <PanelLeftOpen />
+            </IconButton>
+            <IconButton
+              label="New chat"
+              onClick={newChat}
+              className="bg-elevated shadow-composer hover:text-primary"
+            >
+              <SquarePen />
+            </IconButton>
+          </div>
+        )}
+
+        {/* Chat column */}
         <div className="flex min-w-0 flex-1 flex-col">
           {hasMessages ? (
             <>
               <ChatArea key={activeThreadId ?? 'none'} messages={messages} />
-              <div className="shrink-0 px-6 pt-2">
+              <div className="shrink-0 px-6 pb-4 pt-2">
                 <div className="mx-auto w-full max-w-content">
                   <Composer onSend={sendMessage} streaming={streaming} onStop={stopStreaming} />
                   <p className="mt-2 text-center text-xs text-secondary">
@@ -93,8 +114,18 @@ export default function App() {
           )}
         </div>
 
-        {/* Third floating surface — open by default; toggled from the composer */}
+        {/* Right-side workspace — Milo's differentiator; open by default */}
         {workspaceOpen && <Workspace />}
+
+        {!workspaceOpen && (
+          <IconButton
+            label="Open workspace"
+            onClick={() => setWorkspaceOpen(true)}
+            className="absolute right-3 top-3 z-10 bg-elevated shadow-composer hover:text-primary"
+          >
+            <PanelRightOpen />
+          </IconButton>
+        )}
       </main>
     </div>
   )
