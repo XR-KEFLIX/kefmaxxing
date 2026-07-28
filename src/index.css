@@ -54,11 +54,6 @@
     @apply bg-bg font-sans text-primary antialiased;
   }
 
-  /* Fraunces ships with an opsz axis — let it resolve optically per size. */
-  .font-serif {
-    font-optical-sizing: auto;
-  }
-
   ::selection {
     background: rgb(var(--accent) / 0.25);
   }

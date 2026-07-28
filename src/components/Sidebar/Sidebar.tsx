@@ -29,29 +29,29 @@ export function Sidebar({ onCollapse }: SidebarProps) {
   )
 
   return (
-    <aside className="flex h-full w-[260px] flex-col border-r border-border bg-sidebar">
-      {/* 1. Wordmark (Fraunces logotype — a brand moment) + collapse control */}
-      <div className="flex items-center justify-between p-4">
-        <span className="font-serif text-[22px] font-bold leading-6 tracking-[-0.01em]">Milo</span>
+    <aside className="flex h-full w-[240px] flex-col border-r border-border bg-sidebar">
+      {/* 1. Quiet wordmark + collapse control */}
+      <div className="flex items-center justify-between p-3">
+        <span className="px-1 text-[15px] font-semibold leading-6">Milo</span>
         <IconButton label="Collapse sidebar" onClick={onCollapse}>
           <PanelLeftClose />
         </IconButton>
       </div>
 
-      {/* 2. New chat */}
-      <div className="px-4 pb-2">
+      {/* 2. New chat — ghost button, no box */}
+      <div className="px-3 pb-1">
         <button
           type="button"
           onClick={newChat}
-          className="flex w-full items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-primary transition-colors duration-150 ease-out hover:bg-hover"
+          className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-secondary transition-colors duration-150 ease-out hover:bg-hover hover:text-primary"
         >
-          <SquarePen className="h-4 w-4 text-secondary" />
+          <SquarePen className="h-4 w-4" />
           New chat
         </button>
       </div>
 
       {/* 3. Search — filters the thread list live as you type */}
-      <div className="px-4 pb-2">
+      <div className="px-3 pb-2">
         <div className="relative">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-secondary" />
           <input
@@ -79,7 +79,7 @@ export function Sidebar({ onCollapse }: SidebarProps) {
       </nav>
 
       {/* 5. Footer — theme toggle (persisted); settings is decorative in v1 */}
-      <div className="flex items-center gap-1 border-t border-border p-3">
+      <div className="flex items-center gap-1 border-t border-border p-2.5">
         <IconButton
           label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           onClick={toggleTheme}

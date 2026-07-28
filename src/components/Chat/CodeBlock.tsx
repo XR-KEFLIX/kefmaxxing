@@ -115,12 +115,9 @@ export function CodeBlock({ language, code }: CodeBlockProps) {
 
   return (
     <div className="my-4 overflow-hidden rounded-xl bg-code-bg font-mono text-sm">
-      {/* 36px top bar: accent dot + language label left, copy right */}
+      {/* 36px top bar: language label left, copy right — plain, no marks */}
       <div className="flex h-9 items-center justify-between bg-code-topbar pl-4 pr-3">
-        <span className="flex items-center text-xs text-[#8B8F99]">
-          <span aria-hidden="true" className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-          {language || 'text'}
-        </span>
+        <span className="text-xs text-[#8B8F99]">{language || 'text'}</span>
         <button
           type="button"
           onClick={copy}

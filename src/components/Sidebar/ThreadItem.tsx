@@ -65,11 +65,11 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
         }}
       >
         <span className="min-w-0 flex-1 truncate text-[13px] text-primary">Delete this chat?</span>
-        {/* Destructive = full-saturation accent + explicit label (no separate red) */}
+        {/* Destructive action: neutral chrome, meaning carried by the label */}
         <button
           type="button"
           onClick={onDelete}
-          className="ml-1 shrink-0 rounded-md bg-accent-glow px-2 py-1 text-xs font-medium text-accent transition-colors duration-150 ease-out hover:bg-accent/20"
+          className="ml-1 shrink-0 rounded-md px-2 py-1 text-xs font-medium text-primary transition-colors duration-150 ease-out hover:bg-hover"
         >
           Delete
         </button>
@@ -132,12 +132,12 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
 
       {/* Rename/delete — revealed on hover or keyboard focus */}
       <div className="ml-1 hidden shrink-0 items-center gap-0.5 group-hover:flex group-focus-within:flex">
-        <IconButton label="Rename chat" className="p-1 hover:text-accent" onClick={startRename}>
+        <IconButton label="Rename chat" className="p-1 hover:text-primary" onClick={startRename}>
           <Pencil />
         </IconButton>
         <IconButton
           label="Delete chat"
-          className="p-1 hover:text-accent"
+          className="p-1 hover:text-primary"
           onClick={() => setMode('confirming')}
         >
           <Trash2 />

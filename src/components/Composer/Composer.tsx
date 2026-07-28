@@ -14,9 +14,8 @@ interface ComposerProps {
  * Pill composer on the elevated surface:
  * - 28px pill, thin border in light / borderless filled panel in dark.
  * - Focus: warm accent-glow shadow around the pill (not a border swap).
- * - Send: perfect circle, solid accent with accent-ink icon; hover pops
- *   1.04x with a slightly bouncy easing. While streaming it becomes a
- *   square stop icon that aborts the stream.
+ * - Send: perfect circle, solid accent with accent-ink icon; calm color-only
+ *   hover. While streaming it becomes a square stop icon that aborts the stream.
  * - Left tools row ("+" + model pill) is presentation-only in v1 and
  *   collapses to just "+" on narrow viewports.
  */
@@ -49,7 +48,7 @@ export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
     'transition-colors duration-150 ease-out hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40'
 
   return (
-    <div className="rounded-pill border border-transparent bg-elevated px-5 py-3.5 shadow-composer transition-shadow duration-200 ease-out focus-within:shadow-composer-glow light:border-border">
+    <div className="rounded-pill border border-transparent bg-elevated px-5 py-4 shadow-composer transition-shadow duration-200 ease-out focus-within:shadow-composer-glow light:border-border">
       <div className="flex items-end gap-2">
         {/* Tools row — presentation only in v1; extras collapse on narrow screens */}
         <div className="flex shrink-0 items-center gap-1.5">
@@ -79,7 +78,7 @@ export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
           }}
           placeholder="Message Milo…"
           aria-label="Message Milo"
-          className="max-h-[200px] flex-1 resize-none bg-transparent px-1 py-1 text-[15px] leading-6 text-primary placeholder:text-secondary focus:outline-none"
+          className="max-h-[200px] flex-1 resize-none bg-transparent px-1 py-1 text-base leading-6 text-primary placeholder:text-secondary focus:outline-none"
         />
 
         {streaming ? (

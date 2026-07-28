@@ -33,7 +33,7 @@ export function MessageActions({ content, onRetry }: MessageActionsProps) {
   return (
     <div className="flex items-center gap-0.5">
       <IconButton label={copied ? 'Copied' : 'Copy'} onClick={copy}>
-        {copied ? <Check className="text-accent" /> : <Copy />}
+        {copied ? <Check className="text-primary" /> : <Copy />}
       </IconButton>
       {onRetry && (
         <IconButton label="Retry" onClick={onRetry}>
@@ -44,7 +44,7 @@ export function MessageActions({ content, onRetry }: MessageActionsProps) {
         label="Good response"
         aria-pressed={rating === 'up'}
         onClick={() => setRating((r) => (r === 'up' ? null : 'up'))}
-        className={rating === 'up' ? 'text-accent' : undefined}
+        className={rating === 'up' ? 'text-primary' : undefined}
       >
         <ThumbsUp />
       </IconButton>
@@ -52,7 +52,7 @@ export function MessageActions({ content, onRetry }: MessageActionsProps) {
         label="Bad response"
         aria-pressed={rating === 'down'}
         onClick={() => setRating((r) => (r === 'down' ? null : 'down'))}
-        className={rating === 'down' ? 'text-accent' : undefined}
+        className={rating === 'down' ? 'text-primary' : undefined}
       >
         <ThumbsDown />
       </IconButton>

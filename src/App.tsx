@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { PanelLeftOpen, SquarePen } from 'lucide-react'
 import { ChatArea } from './components/Chat/ChatArea'
-import { EmptyState } from './components/Chat/EmptyState'
 import { Composer } from './components/Composer/Composer'
 import { Sidebar } from './components/Sidebar/Sidebar'
 import { IconButton } from './components/ui/IconButton'
@@ -55,11 +54,11 @@ export default function App() {
 
   return (
     <div className="flex h-full bg-bg text-primary">
-      {/* Sidebar: 260px, collapses to 0 with a 200ms ease-out width transition */}
+      {/* Sidebar: 240px, collapses to 0 with a 200ms ease-out width transition */}
       <div
         className={cn(
           'shrink-0 overflow-hidden transition-[width] duration-200 ease-out',
-          sidebarOpen ? 'w-[260px]' : 'w-0',
+          sidebarOpen ? 'w-[240px]' : 'w-0',
         )}
       >
         <Sidebar onCollapse={() => setSidebarOpen(false)} />
@@ -68,20 +67,20 @@ export default function App() {
       {/* Main area */}
       <main className="relative flex min-w-0 flex-1 flex-col">
         {/* Floating hamburger + new chat pair, only when the sidebar is collapsed.
-            Secondary controls stay neutral; accent only on hover. */}
+            Quiet secondary controls; no accent until interaction. */}
         {!sidebarOpen && (
           <div className="absolute left-3 top-3 z-10 flex items-center gap-1">
             <IconButton
               label="Open sidebar"
               onClick={() => setSidebarOpen(true)}
-              className="border border-border bg-elevated shadow-composer hover:border-accent/60 hover:text-accent"
+              className="border border-border bg-elevated hover:text-primary"
             >
               <PanelLeftOpen />
             </IconButton>
             <IconButton
               label="New chat"
               onClick={newChat}
-              className="border border-border bg-elevated shadow-composer hover:border-accent/60 hover:text-accent"
+              className="border border-border bg-elevated hover:text-primary"
             >
               <SquarePen />
             </IconButton>
@@ -102,17 +101,14 @@ export default function App() {
             </div>
           </>
         ) : (
-          /* Empty state, composer-first: the composer is the focal element;
-             the greeting stays minimal and subordinate. No ambient decoration. */
+          /* Empty state — barely exists: the composer IS the product here.
+             Centered pill, subtle helper text, nothing else. */
           <div className="flex flex-1 items-center justify-center overflow-y-auto px-6 pb-[8vh] pt-10">
             <div className="w-full max-w-content">
-              <EmptyState />
-              <div className="mt-6">
-                <Composer onSend={sendMessage} streaming={streaming} onStop={stopStreaming} />
-                <p className="mt-2 text-center text-xs text-secondary">
-                  Milo can make mistakes. Check important info.
-                </p>
-              </div>
+              <Composer onSend={sendMessage} streaming={streaming} onStop={stopStreaming} />
+              <p className="mt-2 text-center text-xs text-secondary">
+                Milo can make mistakes. Check important info.
+              </p>
             </div>
           </div>
         )}

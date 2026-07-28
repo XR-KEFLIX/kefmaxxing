@@ -4,13 +4,10 @@ import { Markdown } from './Markdown'
 import { MessageActions } from './MessageActions'
 
 /**
- * Assistant message: full-width, no bubble, no avatar — plus its visual
- * signature: a single 2px accent bar on the left edge (the same treatment
- * blockquotes get, tying the identity together).
- *
- * Deliberate asymmetry: assistant actions are PERSISTENTLY visible at reduced
- * opacity, brightening on hover/focus. While streaming, an 8px accent square
- * blinks after the last character and actions stay hidden.
+ * Assistant message: full-width plain markdown on the app background —
+ * no bubble, no avatar, no decorative marks. Actions are persistently
+ * visible at reduced opacity, brightening on hover/focus. While streaming,
+ * an 8px accent square blinks after the last character and actions hide.
  */
 export function AssistantMessage({
   message,
@@ -22,7 +19,7 @@ export function AssistantMessage({
   const streaming = message.status === 'streaming'
 
   return (
-    <div className="w-full border-l-2 border-accent pl-5">
+    <div className="w-full">
       <div
         className={cn(
           'text-[15px] leading-[1.7] text-primary',

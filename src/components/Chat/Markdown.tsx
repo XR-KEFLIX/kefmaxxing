@@ -18,7 +18,7 @@ function toText(node: ReactNode): string {
  * - headings: h1 24px / h2 20px / h3 16px, 600 weight, 24px top / 8px bottom
  * - lists: proper indent + markers, 8px rhythm
  * - tables: hairline borders, 14px
- * - blockquote: 2px accent left border, secondary text
+ * - blockquote: 2px neutral left border, secondary text
  * - inline code: bg-elevated pill with hairline border, 0.85em mono
  * - fenced code: CodeBlock (blocks come through as <pre><code className="language-x">)
  */
@@ -34,7 +34,12 @@ const components: Components = {
   ),
   p: ({ children }) => <p className="my-2">{children}</p>,
   a: ({ children, href }) => (
-    <a href={href} target="_blank" rel="noreferrer" className="text-accent underline underline-offset-2">
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="text-primary underline decoration-secondary underline-offset-2 transition-colors duration-150 ease-out hover:decoration-primary"
+    >
       {children}
     </a>
   ),
@@ -42,7 +47,7 @@ const components: Components = {
   ol: ({ children }) => <ol className="my-2 list-decimal space-y-1 pl-6">{children}</ol>,
   li: ({ children }) => <li className="pl-1">{children}</li>,
   blockquote: ({ children }) => (
-    <blockquote className="my-3 border-l-2 border-accent pl-4 text-secondary">
+    <blockquote className="my-3 border-l-2 border-border pl-4 text-secondary">
       {children}
     </blockquote>
   ),
