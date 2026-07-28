@@ -11,14 +11,14 @@ interface ComposerProps {
 }
 
 /**
- * Pill composer (ChatGPT shape language):
- * - 28px pill radius, roomy padding; in dark mode it's a solid filled panel
- *   with NO border, in light mode a thin subtle 1px border.
- * - Left tools row: circular "+" plus a pill model trigger (presentation only
- *   in v1); extra tools collapse behind "+" on narrow viewports.
- * - Send is a perfect 32px circle centered on the right edge; while streaming
- *   it becomes a square stop icon that aborts the stream.
- * - 1 row min, 200px max then scroll. Enter sends, Shift+Enter newline.
+ * Pill composer on the elevated surface:
+ * - 28px pill, thin border in light / borderless filled panel in dark.
+ * - Focus: warm accent-glow shadow around the pill (not a border swap).
+ * - Send: perfect circle, solid accent with accent-ink icon; hover pops
+ *   1.04x with a slightly bouncy easing. While streaming it becomes a
+ *   square stop icon that aborts the stream.
+ * - Left tools row ("+" + model pill) is presentation-only in v1 and
+ *   collapses to just "+" on narrow viewports.
  */
 export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
   const [value, setValue] = useState('')
@@ -43,8 +43,14 @@ export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
 
   const canSend = value.trim().length > 0 && !streaming
 
+  // Tactile send/stop: color shift + 1.04x pop on a bouncy easing
+  const actionButtonClass =
+    'flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-accent-ink ' +
+    'transition-[transform,background-color] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] ' +
+    'hover:scale-[1.04] hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100'
+
   return (
-    <div className="rounded-pill border border-border bg-bg px-5 py-3.5 shadow-composer transition-colors duration-150 ease-out focus-within:border-border-strong dark:border-transparent dark:bg-sidebar dark:focus-within:border-transparent">
+    <div className="rounded-pill border border-transparent bg-elevated px-5 py-3.5 shadow-composer transition-shadow duration-200 ease-out focus-within:shadow-composer-glow light:border-border">
       <div className="flex items-end gap-2">
         {/* Tools row — presentation only in v1; extras collapse on narrow screens */}
         <div className="flex shrink-0 items-center gap-1.5">
@@ -54,7 +60,7 @@ export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
           <button
             type="button"
             aria-label="Choose model (coming soon)"
-            className="hidden h-8 items-center gap-1.5 rounded-full border border-border px-3 text-[13px] text-secondary transition-colors duration-150 ease-out hover:bg-hover sm:flex dark:border-transparent dark:bg-hover dark:hover:bg-border"
+            className="hidden h-8 items-center gap-1.5 rounded-full border border-transparent bg-hover px-3 text-[13px] text-secondary transition-colors duration-150 ease-out hover:bg-border sm:flex light:border-border light:bg-transparent light:hover:bg-hover"
           >
             Milo 2.5
             <ChevronDown className="h-3.5 w-3.5" />
@@ -74,16 +80,11 @@ export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
           }}
           placeholder="Message Milo…"
           aria-label="Message Milo"
-          className="max-h-[200px] flex-1 resize-none bg-transparent px-1 py-1 text-base leading-6 text-primary placeholder:text-secondary focus:outline-none"
+          className="max-h-[200px] flex-1 resize-none bg-transparent px-1 py-1 text-[15px] leading-6 text-primary placeholder:text-secondary focus:outline-none"
         />
 
         {streaming ? (
-          <button
-            type="button"
-            onClick={onStop}
-            aria-label="Stop generating"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-white transition-colors duration-150 ease-out hover:bg-accent-hover"
-          >
+          <button type="button" onClick={onStop} aria-label="Stop generating" className={actionButtonClass}>
             <Square className="h-3.5 w-3.5 fill-current" />
           </button>
         ) : (
@@ -92,7 +93,7 @@ export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
             onClick={submit}
             disabled={!canSend}
             aria-label="Send message"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-white transition-colors duration-150 ease-out hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
+            className={actionButtonClass}
           >
             <ArrowUp className="h-[18px] w-[18px]" />
           </button>

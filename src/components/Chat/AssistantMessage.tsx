@@ -4,13 +4,13 @@ import { Markdown } from './Markdown'
 import { MessageActions } from './MessageActions'
 
 /**
- * Assistant message: NOT a bubble. Full-width markdown on the app background —
- * no avatar, no name label, no card.
+ * Assistant message: full-width, no bubble, no avatar — plus its visual
+ * signature: a single 2px accent bar on the left edge (the same treatment
+ * blockquotes get, tying the identity together).
  *
- * Deliberate asymmetry (ChatGPT pattern): assistant actions are PERSISTENTLY
- * visible at reduced opacity, brightening on hover/focus — while user-side
- * actions (thread rename/delete, etc.) stay hover-reveal. While streaming, an
- * 8px accent square blinks after the last character and actions are hidden.
+ * Deliberate asymmetry: assistant actions are PERSISTENTLY visible at reduced
+ * opacity, brightening on hover/focus. While streaming, an 8px accent square
+ * blinks after the last character and actions stay hidden.
  */
 export function AssistantMessage({
   message,
@@ -22,10 +22,10 @@ export function AssistantMessage({
   const streaming = message.status === 'streaming'
 
   return (
-    <div className="w-full">
+    <div className="w-full border-l-2 border-accent pl-5">
       <div
         className={cn(
-          'text-base leading-[1.65] text-primary',
+          'text-[15px] leading-[1.7] text-primary',
           streaming && 'streaming-inline-last',
         )}
       >

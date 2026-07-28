@@ -19,7 +19,7 @@ function toText(node: ReactNode): string {
  * - lists: proper indent + markers, 8px rhythm
  * - tables: hairline borders, 14px
  * - blockquote: 2px accent left border, secondary text
- * - inline code: bg-user-msg pill, 0.85em mono
+ * - inline code: bg-elevated pill with hairline border, 0.85em mono
  * - fenced code: CodeBlock (blocks come through as <pre><code className="language-x">)
  */
 const components: Components = {
@@ -71,7 +71,12 @@ const components: Components = {
   // `code` only ever renders inline code now (blocks are consumed by `pre` above).
   // The incoming className is preserved so `pre` can still read the language.
   code: ({ className, children }) => (
-    <code className={cn(className, 'rounded-md bg-user-msg px-1.5 py-0.5 font-mono text-[0.85em]')}>
+    <code
+      className={cn(
+        className,
+        'rounded-md border border-border bg-elevated px-1.5 py-0.5 font-mono text-[0.85em]',
+      )}
+    >
       {children}
     </code>
   ),

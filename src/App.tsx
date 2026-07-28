@@ -25,9 +25,9 @@ export default function App() {
     return id && s.threads[id] ? s.threads[id].messages : undefined
   })
 
-  // Theme: swap the `.dark` class on <html>; the CSS-var tokens do the rest.
+  // Theme: dark is default; swap a `.light` class on <html> for the light theme.
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark')
+    document.documentElement.classList.toggle('light', theme === 'light')
   }, [theme])
 
   // Shortcuts: Cmd/Ctrl+Shift+O new chat · Cmd/Ctrl+K focus search · Esc blur composer
@@ -67,13 +67,22 @@ export default function App() {
 
       {/* Main area */}
       <main className="relative flex min-w-0 flex-1 flex-col">
-        {/* Floating hamburger + new chat pair, only when the sidebar is collapsed */}
+        {/* Floating hamburger + new chat pair, only when the sidebar is collapsed.
+            Secondary controls: elevated fill + thin accent ring (not solid accent). */}
         {!sidebarOpen && (
           <div className="absolute left-3 top-3 z-10 flex items-center gap-1">
-            <IconButton label="Open sidebar" onClick={() => setSidebarOpen(true)}>
+            <IconButton
+              label="Open sidebar"
+              onClick={() => setSidebarOpen(true)}
+              className="border border-accent/40 bg-elevated shadow-composer hover:border-accent hover:text-accent"
+            >
               <PanelLeftOpen />
             </IconButton>
-            <IconButton label="New chat" onClick={newChat}>
+            <IconButton
+              label="New chat"
+              onClick={newChat}
+              className="border border-accent/40 bg-elevated shadow-composer hover:border-accent hover:text-accent"
+            >
               <SquarePen />
             </IconButton>
           </div>
@@ -93,13 +102,21 @@ export default function App() {
             </div>
           </>
         ) : (
-          /* Empty state: headline + composer centered as one unit, generous gap */
-          <div className="flex flex-1 items-center justify-center overflow-y-auto px-6 py-10">
+          /* Empty state: the signature moment — Fraunces headline slightly above
+             center, composer below it inside the breathing ambient glow */
+          <div className="flex flex-1 items-center justify-center overflow-y-auto px-6 pb-[8vh] pt-10">
             <div className="w-full max-w-content">
               <EmptyState />
-              <div className="mt-8">
-                <Composer onSend={sendMessage} streaming={streaming} onStop={stopStreaming} />
-                <p className="mt-2 text-center text-xs text-secondary">
+              <div className="relative mt-10">
+                {/* The ONE sanctioned ambient effect: slow-breathing ember glow */}
+                <div
+                  aria-hidden="true"
+                  className="composer-ambient-glow pointer-events-none absolute -inset-x-24 -inset-y-16 animate-breathe"
+                />
+                <div className="relative">
+                  <Composer onSend={sendMessage} streaming={streaming} onStop={stopStreaming} />
+                </div>
+                <p className="relative mt-2 text-center text-xs text-secondary">
                   Milo can make mistakes. Check important info.
                 </p>
               </div>

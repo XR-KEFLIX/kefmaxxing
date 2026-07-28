@@ -30,9 +30,9 @@ export function Sidebar({ onCollapse }: SidebarProps) {
 
   return (
     <aside className="flex h-full w-[260px] flex-col border-r border-border bg-sidebar">
-      {/* 1. Wordmark + collapse control */}
+      {/* 1. Wordmark (Fraunces logotype — a brand moment) + collapse control */}
       <div className="flex items-center justify-between p-4">
-        <span className="text-base font-semibold leading-6">Milo</span>
+        <span className="font-serif text-[22px] font-bold leading-6 tracking-[-0.01em]">Milo</span>
         <IconButton label="Collapse sidebar" onClick={onCollapse}>
           <PanelLeftClose />
         </IconButton>
@@ -61,7 +61,7 @@ export function Sidebar({ onCollapse }: SidebarProps) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search chats"
             aria-label="Search chats"
-            className="w-full rounded-lg border border-border bg-bg py-1.5 pl-8 pr-3 text-[13px] text-primary outline-none transition-colors duration-150 ease-out placeholder:text-secondary focus:border-border-strong"
+            className="w-full rounded-lg border border-border bg-bg py-1.5 pl-8 pr-3 text-[13px] text-primary outline-none transition-colors duration-150 ease-out placeholder:text-secondary focus:border-accent"
           />
         </div>
       </div>

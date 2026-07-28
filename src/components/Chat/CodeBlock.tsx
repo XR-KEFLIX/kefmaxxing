@@ -35,12 +35,13 @@ SyntaxHighlighter.registerLanguage('typescript', typescript)
 SyntaxHighlighter.registerLanguage('yaml', yaml)
 
 /*
- * Muted warm syntax palette (spec hex values, no neon).
- * react-syntax-highlighter chosen over highlight.js: the theme is one typed
- * object colocated with the component — no global CSS to keep in sync.
+ * Syntax palette in the ember/ink family ONLY (no foreign hues): ember for
+ * keywords/functions, a lighter ember tint for strings/literals, off-white
+ * base, cool greys for comments/punctuation. Theme is one typed object
+ * colocated with the component — no global CSS to keep in sync.
  */
 const base: CSSProperties = {
-  color: '#E8E4DC', // base text
+  color: '#EDECE7', // warm off-white base
   background: 'none',
   fontFamily: 'inherit',
   fontSize: 'inherit',
@@ -52,28 +53,28 @@ const base: CSSProperties = {
 const miloTheme: Record<string, CSSProperties> = {
   'code[class*="language-"]': base,
   'pre[class*="language-"]': { ...base, margin: 0, padding: 0 },
-  comment: { color: '#7A766C', fontStyle: 'italic' },
-  prolog: { color: '#7A766C' },
-  doctype: { color: '#7A766C' },
-  cdata: { color: '#7A766C' },
-  keyword: { color: '#D97757' },
-  important: { color: '#D97757' },
-  string: { color: '#A8C39A' },
-  char: { color: '#A8C39A' },
-  regex: { color: '#A8C39A' },
-  'attr-value': { color: '#A8C39A' },
-  function: { color: '#D9B77C' },
-  'class-name': { color: '#D9B77C' },
-  'maybe-class-name': { color: '#D9B77C' },
-  'attr-name': { color: '#D9B77C' },
-  tag: { color: '#D9B77C' },
-  number: { color: '#A8C39A' },
-  boolean: { color: '#A8C39A' },
-  constant: { color: '#A8C39A' },
-  operator: { color: '#B8B4AA' },
-  punctuation: { color: '#8A867C' },
-  selector: { color: '#D97757' },
-  property: { color: '#D9B77C' },
+  comment: { color: '#6B7079', fontStyle: 'italic' },
+  prolog: { color: '#6B7079' },
+  doctype: { color: '#6B7079' },
+  cdata: { color: '#6B7079' },
+  keyword: { color: '#FF6B35' }, // ember
+  important: { color: '#FF6B35' },
+  selector: { color: '#FF6B35' },
+  function: { color: '#FF8256' }, // ember, lifted
+  'class-name': { color: '#FF8256' },
+  'maybe-class-name': { color: '#FF8256' },
+  tag: { color: '#FF8256' },
+  string: { color: '#FFB59A' }, // ember tint
+  char: { color: '#FFB59A' },
+  regex: { color: '#FFB59A' },
+  'attr-value': { color: '#FFB59A' },
+  number: { color: '#FFB59A' },
+  boolean: { color: '#FFB59A' },
+  constant: { color: '#FFB59A' },
+  'attr-name': { color: '#EDECE7' },
+  property: { color: '#EDECE7' },
+  operator: { color: '#8B8F99' },
+  punctuation: { color: '#8B8F99' },
 }
 
 /** Prism language keys differ from common markdown fence aliases. */
@@ -114,14 +115,17 @@ export function CodeBlock({ language, code }: CodeBlockProps) {
 
   return (
     <div className="my-4 overflow-hidden rounded-xl bg-code-bg font-mono text-sm">
-      {/* 36px top bar: language label left, copy right */}
+      {/* 36px top bar: accent dot + language label left, copy right */}
       <div className="flex h-9 items-center justify-between bg-code-topbar pl-4 pr-3">
-        <span className="text-xs text-[#9B978E]">{language || 'text'}</span>
+        <span className="flex items-center text-xs text-[#8B8F99]">
+          <span aria-hidden="true" className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-accent" />
+          {language || 'text'}
+        </span>
         <button
           type="button"
           onClick={copy}
           aria-label={copied ? 'Copied' : 'Copy code'}
-          className="flex items-center gap-1 text-xs text-[#9B978E] transition-colors duration-150 ease-out hover:text-white"
+          className="flex items-center gap-1 text-xs text-[#8B8F99] transition-colors duration-150 ease-out hover:text-[#F5F4F0]"
         >
           {copied ? (
             <>

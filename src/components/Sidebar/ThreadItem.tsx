@@ -18,6 +18,8 @@ interface ThreadItemProps {
  * Thread row with inline flows (no modals):
  * - Rename: pencil swaps the title for an input — Enter commits, Esc cancels, blur commits.
  * - Delete: trash swaps the row for "Delete this chat? [Delete] [Cancel]" — Esc cancels.
+ * Active state: 2.5px accent bar on the left edge (grows in from center)
+ * plus a neutral surface lift — a confident marker, not a faint tint.
  */
 export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: ThreadItemProps) {
   const [mode, setMode] = useState<Mode>('idle')
@@ -46,9 +48,9 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
   }
 
   const containerClass = cn(
-    'group flex h-9 items-center rounded-lg pl-3 transition-colors duration-150 ease-out',
+    'group relative flex h-9 items-center rounded-lg pl-3 transition-colors duration-150 ease-out',
     mode === 'idle' ? 'pr-1' : 'pr-2',
-    active ? 'bg-accent-subtle' : 'hover:bg-hover',
+    active ? 'bg-hover' : 'hover:bg-hover',
   )
 
   if (mode === 'confirming') {
@@ -63,10 +65,11 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
         }}
       >
         <span className="min-w-0 flex-1 truncate text-[13px] text-primary">Delete this chat?</span>
+        {/* Destructive = full-saturation accent + explicit label (no separate red) */}
         <button
           type="button"
           onClick={onDelete}
-          className="ml-1 shrink-0 rounded-md bg-danger/10 px-2 py-1 text-xs font-medium text-danger transition-colors duration-150 ease-out hover:bg-danger/20"
+          className="ml-1 shrink-0 rounded-md bg-accent-glow px-2 py-1 text-xs font-medium text-accent transition-colors duration-150 ease-out hover:bg-accent/20"
         >
           Delete
         </button>
@@ -98,9 +101,9 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
               setMode('idle')
             }
           }}
-          onBlur={commitRename} // blur commits per spec
+          onBlur={commitRename} // blur commits
           aria-label="Chat title"
-          className="w-full min-w-0 rounded-md border border-border-strong bg-bg px-2 py-1 text-sm text-primary outline-none"
+          className="w-full min-w-0 rounded-md border border-border bg-bg px-2 py-1 text-sm text-primary outline-none"
         />
       </div>
     )
@@ -108,11 +111,21 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
 
   return (
     <div className={containerClass}>
+      {/* Active indicator: 2.5px accent bar, animates in with a vertical grow */}
+      {active && (
+        <span
+          aria-hidden="true"
+          className="absolute left-1 top-[22.5%] h-[55%] w-[2.5px] animate-grow-y rounded-full bg-accent"
+        />
+      )}
       <button
         type="button"
         onClick={onSelect}
         aria-current={active ? 'page' : undefined}
-        className="min-w-0 flex-1 truncate text-left text-sm text-primary"
+        className={cn(
+          'min-w-0 flex-1 truncate text-left text-sm transition-colors duration-150 ease-out',
+          active ? 'font-medium text-primary' : 'text-secondary hover:text-primary',
+        )}
       >
         {thread.title || 'New chat'}
       </button>
