@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design tokens — single source of truth (defined before any component, per spec).
+ * Light is the default theme; a `.dark` class on <html> swaps the variables.
+ * Values are RGB triplets so Tailwind's <alpha-value> modifier works;
+ * original hex values from the spec are kept in comments.
+ */
+:root {
+  --bg: 250 249 245; /* #FAF9F5 warm paper */
+  --bg-sidebar: 240 238 230; /* #F0EEE6 */
+  --bg-user-msg: 240 238 230; /* #F0EEE6 */
+  --bg-hover: 232 230 220; /* #E8E6DC */
+  --text-primary: 31 30 29; /* #1F1E1D near-black, warm */
+  --text-secondary: 110 107 99; /* #6E6B63 */
+  --border: 232 230 220; /* #E8E6DC hairlines only */
+  --border-strong: 214 211 199; /* #D6D3C7 composer focus */
+  --accent: 217 119 87; /* #D97757 */
+  --accent-hover: 201 102 69; /* #C96645 */
+  --danger: 194 64 46; /* #C2402E delete confirm only */
+  --code-bg: 30 28 26; /* #1E1C1A both themes */
+  --code-topbar: 42 40 37; /* #2A2825 */
+  --shadow-composer: 0 2px 12px rgba(0, 0, 0, 0.06);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: 26 25 23; /* #1A1917 */
+  --bg-sidebar: 34 33 31; /* #22211F */
+  --bg-user-msg: 38 37 34; /* #262522 */
+  --bg-hover: 46 44 41; /* #2E2C29 */
+  --text-primary: 240 238 233; /* #F0EEE9 */
+  --text-secondary: 155 151 142; /* #9B978E */
+  --border: 51 49 46; /* #33312E */
+  --border-strong: 74 71 65; /* #4A4741 */
+  /* accent, accent-hover, danger, code-bg, code-topbar: unchanged per spec */
+  --shadow-composer: 0 2px 12px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-bg font-sans text-primary antialiased;
+  }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.2);
+  }
+
+  /* Visible accent focus ring (2px, offset 2px) on everything interactive */
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+  }
+
+  /* Quiet thin scrollbars, hairline-colored */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--border-strong)) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--border-strong));
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  /*
+   * While an assistant message streams, the last rendered block is pulled
+   * inline so the blinking cursor sits immediately after the last character.
+   */
+  .streaming-inline-last > :last-child {
+    display: inline;
+  }
+}
