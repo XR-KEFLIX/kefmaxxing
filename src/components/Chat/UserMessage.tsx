@@ -1,12 +1,13 @@
 import type { Message } from '../../lib/types'
 
 /**
- * User message: left-aligned block (never right-aligned), content-width capped
- * at 70%, bg-user-msg, rounded-2xl, 12px 16px padding — the Claude pattern.
+ * User message: right-aligned pill (ChatGPT shape language) — evenly rounded
+ * on all four corners at the `bubble` radius (20px), solid filled background,
+ * no border. Content-width capped at 70%.
  */
 export function UserMessage({ message }: { message: Message }) {
   return (
-    <div className="max-w-[70%] rounded-2xl bg-user-msg px-4 py-3">
+    <div className="max-w-[70%] rounded-bubble bg-user-msg px-4 py-3">
       <p className="whitespace-pre-wrap text-base leading-[1.65] text-primary">{message.content}</p>
     </div>
   )

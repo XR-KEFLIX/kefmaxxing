@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowUp, Square } from 'lucide-react'
+import { ArrowUp, ChevronDown, Plus, Square } from 'lucide-react'
+import { IconButton } from '../ui/IconButton'
 
 const MAX_HEIGHT = 200 // px — textarea grows to this, then scrolls
 
@@ -10,10 +11,14 @@ interface ComposerProps {
 }
 
 /**
- * Auto-growing composer: 1 row min, max 200px then scroll.
- * Enter sends, Shift+Enter newline. Container gets border-strong on focus
- * (no glow, no ring). Send is a 32px accent circle; while streaming it becomes
- * a square stop icon that aborts the stream.
+ * Pill composer (ChatGPT shape language):
+ * - 28px pill radius, roomy padding; in dark mode it's a solid filled panel
+ *   with NO border, in light mode a thin subtle 1px border.
+ * - Left tools row: circular "+" plus a pill model trigger (presentation only
+ *   in v1); extra tools collapse behind "+" on narrow viewports.
+ * - Send is a perfect 32px circle centered on the right edge; while streaming
+ *   it becomes a square stop icon that aborts the stream.
+ * - 1 row min, 200px max then scroll. Enter sends, Shift+Enter newline.
  */
 export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
   const [value, setValue] = useState('')
@@ -39,8 +44,23 @@ export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
   const canSend = value.trim().length > 0 && !streaming
 
   return (
-    <div className="rounded-2xl border border-border bg-bg px-4 py-[14px] shadow-composer transition-colors duration-150 ease-out focus-within:border-border-strong">
-      <div className="flex items-end gap-3">
+    <div className="rounded-pill border border-border bg-bg px-5 py-3.5 shadow-composer transition-colors duration-150 ease-out focus-within:border-border-strong dark:border-transparent dark:bg-sidebar dark:focus-within:border-transparent">
+      <div className="flex items-end gap-2">
+        {/* Tools row — presentation only in v1; extras collapse on narrow screens */}
+        <div className="flex shrink-0 items-center gap-1.5">
+          <IconButton label="Attach files (coming soon)" className="h-8 w-8 p-0">
+            <Plus />
+          </IconButton>
+          <button
+            type="button"
+            aria-label="Choose model (coming soon)"
+            className="hidden h-8 items-center gap-1.5 rounded-full border border-border px-3 text-[13px] text-secondary transition-colors duration-150 ease-out hover:bg-hover sm:flex dark:border-transparent dark:bg-hover dark:hover:bg-border"
+          >
+            Milo 2.5
+            <ChevronDown className="h-3.5 w-3.5" />
+          </button>
+        </div>
+
         <textarea
           ref={textareaRef}
           rows={1}
@@ -54,8 +74,9 @@ export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
           }}
           placeholder="Message Milo…"
           aria-label="Message Milo"
-          className="max-h-[200px] flex-1 resize-none bg-transparent text-base leading-6 text-primary placeholder:text-secondary focus:outline-none"
+          className="max-h-[200px] flex-1 resize-none bg-transparent px-1 py-1 text-base leading-6 text-primary placeholder:text-secondary focus:outline-none"
         />
+
         {streaming ? (
           <button
             type="button"

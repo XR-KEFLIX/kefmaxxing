@@ -86,16 +86,22 @@ export default function App() {
             <div className="shrink-0 px-6 pb-4 pt-2">
               <div className="mx-auto w-full max-w-content">
                 <Composer onSend={sendMessage} streaming={streaming} onStop={stopStreaming} />
+                <p className="mt-2 text-center text-xs text-secondary">
+                  Milo can make mistakes. Check important info.
+                </p>
               </div>
             </div>
           </>
         ) : (
-          /* Empty state: greeting + composer, vertically centered as one block */
+          /* Empty state: headline + composer centered as one unit, generous gap */
           <div className="flex flex-1 items-center justify-center overflow-y-auto px-6 py-10">
             <div className="w-full max-w-content">
               <EmptyState />
-              <div className="mt-6">
+              <div className="mt-8">
                 <Composer onSend={sendMessage} streaming={streaming} onStop={stopStreaming} />
+                <p className="mt-2 text-center text-xs text-secondary">
+                  Milo can make mistakes. Check important info.
+                </p>
               </div>
             </div>
           </div>

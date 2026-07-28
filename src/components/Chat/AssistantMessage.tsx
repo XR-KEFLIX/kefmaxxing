@@ -5,11 +5,12 @@ import { MessageActions } from './MessageActions'
 
 /**
  * Assistant message: NOT a bubble. Full-width markdown on the app background —
- * no avatar, no name label, no card (the most important visual rule).
+ * no avatar, no name label, no card.
  *
- * While `status === 'streaming'`: an 8px accent square blinks after the last
- * character (the .streaming-inline-last utility pulls the last block inline so
- * the cursor hugs the text) and the actions row is hidden.
+ * Deliberate asymmetry (ChatGPT pattern): assistant actions are PERSISTENTLY
+ * visible at reduced opacity, brightening on hover/focus — while user-side
+ * actions (thread rename/delete, etc.) stay hover-reveal. While streaming, an
+ * 8px accent square blinks after the last character and actions are hidden.
  */
 export function AssistantMessage({
   message,
@@ -21,7 +22,7 @@ export function AssistantMessage({
   const streaming = message.status === 'streaming'
 
   return (
-    <div className="group w-full">
+    <div className="w-full">
       <div
         className={cn(
           'text-base leading-[1.65] text-primary',
@@ -34,9 +35,8 @@ export function AssistantMessage({
         )}
       </div>
 
-      {/* Hover (or keyboard focus) reveals copy / retry / thumbs below the message */}
       {!streaming && (
-        <div className="mt-1 opacity-0 transition-opacity duration-150 ease-out group-hover:opacity-100 group-focus-within:opacity-100">
+        <div className="mt-1 opacity-60 transition-opacity duration-150 ease-out hover:opacity-100 focus-within:opacity-100">
           <MessageActions content={message.content} onRetry={onRetry} />
         </div>
       )}

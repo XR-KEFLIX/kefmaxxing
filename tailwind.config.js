@@ -28,6 +28,13 @@ export default {
       maxWidth: {
         content: '768px', // centered content column per spec
       },
+      borderRadius: {
+        // Pill design system: exactly two named radii on top of the base scale.
+        // `pill` — composer + large pill surfaces; `bubble` — user message pills.
+        // Perfect circles use Tailwind's `rounded-full` (send/tools/action buttons).
+        pill: '28px',
+        bubble: '20px',
+      },
       boxShadow: {
         composer: 'var(--shadow-composer)', // the only shadow in the app
       },
