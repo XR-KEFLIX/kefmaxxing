@@ -43,11 +43,10 @@ export function Composer({ onSend, streaming = false, onStop }: ComposerProps) {
 
   const canSend = value.trim().length > 0 && !streaming
 
-  // Tactile send/stop: color shift + 1.04x pop on a bouncy easing
+  // Calm, permanent-feeling action: color shift only on hover, no playful motion
   const actionButtonClass =
     'flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-accent-ink ' +
-    'transition-[transform,background-color] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] ' +
-    'hover:scale-[1.04] hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100'
+    'transition-colors duration-150 ease-out hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40'
 
   return (
     <div className="rounded-pill border border-transparent bg-elevated px-5 py-3.5 shadow-composer transition-shadow duration-200 ease-out focus-within:shadow-composer-glow light:border-border">

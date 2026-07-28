@@ -25,7 +25,7 @@ export default {
         mono: ['"JetBrains Mono Variable"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       maxWidth: {
-        content: '768px', // centered content column
+        content: '720px', // reading-width column (~75 chars at 15px) — optimize for reading
       },
       borderRadius: {
         // Pill design system: exactly two named radii on top of the base scale.
@@ -35,8 +35,8 @@ export default {
       },
       boxShadow: {
         composer: 'var(--shadow-composer)',
-        // Warm focus glow around the composer pill (the only glow shadow)
-        'composer-glow': '0 0 0 2px var(--accent-glow), 0 0 28px var(--accent-glow)',
+        // Restrained focus ring in accent-glow — warmth without a screenshot-bait bloom
+        'composer-glow': '0 0 0 2px var(--accent-glow)',
       },
       keyframes: {
         // streaming cursor: crisp 1s blink, no fade
@@ -44,11 +44,6 @@ export default {
           '0%, 45%': { opacity: '1' },
           '50%, 95%': { opacity: '0' },
           '100%': { opacity: '1' },
-        },
-        // empty-state ambient glow: slow 5s breathing, felt more than noticed
-        breathe: {
-          '0%, 100%': { opacity: '0.75', transform: 'scale(1)' },
-          '50%': { opacity: '1', transform: 'scale(1.05)' },
         },
         // active-thread indicator bar: quick vertical grow from center
         'grow-y': {
@@ -58,7 +53,6 @@ export default {
       },
       animation: {
         blink: 'blink 1s step-end infinite',
-        breathe: 'breathe 5s ease-in-out infinite',
         'grow-y': 'grow-y 150ms ease-out',
       },
     },

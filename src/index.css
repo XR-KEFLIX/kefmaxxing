@@ -95,12 +95,4 @@
   .streaming-inline-last > :last-child {
     display: inline;
   }
-
-  /*
-   * The ONE sanctioned gradient: the soft radial ember glow behind the
-   * empty-state composer (animated with `animate-breathe`).
-   */
-  .composer-ambient-glow {
-    background: radial-gradient(closest-side, var(--accent-glow), transparent);
-  }
 }

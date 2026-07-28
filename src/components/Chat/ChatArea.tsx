@@ -51,7 +51,7 @@ export function ChatArea({ messages }: { messages: Message[] }) {
   return (
     <div className="relative flex-1 overflow-hidden">
       <div ref={scrollRef} onScroll={handleScroll} className="h-full overflow-y-auto">
-        <div className="mx-auto w-full max-w-content px-6 py-8">
+        <div className="mx-auto w-full max-w-content px-6 py-6">
           <MessageList messages={messages} />
         </div>
       </div>
@@ -61,7 +61,7 @@ export function ChatArea({ messages }: { messages: Message[] }) {
           type="button"
           aria-label="Scroll to bottom"
           onClick={jumpToBottom}
-          className="absolute bottom-4 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border border-accent/40 bg-elevated text-secondary shadow-composer transition-colors duration-150 ease-out hover:border-accent hover:text-accent"
+          className="absolute bottom-4 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border border-border bg-elevated text-secondary shadow-composer transition-colors duration-150 ease-out hover:border-accent/60 hover:text-accent"
         >
           <ArrowDown className="h-4 w-4" />
         </button>

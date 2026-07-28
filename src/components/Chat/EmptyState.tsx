@@ -1,8 +1,8 @@
 export function EmptyState() {
-  // The signature moment: Fraunces at real display size (48–56px), tightened
-  // tracking, sitting above a composer wrapped in the ambient ember glow.
+  // Composer-first hierarchy: the headline is a subordinate greeting, not the
+  // hero. Fraunces keeps the brand voice at a restrained, working size.
   return (
-    <h1 className="text-center font-serif text-[44px] font-semibold leading-[1.08] tracking-[-0.02em] text-primary sm:text-[56px]">
+    <h1 className="text-center font-serif text-[26px] font-medium leading-snug tracking-[-0.01em] text-primary sm:text-[30px]">
       What are we working on today?
     </h1>
   )

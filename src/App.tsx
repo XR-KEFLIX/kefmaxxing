@@ -68,20 +68,20 @@ export default function App() {
       {/* Main area */}
       <main className="relative flex min-w-0 flex-1 flex-col">
         {/* Floating hamburger + new chat pair, only when the sidebar is collapsed.
-            Secondary controls: elevated fill + thin accent ring (not solid accent). */}
+            Secondary controls stay neutral; accent only on hover. */}
         {!sidebarOpen && (
           <div className="absolute left-3 top-3 z-10 flex items-center gap-1">
             <IconButton
               label="Open sidebar"
               onClick={() => setSidebarOpen(true)}
-              className="border border-accent/40 bg-elevated shadow-composer hover:border-accent hover:text-accent"
+              className="border border-border bg-elevated shadow-composer hover:border-accent/60 hover:text-accent"
             >
               <PanelLeftOpen />
             </IconButton>
             <IconButton
               label="New chat"
               onClick={newChat}
-              className="border border-accent/40 bg-elevated shadow-composer hover:border-accent hover:text-accent"
+              className="border border-border bg-elevated shadow-composer hover:border-accent/60 hover:text-accent"
             >
               <SquarePen />
             </IconButton>
@@ -102,21 +102,14 @@ export default function App() {
             </div>
           </>
         ) : (
-          /* Empty state: the signature moment — Fraunces headline slightly above
-             center, composer below it inside the breathing ambient glow */
+          /* Empty state, composer-first: the composer is the focal element;
+             the greeting stays minimal and subordinate. No ambient decoration. */
           <div className="flex flex-1 items-center justify-center overflow-y-auto px-6 pb-[8vh] pt-10">
             <div className="w-full max-w-content">
               <EmptyState />
-              <div className="relative mt-10">
-                {/* The ONE sanctioned ambient effect: slow-breathing ember glow */}
-                <div
-                  aria-hidden="true"
-                  className="composer-ambient-glow pointer-events-none absolute -inset-x-24 -inset-y-16 animate-breathe"
-                />
-                <div className="relative">
-                  <Composer onSend={sendMessage} streaming={streaming} onStop={stopStreaming} />
-                </div>
-                <p className="relative mt-2 text-center text-xs text-secondary">
+              <div className="mt-6">
+                <Composer onSend={sendMessage} streaming={streaming} onStop={stopStreaming} />
+                <p className="mt-2 text-center text-xs text-secondary">
                   Milo can make mistakes. Check important info.
                 </p>
               </div>

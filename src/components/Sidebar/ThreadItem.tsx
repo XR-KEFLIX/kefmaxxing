@@ -48,7 +48,7 @@ export function ThreadItem({ thread, active, onSelect, onRename, onDelete }: Thr
   }
 
   const containerClass = cn(
-    'group relative flex h-9 items-center rounded-lg pl-3 transition-colors duration-150 ease-out',
+    'group relative flex h-8 items-center rounded-lg pl-3 transition-colors duration-150 ease-out',
     mode === 'idle' ? 'pr-1' : 'pr-2',
     active ? 'bg-hover' : 'hover:bg-hover',
   )
