@@ -29,16 +29,19 @@ export function Sidebar({ onCollapse }: SidebarProps) {
   )
 
   return (
-    <aside className="flex h-full w-[240px] flex-col border-r border-border bg-sidebar">
-      {/* 1. Quiet wordmark + collapse control */}
+    <aside className="flex h-full w-[240px] flex-col bg-sidebar">
+      {/* 1. Brand lockup: wordmark + ember period — quiet, ownable, no logo box */}
       <div className="flex items-center justify-between p-3">
-        <span className="px-1 text-[15px] font-semibold leading-6">Milo</span>
+        <span className="flex items-baseline px-1 text-[15px] font-semibold leading-6">
+          Milo
+          <span aria-hidden="true" className="ml-[3px] inline-block h-[5px] w-[5px] rounded-full bg-accent" />
+        </span>
         <IconButton label="Collapse sidebar" onClick={onCollapse}>
           <PanelLeftClose />
         </IconButton>
       </div>
 
-      {/* 2. New chat — ghost button, no box */}
+      {/* 2. New chat — ghost row, no box */}
       <div className="px-3 pb-1">
         <button
           type="button"
@@ -50,7 +53,7 @@ export function Sidebar({ onCollapse }: SidebarProps) {
         </button>
       </div>
 
-      {/* 3. Search — filters the thread list live as you type */}
+      {/* 3. Search — filled field, no border until focus */}
       <div className="px-3 pb-2">
         <div className="relative">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-secondary" />
@@ -61,7 +64,7 @@ export function Sidebar({ onCollapse }: SidebarProps) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search chats"
             aria-label="Search chats"
-            className="w-full rounded-lg border border-border bg-bg py-1.5 pl-8 pr-3 text-[13px] text-primary outline-none transition-colors duration-150 ease-out placeholder:text-secondary focus:border-accent"
+            className="w-full rounded-lg border border-transparent bg-elevated py-1.5 pl-8 pr-3 text-[13px] text-primary outline-none transition-colors duration-150 ease-out placeholder:text-secondary focus:border-accent"
           />
         </div>
       </div>
@@ -78,8 +81,8 @@ export function Sidebar({ onCollapse }: SidebarProps) {
         />
       </nav>
 
-      {/* 5. Footer — theme toggle (persisted); settings is decorative in v1 */}
-      <div className="flex items-center gap-1 border-t border-border p-2.5">
+      {/* 5. Footer — no separator; icons just rest on the surface */}
+      <div className="flex items-center gap-1 px-2.5 pb-2.5 pt-1">
         <IconButton
           label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           onClick={toggleTheme}

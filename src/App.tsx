@@ -67,20 +67,20 @@ export default function App() {
       {/* Main area */}
       <main className="relative flex min-w-0 flex-1 flex-col">
         {/* Floating hamburger + new chat pair, only when the sidebar is collapsed.
-            Quiet secondary controls; no accent until interaction. */}
+            Floating surfaces read via shadow, not outline. */}
         {!sidebarOpen && (
           <div className="absolute left-3 top-3 z-10 flex items-center gap-1">
             <IconButton
               label="Open sidebar"
               onClick={() => setSidebarOpen(true)}
-              className="border border-border bg-elevated hover:text-primary"
+              className="bg-elevated shadow-composer hover:text-primary"
             >
               <PanelLeftOpen />
             </IconButton>
             <IconButton
               label="New chat"
               onClick={newChat}
-              className="border border-border bg-elevated hover:text-primary"
+              className="bg-elevated shadow-composer hover:text-primary"
             >
               <SquarePen />
             </IconButton>
