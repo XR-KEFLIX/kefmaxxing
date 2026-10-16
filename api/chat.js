@@ -1,150 +1,75 @@
-module.exports = async function handler(req, res) {
+import { callAgnes } from './_agnes.js';
+
+const MAX_QUESTION = 500;
+const MAX_HISTORY = 10;
+const MAX_REPORT_JSON = 4000;
+
+function stripDashes(value) {
+  return String(value)
+    .replace(/\s*—\s*/g, ', ')
+    .replace(/\s+-\s+/g, ', ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+function buildSystem(report, gender) {
+  const context = report ? JSON.stringify(report).slice(0, MAX_REPORT_JSON) : 'no rating on file';
+  return [
+    `You are KEFMAXX, the rater behind kefmaxxing. You just rated this user's face.`,
+    `Their rating as JSON: ${context}`,
+    `Their reference: ${gender} standards.`,
+    ``,
+    `Answer their follow-up questions about their face, their plan and looksmaxxing. Rules:`,
+    `- Blunt, but on their side. Every criticism comes attached to the fix.`,
+    `- Use their real features and scores from the rating above. No generic advice.`,
+    `- Under 120 words unless they ask for a full routine or a full plan.`,
+    `- Plain words, short sentences. Never use em dashes or hyphens as punctuation.`,
+    `- No hype, no motivational fluff, no moralizing. Never insult.`,
+    `- Never suggest surgery first. No medical claims. Never mention race or ethnicity. No slurs.`,
+    `- If they ask about something unrelated to looks, redirect in one line.`,
+  ].join('\n');
+}
+
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({
-      error: 'Method not allowed',
-      message: 'Only POST requests are accepted at this endpoint.'
-    });
+    return res.status(405).json({ error: 'Method not allowed', message: 'POST only.' });
   }
 
-  const apiKey = process.env.CROWLLM_API_KEY;
-  if (!apiKey) {
+  if (!process.env.RATE_API_KEY) {
     return res.status(500).json({
       error: 'Server configuration error',
-      message: 'CROWLLM_API_KEY is not set. Add it as an environment variable in Vercel.'
+      message: 'RATE_API_KEY is not set. Add it as an environment variable in Vercel.',
     });
   }
 
   const body = req.body || {};
-  const { messages } = body;
-  if (!Array.isArray(messages) || messages.length === 0) {
-    return res.status(400).json({
-      error: 'Bad request',
-      message: 'A non-empty "messages" array is required.'
-    });
-  }
-  for (let i = 0; i < messages.length; i++) {
-    const m = messages[i];
-    if (!m || typeof m !== 'object' || typeof m.role !== 'string' || typeof m.content !== 'string') {
-      return res.status(400).json({
-        error: 'Bad request',
-        message: 'Every message must have a string "role" and string "content".'
-      });
-    }
-    if (!['system', 'user', 'assistant'].includes(m.role)) {
-      return res.status(400).json({
-        error: 'Bad request',
-        message: 'Message role must be "system", "user", or "assistant".'
-      });
-    }
+  const question = typeof body.question === 'string' ? body.question.trim() : '';
+  if (!question || question.length > MAX_QUESTION) {
+    return res.status(400).json({ error: 'Bad request', message: 'Ask one question under 500 characters.' });
   }
 
-  const ALLOWED_MODELS = ['kimi-k2-7-code', 'glm-5.2-thinking', 'deepseek-v4-pro-thinking', 'mimo-v2-5', 'minimax-m3'];
-  const requestedModel = typeof body.model === 'string' ? body.model : 'mimo-v2-5';
-  const model = ALLOWED_MODELS.includes(requestedModel) ? requestedModel : 'mimo-v2-5';
+  const report = body.report && typeof body.report === 'object' ? body.report : null;
+  const gender = body.gender === 'female' ? 'female' : 'male';
 
-  const MAX_RETRIES = 3;
-  const RETRY_DELAYS_MS = [1000, 2000, 4000];
+  const messages = [{ role: 'system', content: buildSystem(report, gender) }];
 
-  function isContextLengthError(status, text) {
-    if (status === 413) return true;
-    if (status !== 400) return false;
-    const lower = (text || '').toLowerCase();
-    return lower.indexOf('context length') !== -1
-        || lower.indexOf('maximum context') !== -1
-        || lower.indexOf('too many tokens') !== -1
-        || lower.indexOf('reduce the length') !== -1;
+  const history = Array.isArray(body.history) ? body.history : [];
+  for (const turn of history.slice(-MAX_HISTORY)) {
+    if (!turn || typeof turn.content !== 'string') continue;
+    const role = turn.role === 'assistant' || turn.role === 'coach' ? 'assistant' : 'user';
+    const content = turn.content.slice(0, 1000).trim();
+    if (content) messages.push({ role, content });
   }
 
-  function trimMessages(msgs) {
-    if (msgs.length <= 2) return msgs;
-    const keepSystem = msgs[0] && msgs[0].role === 'system' ? 1 : 0;
-    const tail = msgs.slice(keepSystem + Math.floor((msgs.length - keepSystem) / 2));
-    return msgs.slice(0, keepSystem).concat(tail);
-  }
+  messages.push({ role: 'user', content: question });
 
-  async function attemptChat(currentMessages) {
-    return await fetch('https://crowllm.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model,
-        messages: currentMessages,
-        stream: true
-      })
+  const result = await callAgnes(messages, { maxTokens: 500, temperature: 0.6 });
+  if (!result.ok) {
+    return res.status(502).json({
+      error: 'Upstream error',
+      message: 'The coach is unavailable right now. Try again in a moment.',
     });
   }
 
-  try {
-    let upstream = null;
-    let attempts = 0;
-    let lastStatus = 0;
-    let lastBody = '';
-    let currentMessages = messages;
-    let trimmedOnce = false;
-
-    outer: for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      attempts = attempt + 1;
-      upstream = await attemptChat(currentMessages);
-      lastStatus = upstream.status;
-      if (upstream.ok) break;
-      lastBody = await upstream.text();
-      if (upstream.status === 429 && attempt < MAX_RETRIES) {
-        await new Promise(function(r) { setTimeout(r, RETRY_DELAYS_MS[attempt]); });
-        continue;
-      }
-      if (!trimmedOnce && isContextLengthError(upstream.status, lastBody)) {
-        const next = trimMessages(currentMessages);
-        if (next.length < currentMessages.length) {
-          currentMessages = next;
-          trimmedOnce = true;
-          continue outer;
-        }
-      }
-      break;
-    }
-
-    if (!upstream || !upstream.ok) {
-      return res.status(lastStatus || 502).json({
-        error: 'Upstream error',
-        message: lastBody
-      });
-    }
-
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Milo-Retry-Attempts', String(attempts - 1));
-    if (trimmedOnce) res.setHeader('X-Milo-Context-Trimmed', '1');
-
-    try {
-      const reader = upstream.body.getReader();
-      let done = false;
-      while (!done) {
-        const result = await reader.read();
-        done = result.done;
-        if (result.value) {
-          try { res.write(Buffer.from(result.value)); } catch (_) {}
-          if (res.flush) { try { res.flush(); } catch (_) {} }
-        }
-      }
-    } catch (streamErr) {
-      console.error('Error streaming upstream response:', streamErr);
-      if (!res.headersSent) {
-        return res.status(500).json({
-          error: 'Stream interrupted',
-          message: streamErr.message
-        });
-      }
-    }
-    res.end();
-  } catch (error) {
-    console.error('Error in /api/chat:', error);
-    return res.status(500).json({
-      error: 'Internal server error',
-      message: error.message
-    });
-  }
-};
+  return res.status(200).json({ ok: true, answer: stripDashes(result.text) });
+}

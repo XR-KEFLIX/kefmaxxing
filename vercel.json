@@ -1,14 +1,10 @@
 {
-  "version": 2,
   "functions": {
+    "api/rate.js": {
+      "maxDuration": 60
+    },
     "api/chat.js": {
-      "maxDuration": 30
+      "maxDuration": 60
     }
-  },
-  "routes": [
-    {
-      "src": "/api/chat",
-      "dest": "/api/chat.js"
-    }
-  ]
+  }
 }

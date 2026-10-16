@@ -1,73 +1,70 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class', // legacy hook — theming is CSS-var driven via `.light` (dark is default)
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        bg: 'rgb(var(--bg) / <alpha-value>)',
-        sidebar: 'rgb(var(--bg-sidebar) / <alpha-value>)',
+        bg: 'rgb(var(--bg-base) / <alpha-value>)',
+        surface: 'rgb(var(--bg-surface) / <alpha-value>)',
         elevated: 'rgb(var(--bg-elevated) / <alpha-value>)',
         hover: 'rgb(var(--bg-hover) / <alpha-value>)',
         primary: 'rgb(var(--text-primary) / <alpha-value>)',
         secondary: 'rgb(var(--text-secondary) / <alpha-value>)',
-        border: 'rgb(var(--border) / <alpha-value>)',
-        accent: 'rgb(var(--accent) / <alpha-value>)',
-        'accent-hover': 'rgb(var(--accent-hover) / <alpha-value>)',
-        'accent-ink': 'rgb(var(--accent-ink) / <alpha-value>)',
-        'accent-glow': 'var(--accent-glow)', // pre-alpha'd rgba, used as-is
-        'code-bg': 'rgb(var(--code-bg) / <alpha-value>)',
-        'code-topbar': 'rgb(var(--code-topbar) / <alpha-value>)',
+        faint: 'rgb(var(--text-faint) / <alpha-value>)',
+        gold: 'rgb(var(--gold) / <alpha-value>)',
+        'gold-bright': 'rgb(var(--gold-bright) / <alpha-value>)',
+        good: '#4ade80',
+        warn: '#fbbf24',
+        bad: '#f87171',
+        border: 'var(--border-subtle)',
+        'border-strong': 'var(--border-strong)',
       },
       fontFamily: {
-        sans: ['"Inter Variable"', 'system-ui', 'sans-serif'],
+        sans: ['"Inter Variable"', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"JetBrains Mono Variable"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       maxWidth: {
-        content: '820px', // the editorial spine — reading + composer column
+        content: '960px',
       },
       borderRadius: {
-        // Pill design system: named radii on top of the base scale.
-        // `pill` — composer; `bubble` — user messages; `surface` — floating objects (rail, workspace).
-        pill: '28px',
-        bubble: '20px',
-        surface: '20px',
+        card: '14px',
+        sheet: '20px',
       },
       boxShadow: {
-        composer: 'var(--shadow-composer)',
-        // Hover elevation for cards — a gentle lift off the desk
-        card: '0 2px 10px rgba(0, 0, 0, 0.3)',
-        // Restrained focus ring in accent-glow — warmth without a screenshot-bait bloom
-        'composer-glow': '0 0 0 2px var(--accent-glow)',
+        1: '0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.6)',
+        2: '0 2px 4px rgba(0, 0, 0, 0.4), 0 16px 40px -16px rgba(0, 0, 0, 0.7)',
+        glow: '0 0 0 1px rgba(216, 184, 120, 0.25), 0 8px 32px -8px rgba(216, 184, 120, 0.22)',
       },
       keyframes: {
-        // streaming cursor: crisp 1s blink, no fade
-        blink: {
-          '0%, 45%': { opacity: '1' },
-          '50%, 95%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        // active-thread indicator bar: quick vertical grow from center
-        'grow-y': {
-          from: { transform: 'scaleY(0)' },
-          to: { transform: 'scaleY(1)' },
-        },
-        // thread switching: quiet 150ms fade, motion with a purpose
         'fade-in': {
           from: { opacity: '0' },
           to: { opacity: '1' },
         },
+        'fade-up': {
+          from: { opacity: '0', transform: 'translateY(10px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        scan: {
+          '0%': { top: '-18%' },
+          '100%': { top: '106%' },
+        },
+        shimmer: {
+          from: { backgroundPosition: '200% 0' },
+          to: { backgroundPosition: '-200% 0' },
+        },
+        'pulse-soft': {
+          '0%, 100%': { opacity: '0.5' },
+          '50%': { opacity: '1' },
+        },
       },
       animation: {
-        blink: 'blink 1s step-end infinite',
-        'grow-y': 'grow-y 150ms ease-out',
-        'fade-in': 'fade-in 150ms ease-out',
+        'fade-in': 'fade-in 200ms ease-out',
+        'fade-up': 'fade-up 320ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+        scan: 'scan 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        shimmer: 'shimmer 1.8s linear infinite',
+        'pulse-soft': 'pulse-soft 1.6s ease-in-out infinite',
       },
     },
   },
-  plugins: [
-    // Dark is the default theme; `.light` on <html> swaps the CSS vars.
-    // This variant lets components mark light-only overrides as `light:*`.
-    ({ addVariant }) => addVariant('light', '.light &'),
-  ],
+  plugins: [],
 }
