@@ -84,7 +84,7 @@ export async function saveScan(image, meta) {
           await fs.mkdir(SCAN_DIR, { recursive: true })
           await fs.writeFile(diskFilePath(filename), buffer)
         }
-        return blob
+        return { filename, pathname: blob.pathname || `scans/${filename}`, url: blob.url || null }
       } catch (e) {
         console.error('[scan-store] blob save failed, falling back to disk', e && e.message)
       }
@@ -93,9 +93,23 @@ export async function saveScan(image, meta) {
     await fs.mkdir(SCAN_DIR, { recursive: true })
     await fs.writeFile(diskFilePath(filename), buffer)
     await writeMeta(filename, metaPayload)
-    return { url: null, pathname: filename }
+    return { filename, pathname: filename, url: null }
   } catch (e) {
     console.error('[scan-store] scan save failed', e && e.message)
+    return null
+  }
+}
+
+export async function updateScanMeta(filename, patch) {
+  try {
+    const name = String(filename || '').split('/').pop()
+    if (!/^scan-[A-Za-z0-9._-]+\.jpg$/i.test(name)) return null
+    const existing = (await readMeta(name)) || { filename: name }
+    const next = { ...existing, ...(patch && typeof patch === 'object' ? patch : {}), updatedAt: new Date().toISOString() }
+    await writeMeta(name, next)
+    return next
+  } catch (e) {
+    console.error('[scan-store] meta update failed', e && e.message)
     return null
   }
 }

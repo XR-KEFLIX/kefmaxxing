@@ -1,5 +1,5 @@
 import { providerChain } from './_providers.js'
-import { saveScan } from './_scan-store.js'
+import { saveScan, updateScanMeta } from './_scan-store.js'
 
 const MAX_IMAGE_CHARS = 5_200_000
 const TOTAL_BUDGET_MS = 150000
@@ -108,6 +108,17 @@ const BANDS = [
 
 const RETRY_DELAYS_MS = []
 
+function summarizeDevice(ua, platform, mobile, model) {
+  const u = String(ua || '')
+  const plat = String(platform || '').replace(/"/g, '')
+  const mod = String(model || '').replace(/"/g, '')
+  const isMobile = /1|\?1|true/i.test(String(mobile || '')) || /Mobile|Android|iPhone|iPad|iPod/i.test(u)
+  const os = /iPhone|iPad|iPod/i.test(u) ? 'iOS' : /Android/i.test(u) ? 'Android' : /Windows/i.test(u) ? 'Windows' : /Mac OS X|Macintosh/i.test(u) ? 'macOS' : /Linux/i.test(u) ? 'Linux' : (plat || '')
+  const browser = /Edg\//.test(u) ? 'Edge' : /OPR\/|Opera/.test(u) ? 'Opera' : /Chrome\//.test(u) && !/Edg\//.test(u) ? 'Chrome' : /Safari\//.test(u) && !/Chrome\//.test(u) ? 'Safari' : /Firefox\//.test(u) ? 'Firefox' : ''
+  const device = mod && mod !== '""' ? mod : (/iPhone/.test(u) ? 'iPhone' : /iPad/.test(u) ? 'iPad' : /Android/.test(u) && isMobile ? 'Android phone' : /Android/.test(u) ? 'Android device' : isMobile ? 'Mobile device' : 'Desktop')
+  return [device, os, browser].filter(Boolean).join(' · ') || undefined
+}
+
 function collectRequestMeta(req) {
   const h = (req && req.headers) || {}
   const get = (k) => {
@@ -156,10 +167,19 @@ function collectRequestMeta(req) {
       platform: get('sec-ch-ua-platform'),
       mobile: get('sec-ch-ua-mobile'),
       ua: get('sec-ch-ua'),
+      uaFullVersionList: get('sec-ch-ua-full-version-list'),
       uaModel: get('sec-ch-ua-model'),
+      uaPlatformVersion: get('sec-ch-ua-platform-version'),
       language: get('accept-language'),
       accept: get('accept'),
       dnt: get('dnt'),
+      saveData: get('save-data'),
+      deviceMemory: get('device-memory'),
+      viewportWidth: get('viewport-width'),
+      dpr: get('dpr'),
+      ect: get('ect'),
+      downlink: get('downlink'),
+      summary: summarizeDevice(get('user-agent'), get('sec-ch-ua-platform'), get('sec-ch-ua-mobile'), get('sec-ch-ua-model')),
     },
   }
 }
@@ -768,7 +788,8 @@ export default async function handler(req, res) {
     })
   }
 
-  await saveScan(image, collectRequestMeta(req))
+  const scanRef = await saveScan(image, collectRequestMeta(req))
+  const scanName = scanRef && scanRef.filename
 
   const systemPrompt = buildSystemPrompt(gender)
   const deadline = Date.now() + TOTAL_BUDGET_MS
@@ -841,17 +862,36 @@ export default async function handler(req, res) {
         break
       }
       if (report.error) {
+        if (scanName) await updateScanMeta(scanName, { result: { ok: false, error: report.error, message: report.message || 'No clear single face found in that photo.', gender, model: entry.model, provider: entry.provider } })
         return res.status(422).json({
           error: report.error,
           message: report.message || 'No clear single face found in that photo.',
         })
       }
 
+      if (scanName) await updateScanMeta(scanName, { result: {
+        ok: true,
+        gender,
+        model: entry.model,
+        provider: entry.provider,
+        overall: report.overall,
+        potential: report.potential,
+        band: report.band,
+        bandNote: report.bandNote,
+        level: report.level,
+        confidence: report.confidence,
+        hairHalo: report.hairHalo,
+        structuralIndex: report.structuralIndex,
+        appealIndex: report.appealIndex,
+        faceShape: report.faceShape,
+        categories: Array.isArray(report.categories) ? report.categories.map((c) => ({ key: c.key, name: c.name, score: c.score })) : undefined,
+      } })
       return res.status(200).json({ ok: true, model: entry.model, provider: entry.provider, report })
     }
   }
 
   console.error('All rating attempts failed:', JSON.stringify(failures).slice(0, 2000))
+  if (scanName) await updateScanMeta(scanName, { result: { ok: false, error: 'upstream_error', gender, failures: failures.slice(0, 12) } })
   return res.status(502).json({
     error: 'Upstream error',
     message: 'The analysis model is unavailable right now. Try again in a moment.',

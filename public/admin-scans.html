@@ -20,21 +20,31 @@
   .name { font-size: 11px; font-family: ui-monospace, monospace; color: #9a9790; word-break: break-all; }
   .empty { color: #9a9790; padding: 48px 24px; text-align: center; font-size: 14px; }
   .error { color: #f0a08a; padding: 12px 24px; font-size: 13px; }
-  /* modal */
   .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.72); display: none; align-items: flex-start; justify-content: center; padding: 24px; overflow: auto; z-index: 50; }
   .modal-backdrop.open { display: flex; }
-  .modal { width: min(1100px, 100%); background: #141514; border: 1px solid #2a2b29; border-radius: 10px; overflow: hidden; }
+  .modal { width: min(1180px, 100%); background: #141514; border: 1px solid #2a2b29; border-radius: 10px; overflow: hidden; }
   .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #2a2b29; }
   .modal-head .title { font-size: 13px; font-family: ui-monospace, monospace; color: #cfcac0; word-break: break-all; }
-  .modal-body { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(320px, 1fr); gap: 0; }
-  @media (max-width: 800px) { .modal-body { grid-template-columns: 1fr; } }
+  .modal-body { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(360px, 1.15fr); }
+  @media (max-width: 880px) { .modal-body { grid-template-columns: 1fr; } }
   .modal-img { padding: 16px; border-right: 1px solid #2a2b29; background: #0d0d0c; display: flex; align-items: flex-start; justify-content: center; }
-  @media (max-width: 800px) { .modal-img { border-right: 0; border-bottom: 1px solid #2a2b29; } }
+  @media (max-width: 880px) { .modal-img { border-right: 0; border-bottom: 1px solid #2a2b29; } }
   .modal-img img { max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #232422; }
-  .modal-info { padding: 16px; max-height: 75vh; overflow: auto; }
+  .modal-info { padding: 16px; max-height: 78vh; overflow: auto; }
   .section { margin-bottom: 14px; }
-  .section h3 { margin: 0 0 6px; font-size: 12px; color: #9a9790; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
-  pre { margin: 0; padding: 10px 12px; background: #101110; border: 1px solid #232422; border-radius: 6px; font-size: 11.5px; line-height: 1.45; color: #d8d4cb; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .section h3 { margin: 0 0 8px; font-size: 11px; color: #9a9790; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+  .cardish { background: #101110; border: 1px solid #232422; border-radius: 8px; padding: 10px 12px; }
+  .kv { display: grid; grid-template-columns: 150px 1fr; gap: 6px 12px; font-size: 12.5px; }
+  @media (max-width: 520px) { .kv { grid-template-columns: 1fr; } }
+  .k { color: #8f8c85; }
+  .v { color: #e2ded5; word-break: break-word; }
+  .score-big { font-size: 28px; font-weight: 700; color: #f2eee6; letter-spacing: -0.02em; }
+  .sub { color: #9a9790; font-size: 12px; margin-top: 2px; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #1c1d1b; border: 1px solid #2f302e; font-size: 11px; color: #cfcac0; margin-right: 6px; margin-top: 4px; }
+  details.raw { margin-top: 6px; }
+  details.raw summary { cursor: pointer; color: #8f8c85; font-size: 12px; }
+  pre { margin: 8px 0 0; padding: 10px 12px; background: #0d0d0c; border: 1px solid #232422; border-radius: 6px; font-size: 11px; line-height: 1.45; color: #cfc5b8; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .muted { color: #7a7872; font-size: 12px; }
   .actions { display: flex; gap: 8px; align-items: center; }
 </style>
 </head>
@@ -52,7 +62,7 @@
   <div class="empty" id="empty" hidden>
     <div style="margin-bottom:10px">No scans found.</div>
     <div style="font-size:12px;color:#7a7872;line-height:1.5;max-width:520px;margin:0 auto">
-      On Vercel, server files are temporary. For persistent scans, create a Vercel Blob store for this project and set <code>BLOB_READ_WRITE_TOKEN</code> in the project env vars, then redeploy. Locally, scans save to the <code>scans/</code> folder and appear here when using <code>npm run dev</code>.
+      On Vercel, scans persist via Blob (<code>BLOB_READ_WRITE_TOKEN</code>). Locally, scans save to the <code>scans/</code> folder when using <code>npm run dev</code>.
     </div>
   </div>
 </main>
@@ -68,11 +78,7 @@
     </div>
     <div class="modal-body">
       <div class="modal-img"><img id="modal-img" alt="" /></div>
-      <div class="modal-info">
-        <div class="section"><h3>Sent time</h3><pre id="modal-sent"></pre></div>
-        <div class="section"><h3>Scan</h3><pre id="modal-scan"></pre></div>
-        <div class="section"><h3>Metadata (device, location, upload source)</h3><pre id="modal-meta"></pre></div>
-      </div>
+      <div class="modal-info" id="modal-info"></div>
     </div>
   </div>
 </div>
@@ -81,20 +87,71 @@
 (function () {
   const grid = document.getElementById('grid')
   const empty = document.getElementById('empty')
-  const meta = document.getElementById('meta')
+  const metaEl = document.getElementById('meta')
   const errorEl = document.getElementById('error')
   const modal = document.getElementById('modal')
   const modalTitle = document.getElementById('modal-title')
   const modalImg = document.getElementById('modal-img')
-  const modalSent = document.getElementById('modal-sent')
-  const modalScan = document.getElementById('modal-scan')
-  const modalMeta = document.getElementById('modal-meta')
+  const modalInfo = document.getElementById('modal-info')
   const modalDownload = document.getElementById('modal-download')
   const modalClose = document.getElementById('modal-close')
 
-  function showError(msg) {
-    errorEl.hidden = false
-    errorEl.textContent = msg
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])) }
+  function showError(msg){ errorEl.hidden = false; errorEl.textContent = msg }
+  function fmtTime(iso, epoch){
+    if(!iso && !epoch) return null
+    const d = new Date(iso || epoch)
+    if(isNaN(d.getTime())) return { raw: iso || epoch }
+    return { iso: iso || d.toISOString(), epochMs: epoch || d.getTime(), utc: d.toUTCString(), local: d.toString() }
+  }
+  function kv(obj){
+    const rows = Object.entries(obj || {}).filter(([,v])=>v !== undefined && v !== null && v !== '')
+    if(!rows.length) return '<div class="muted">No data</div>'
+    return '<div class="kv">' + rows.map(([k,v])=>`<div class="k">${esc(k)}</div><div class="v">${esc(typeof v === 'object' ? JSON.stringify(v) : v)}</div>`).join('') + '</div>'
+  }
+  function section(title, inner){ return `<div class="section"><h3>${esc(title)}</h3><div class="cardish">${inner}</div></div>` }
+
+  function renderDetail(obj){
+    const m = obj.meta && typeof obj.meta === 'object' ? obj.meta : null
+    const sent = fmtTime(m && (m.sentAt || m.capturedAt || m.at), m && m.sentAtEpochMs)
+    const res = m && m.result ? m.result : null
+    const dev = m && m.device ? m.device : {}
+    const net = m && m.network ? m.network : {}
+    const geo = m && m.geo ? m.geo : {}
+    const up = m && m.upload ? m.upload : {}
+
+    let scoreHtml = '<div class="muted">No score recorded (scan saved before result logging, or analysis failed).</div>'
+    if(res && res.ok){
+      const cats = Array.isArray(res.categories) ? res.categories.map(c=>`<span class="pill">${esc(c.name)} ${esc(c.score)}</span>`).join('') : ''
+      scoreHtml = `
+        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+          <div class="score-big">${esc(res.overall)}</div>
+          <div><div style="font-weight:600;color:#f2eee6">${esc(res.band || '')} ${res.level ? '('+esc(res.level)+')' : ''}</div><div class="sub">Potential ${esc(res.potential)} · Confidence ${esc(res.confidence)} · Hair halo ${esc(res.hairHalo)}</div></div>
+        </div>
+        <div class="sub" style="margin-top:8px">Gender: ${esc(res.gender)} · Model: ${esc(res.provider)}/${esc(res.model)} · Structural ${esc(res.structuralIndex)} · Appeal ${esc(res.appealIndex)}</div>
+        ${cats ? `<div style="margin-top:8px">${cats}</div>` : ''}
+      `
+    } else if (res && !res.ok) {
+      scoreHtml = `<div class="muted">Result: ${esc(res.error || 'failed')}${res.message ? ' — '+esc(res.message) : ''}</div>`
+    }
+
+    const deviceSummary = dev.summary || [dev.uaModel && String(dev.uaModel).replace(/"/g,''), dev.platform && String(dev.platform).replace(/"/g,''), /Mobile/i.test(String(dev.userAgent||''))||dev.mobile==='?1'?'Mobile':'Desktop'].filter(Boolean).join(' · ')
+    const loc = [geo.city, geo.region, geo.country].filter(Boolean).join(', ') + (geo.latitude && geo.longitude ? ` (${geo.latitude}, ${geo.longitude})` : '')
+    const where = [up.referer, up.origin, up.fullUrl || (up.host && up.url ? (up.forwardedProto||'https')+'://'+up.host+up.url : '')].find(Boolean)
+
+    const parts = []
+    parts.push(section('Score', scoreHtml))
+    parts.push(section('Sent time (exact)', sent ? kv({ sentAt: sent.iso, epochMs: sent.epochMs, utc: sent.utc, local: sent.local }) : '<div class="muted">No exact sent time recorded (saved before timestamp logging).</div>'))
+    parts.push(section('Device / Phone', kv({ device: deviceSummary, platform: dev.platform, mobile: dev.mobile, model: dev.uaModel, ua: dev.ua, uaFullVersionList: dev.uaFullVersionList, platformVersion: dev.uaPlatformVersion, userAgent: dev.userAgent, language: dev.language, viewport: dev.viewportWidth, dpr: dev.dpr, deviceMemory: dev.deviceMemory, connection: dev.ect || dev.downlink ? (dev.ect||'') + (dev.downlink?(' '+dev.downlink+'Mbps'):'') : undefined })))
+    parts.push(section('Location', kv({ location: loc || undefined, country: geo.country, region: geo.region, city: geo.city, latitude: geo.latitude, longitude: geo.longitude, timezone: geo.timezone, continent: geo.continent, ip: net.ip, xForwardedFor: net.xForwardedFor })))
+    parts.push(section('Upload source (where it came from)', kv({ referer: up.referer, origin: up.origin, host: up.host, requestUrl: up.url, fullUrl: up.fullUrl, method: up.method, vercelId: up.vercelId, deploymentUrl: up.vercelDeploymentUrl })))
+    parts.push(section('Scan', kv({ name: obj.name, pathname: obj.pathname, source: obj.source, size: obj.size, uploadedAt: obj.uploadedAt })))
+    if(m){
+      parts.push(`<div class="section"><div class="cardish"><details class="raw"><summary>Raw metadata (all captured)</summary><pre>${esc(JSON.stringify(m,null,2))}</pre></details></div></div>`)
+    } else {
+      parts.push(section('Metadata', '<div class="muted">No metadata recorded for this scan (saved before logging was enabled).</div>'))
+    }
+    return parts.join('')
   }
 
   function openModal(obj) {
@@ -105,17 +162,7 @@
     modalImg.alt = name
     modalDownload.href = src
     modalDownload.download = name
-    const sentAt = obj.meta && (obj.meta.sentAt || obj.meta.capturedAt || obj.meta.at)
-    const sentAtEpochMs = obj.meta && obj.meta.sentAtEpochMs
-    if (sentAt) {
-      const d = new Date(sentAt)
-      modalSent.textContent = JSON.stringify({ sentAt, sentAtEpochMs: sentAtEpochMs || (isNaN(d.getTime()) ? null : d.getTime()), utc: isNaN(d.getTime()) ? null : d.toUTCString(), local: isNaN(d.getTime()) ? null : d.toString() }, null, 2)
-    } else {
-      modalSent.textContent = 'No exact sent time recorded for this scan (saved before timestamp logging was enabled).'
-    }
-    const scanInfo = { name, pathname: obj.pathname, url: src, source: obj.source, size: obj.size, uploadedAt: obj.uploadedAt, sentAt: sentAt || null, sentAtEpochMs: sentAtEpochMs || null }
-    modalScan.textContent = JSON.stringify(scanInfo, null, 2)
-    modalMeta.textContent = obj.meta ? JSON.stringify(obj.meta, null, 2) : 'No metadata recorded for this scan (saved before metadata logging was enabled).'
+    modalInfo.innerHTML = renderDetail(obj)
     modal.classList.add('open')
     modal.setAttribute('aria-hidden', 'false')
   }
@@ -137,11 +184,8 @@
       const res = await fetch('/api/scans')
       if (!res.ok) throw new Error('Failed to load: ' + res.status)
       const data = await res.json()
-      meta.textContent = data.count + ' scan' + (data.count === 1 ? '' : 's') + ' found — click an image to view details'
-      if (!data.scans.length) {
-        empty.hidden = false
-        return
-      }
+      metaEl.textContent = data.count + ' scan' + (data.count === 1 ? '' : 's') + ' — click an image for score, device, location, source & exact time'
+      if (!data.scans.length) { empty.hidden = false; return }
       empty.hidden = true
       for (const item of data.scans) {
         const obj = typeof item === 'string' ? { name: item, url: '/api/scans?file=' + encodeURIComponent(item) } : item
@@ -150,10 +194,7 @@
         const card = document.createElement('div')
         card.className = 'card'
         const img = document.createElement('img')
-        img.src = src
-        img.alt = name
-        img.loading = 'lazy'
-        img.title = 'Click to view details'
+        img.src = src; img.alt = name; img.loading = 'lazy'; img.title = 'Click to view details'
         img.addEventListener('click', () => openModal(obj))
         const row = document.createElement('div')
         row.className = 'row'
@@ -161,18 +202,15 @@
         span.className = 'name'
         span.textContent = name
         const btn = document.createElement('button')
-        btn.textContent = 'Details'
-        btn.type = 'button'
+        btn.textContent = 'Details'; btn.type = 'button'
         btn.addEventListener('click', () => openModal(obj))
-        row.appendChild(span)
-        row.appendChild(btn)
-        card.appendChild(img)
-        card.appendChild(row)
+        row.appendChild(span); row.appendChild(btn)
+        card.appendChild(img); card.appendChild(row)
         grid.appendChild(card)
       }
     } catch (err) {
       showError('Could not load scans: ' + err.message)
-      meta.textContent = '—'
+      metaEl.textContent = '—'
     }
   }
 
