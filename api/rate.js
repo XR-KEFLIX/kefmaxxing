@@ -1,9 +1,12 @@
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import { providerChain } from './_providers.js'
 
 const MAX_IMAGE_CHARS = 5_200_000
 const TOTAL_BUDGET_MS = 150000
 const PER_MODEL_TIMEOUT_MS = 40000
 const MAX_ATTEMPTS = 12
+const SCAN_DIR = process.env.SCAN_DIR || (process.env.VERCEL ? '/tmp/scans' : path.join(process.cwd(), 'scans'))
 
 const CATEGORY_META = [
   {
@@ -681,6 +684,19 @@ async function callModel(entry, systemPrompt, image, deadline) {
   }
 }
 
+async function saveScan(image) {
+  try {
+    const base64 = String(image || '').replace(/^data:image\/[a-z0-9.]+;base64,/, '')
+    const buffer = Buffer.from(base64, 'base64')
+    if (!buffer.length) return
+    await fs.mkdir(SCAN_DIR, { recursive: true })
+    const filename = `scan-${new Date().toISOString().replace(/[:.]/g, '-')}-${Math.random().toString(36).slice(2, 8)}.jpg`
+    await fs.writeFile(path.join(SCAN_DIR, filename), buffer)
+  } catch (error) {
+    console.error('[rate] scan folder save failed', error && error.message)
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed', message: 'POST only.' })
@@ -710,6 +726,8 @@ export default async function handler(req, res) {
       message: 'Photo exceeds the size limit. Retake or use a smaller photo.',
     })
   }
+
+  await saveScan(image)
 
   const systemPrompt = buildSystemPrompt(gender)
   const deadline = Date.now() + TOTAL_BUDGET_MS

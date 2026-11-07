@@ -40,7 +40,7 @@ export function Analyzing({ photo, onCancel }) {
               <div className="h-full w-1/3 animate-indeterminate rounded-full bg-accent" />
             </div>
             <p className="mt-3 text-[11.5px] leading-relaxed text-ink3">
-              The image is sent to the analysis endpoint and is not saved by the app.
+              The image is sent to the analysis endpoint for this read.
             </p>
           </div>
 

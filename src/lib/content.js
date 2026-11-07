@@ -47,7 +47,6 @@ export const PHOTO_PROTOCOL = [
 export const PRIVACY_POINTS = [
   'Compressed in your browser before sending',
   'Processed once by the analysis endpoint',
-  'Not stored by this app. No account, no profile, no gallery',
   'The chat sends your report, not your photo',
 ]
 
@@ -65,7 +64,6 @@ export const EVIDENCE_LEVERS = [
 
 export const FAQ_ITEMS = [
   { q: 'Is the score objective?', a: 'No. It is an estimate from one photo. The method is consistent, but different photos, lighting and models can produce different readings.' },
-  { q: 'Is my photo stored?', a: 'Not by this app. The image is compressed in your browser, sent to the analysis endpoint and processed once. There is no account, profile or gallery.' },
   { q: 'Why does my score change between photos?', a: 'Perspective, light, expression, compression and filters can shift the read by a meaningful amount. If you want to track progress, use the same camera, distance, room and light each time.' },
   { q: 'What is the PSL-style structural index?', a: 'A secondary readout built from the six structure dimensions. It is inspired by internet looksmaxxing culture, not by science, and it is not the overall score.' },
   { q: 'What do the ranks mean?', a: 'They are looksmaxxing-culture ranks. Sub-3 to Sub-5 are the lower tiers. LTN, MTN and HTN are the normal tiers. Above that are Chadlite and Chad.' },

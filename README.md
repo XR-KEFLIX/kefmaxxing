@@ -17,7 +17,7 @@ It is deliberately not a single-metric "PSL score" site. The overall score is a 
 - Includes a **hair halo** score: how well the current cut suits the specific face. A halo of 9.0 or above adds at least two subtiers to the overall score.
 - Separates traits that are largely genetic from presentation changes that are realistically achievable.
 - Provides a persistent chat assistant, Kef, that can answer general questions before a rating and report-specific questions afterwards.
-- Does not store photos. There is no account, profile or gallery.
+- Writes each scanned face to a scans folder on the server. No account, profile or gallery is exposed.
 
 ## Scoring method
 
@@ -124,7 +124,7 @@ src/
 
 ## Privacy
 
-Photos are compressed in the browser, sent to the rating endpoint, processed once and not written to storage by the app. There is no account or gallery. The image is sent to the configured third-party model provider to generate the report, so that provider processes it under its own data policy. The chat sends the report context and the conversation history, not the photo, to the configured model provider.
+Photos are compressed in the browser, sent to the rating endpoint, processed once and written to a scans folder on the server. There is no account or gallery. The image is sent to the configured third-party model provider to generate the report, so that provider processes it under its own data policy. The chat sends the report context and the conversation history, not the photo, to the configured model provider.
 
 ## Disclaimer
 

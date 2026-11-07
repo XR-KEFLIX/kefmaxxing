@@ -52,7 +52,6 @@ export function AnalyzerSection({ photo, gender, status, error, onFile, onGender
               <button type="button" onClick={pick} className="btn btn-secondary btn-sm"><ImagePlus className="h-3.5 w-3.5" strokeWidth={1.8} />{photo ? 'Replace' : 'Choose photo'}</button>
               {photo && (<button type="button" onClick={onClearPhoto} className="btn btn-ghost btn-sm"><X className="h-3.5 w-3.5" strokeWidth={1.8} />Remove</button>)}
             </div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">Never stored</span>
           </div>
 
           <div className="mt-7">

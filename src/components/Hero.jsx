@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense } from 'react'
-import { ArrowRight, ArrowUp, Lock, MessageSquare } from 'lucide-react'
+import { ArrowRight, ArrowUp, MessageSquare } from 'lucide-react'
 import { DIMENSIONS, FRAMEWORK_GROUPS } from '../lib/content'
 
 const BlackPill3D = lazy(() =>
@@ -49,11 +49,6 @@ export function Hero({ onStart, onOpenChat, onAsk }) {
             </button>
           </div>
 
-          <p className="mt-4 flex items-center gap-2 text-[11.5px] leading-relaxed text-ink3">
-            <Lock className="h-3.5 w-3.5 text-accent" strokeWidth={1.8} />
-            Analysed once. Never stored.
-          </p>
-
           <dl className="mt-8 grid max-w-lg grid-cols-3 gap-3 border-t border-line pt-5">
             <div>
               <dt className="eyebrow">Scores</dt>
@@ -64,8 +59,8 @@ export function Hero({ onStart, onOpenChat, onAsk }) {
               <dd className="mt-1 font-mono text-[13px] font-medium text-ink sm:text-[15px]">1.0-10.0</dd>
             </div>
             <div>
-              <dt className="eyebrow">Photo storage</dt>
-              <dd className="mt-1 font-mono text-[13px] font-medium text-ink sm:text-[15px]">None</dd>
+              <dt className="eyebrow">Photos</dt>
+              <dd className="mt-1 font-mono text-[13px] font-medium text-ink sm:text-[15px]">One</dd>
             </div>
           </dl>
         </div>
