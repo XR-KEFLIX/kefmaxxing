@@ -110,22 +110,54 @@ const RETRY_DELAYS_MS = []
 
 function collectRequestMeta(req) {
   const h = (req && req.headers) || {}
-  const get = (k) => (typeof h[k] === 'string' ? h[k] : Array.isArray(h[k]) ? h[k][0] : undefined)
+  const get = (k) => {
+    const v = h[k]
+    if (typeof v === 'string') return v
+    if (Array.isArray(v)) return v[0]
+    return undefined
+  }
+  const proto = get('x-forwarded-proto') || 'https'
+  const host = get('x-forwarded-host') || get('host')
+  const url = (req && req.url) || ''
+  const fullUrl = host ? `${proto}://${host}${url}` : url || undefined
   return {
-    at: new Date().toISOString(),
-    ip: get('x-forwarded-for') || get('x-real-ip') || (req && req.socket && req.socket.remoteAddress) || undefined,
-    country: get('x-vercel-ip-country'),
-    region: get('x-vercel-ip-country-region'),
-    city: get('x-vercel-ip-city'),
-    latitude: get('x-vercel-ip-latitude'),
-    longitude: get('x-vercel-ip-longitude'),
-    timezone: get('x-vercel-ip-timezone'),
-    userAgent: get('user-agent'),
-    platform: get('sec-ch-ua-platform'),
-    language: get('accept-language'),
-    referer: get('referer') || get('referrer'),
-    origin: get('origin'),
-    host: get('host'),
+    capturedAt: new Date().toISOString(),
+    upload: {
+      method: req && req.method,
+      url,
+      fullUrl,
+      host,
+      origin: get('origin'),
+      referer: get('referer') || get('referrer'),
+      forwardedHost: get('x-forwarded-host'),
+      forwardedProto: get('x-forwarded-proto'),
+      vercelId: get('x-vercel-id'),
+      vercelDeploymentUrl: get('x-vercel-deployment-url'),
+    },
+    network: {
+      ip: get('x-forwarded-for') || get('x-real-ip') || get('x-vercel-forwarded-for') || (req && req.socket && req.socket.remoteAddress) || undefined,
+      xForwardedFor: get('x-forwarded-for'),
+      vercelProxiedFor: get('x-vercel-proxied-for'),
+    },
+    geo: {
+      country: get('x-vercel-ip-country'),
+      region: get('x-vercel-ip-country-region'),
+      city: get('x-vercel-ip-city'),
+      latitude: get('x-vercel-ip-latitude'),
+      longitude: get('x-vercel-ip-longitude'),
+      timezone: get('x-vercel-ip-timezone'),
+      continent: get('x-vercel-ip-continent'),
+    },
+    device: {
+      userAgent: get('user-agent'),
+      platform: get('sec-ch-ua-platform'),
+      mobile: get('sec-ch-ua-mobile'),
+      ua: get('sec-ch-ua'),
+      uaModel: get('sec-ch-ua-model'),
+      language: get('accept-language'),
+      accept: get('accept'),
+      dnt: get('dnt'),
+    },
   }
 }
 
