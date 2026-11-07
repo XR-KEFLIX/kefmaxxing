@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
 /**
  * Interactive real-time 3D blackpill rendered with Three.js.
@@ -40,16 +39,13 @@ export function BlackPill3D({ className }: { className?: string }) {
     camera.position.set(0, 1.05, 7.4)
     camera.lookAt(0, 0.05, 0)
 
-    // Environment reflections without an external HDR: procedural room.
-    const pmrem = new THREE.PMREMGenerator(renderer)
-    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
-    pmrem.dispose()
-
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.0)
+    // Procedural lighting from lights only; no environment map for now.
+    // This avoids the bright hairline outline on the capsule's silhouette.
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2)
     keyLight.position.set(3.2, 5.2, 3.6)
     scene.add(keyLight)
 
-    const rimLight = new THREE.DirectionalLight(0xd9e2dc, 0.45)
+    const rimLight = new THREE.DirectionalLight(0xffe2ca, 0.55)
     rimLight.position.set(-4.2, 2.6, -3.4)
     scene.add(rimLight)
 
@@ -67,13 +63,13 @@ export function BlackPill3D({ className }: { className?: string }) {
     const cylinderLength = 1.95
 
     const capsuleMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x121218,
-      metalness: 0.08,
-      roughness: 0.27,
-      clearcoat: 0.7,
-      clearcoatRoughness: 0.18,
-      envMapIntensity: 0.75,
-      specularIntensity: 1.0,
+      color: 0x111117,
+      metalness: 0.03,
+      roughness: 0.38,
+      clearcoat: 0.45,
+      clearcoatRoughness: 0.3,
+      specularIntensity: 0.6,
+      specularColor: 0xdddddd,
     })
 
     const capsule = new THREE.Mesh(
@@ -267,7 +263,6 @@ export function BlackPill3D({ className }: { className?: string }) {
       shadowPlane.geometry.dispose()
       shadowMaterial.dispose()
       shadowTexture.dispose()
-      scene.environment?.dispose()
       renderer.dispose()
     }
   }, [])
