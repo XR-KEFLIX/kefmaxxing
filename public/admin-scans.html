@@ -33,7 +33,12 @@
 <div class="error" id="error" hidden></div>
 <main>
   <div class="grid" id="grid"></div>
-  <div class="empty" id="empty" hidden>No scans found.</div>
+  <div class="empty" id="empty" hidden>
+    <div style="margin-bottom:10px">No scans found.</div>
+    <div style="font-size:12px;color:#7a7872;line-height:1.5;max-width:520px;margin:0 auto">
+      On Vercel, server files are temporary. For persistent scans, create a Vercel Blob store for this project and set <code>BLOB_READ_WRITE_TOKEN</code> in the project env vars, then redeploy. Locally, scans save to the <code>scans/</code> folder and appear here when using <code>npm run dev</code>.
+    </div>
+  </div>
 </main>
 <script>
 (function () {
