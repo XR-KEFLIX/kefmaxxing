@@ -5,6 +5,7 @@ function devApiPlugin() {
   const routes = [
     ['/api/rate', '/api/rate.js'],
     ['/api/chat', '/api/chat.js'],
+    ['/api/scans', '/api/scans.js'],
   ]
 
   return {
@@ -27,15 +28,18 @@ function devApiPlugin() {
             const mod = await server.ssrLoadModule(modulePath)
             const handler = mod.default
             if (req.method === 'POST') {
-              let raw = ''
-              for await (const chunk of req) raw += chunk
-              let parsed = {}
-              try {
-                parsed = raw ? JSON.parse(raw) : {}
-              } catch {
-                parsed = {}
-              }
-              req.body = parsed
+              const chunks = []
+              await new Promise((resolve, reject) => {
+                req.on('data', (chunk) => chunks.push(chunk))
+                req.on('end', () => {
+                  const raw = Buffer.concat(chunks).toString('utf8')
+                  let parsed = {}
+                  try { parsed = raw ? JSON.parse(raw) : {} } catch { parsed = {} }
+                  req.body = parsed
+                  resolve()
+                })
+                req.on('error', reject)
+              })
             }
             await handler(req, shim)
           } catch {

@@ -5,6 +5,9 @@
     },
     "api/chat.js": {
       "maxDuration": 120
+    },
+    "api/scans.js": {
+      "maxDuration": 30
     }
   }
 }
