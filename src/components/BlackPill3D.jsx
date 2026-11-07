@@ -63,27 +63,6 @@ export function BlackPill3D({ className }) {
     body.rotation.z = Math.PI / 2.35
     root.position.y = 0.25
 
-    const shadowCanvas = document.createElement('canvas')
-    shadowCanvas.width = 256
-    shadowCanvas.height = 256
-    const shadowContext = shadowCanvas.getContext('2d')
-    if (shadowContext) {
-      const gradient = shadowContext.createRadialGradient(128, 128, 6, 128, 128, 124)
-      gradient.addColorStop(0, 'rgba(0, 0, 0, 0.85)')
-      gradient.addColorStop(0.42, 'rgba(0, 0, 0, 0.38)')
-      gradient.addColorStop(0.75, 'rgba(0, 0, 0, 0.1)')
-      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)')
-      shadowContext.fillStyle = gradient
-      shadowContext.fillRect(0, 0, 256, 256)
-    }
-    const shadowTexture = new THREE.CanvasTexture(shadowCanvas)
-    shadowTexture.colorSpace = THREE.SRGBColorSpace
-    const shadowMaterial = new THREE.MeshBasicMaterial({ map: shadowTexture, transparent: true, depthWrite: false, opacity: 0.55 })
-    const shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(5.1, 3.4), shadowMaterial)
-    shadowPlane.rotation.x = -Math.PI / 2
-    shadowPlane.position.y = -1.72
-    scene.add(shadowPlane)
-
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     const home = { yaw: 0, pitch: 0.12, offsetX: 0, offsetY: 0 }
@@ -185,8 +164,6 @@ export function BlackPill3D({ className }) {
       if (!reducedMotion) {
         const lift = Math.sin(t * 1.1)
         root.position.y = 0.25 + view.offsetY + lift * 0.1
-        shadowPlane.scale.set(1 - lift * 0.09, 1 - lift * 0.09, 1)
-        shadowMaterial.opacity = 0.55 - lift * 0.18
       } else {
         root.position.y = 0.25 + view.offsetY
       }
@@ -210,9 +187,6 @@ export function BlackPill3D({ className }) {
       capsuleMaterial.dispose()
       seamRing.geometry.dispose()
       seamRing.material.dispose()
-      shadowPlane.geometry.dispose()
-      shadowMaterial.dispose()
-      shadowTexture.dispose()
       timer.dispose()
       renderer.dispose()
     }

@@ -117,10 +117,11 @@ function buildSystemPrompt(gender) {
     `REFERENCE: The user chose ${reference} reference standards. Compare visible features to that reference. Do not infer identity, sexuality, race or ethnicity. Never mention race or ethnicity.`,
     ``,
     `CALIBRATION:`,
-    `- 5.0 is population average. Most faces fall between 4.0 and 6.0.`,
-    `- 6.0 is clearly above average. 7.0 is attractive. 8.0 is very attractive and rare. 9.0 to 10.0 is exceptional.`,
-    `- Do not inflate. Do not use a score to punish. Use one decimal.`,
-    `- A face with no standout features is around 4.5 to 5.2, not 6.0.`,
+    `- 5.0 is a true population average. Most faces fall between 3.8 and 5.8. Be conservative.`,
+    `- 5.5 is slightly above average. 6.0 is clearly above average and requires noticeable strengths. 7.0 is attractive and uncommon. 8.0 is very attractive and rare. 9.0+ is exceptional.`,
+    `- Do not inflate. Err on the lower side when uncertain. Use one decimal.`,
+    `- A face with no standout features is around 4.2 to 5.0, not 5.5 or 6.0.`,
+    `- If a feature is merely ordinary, score it near 4.5–5.2. Reserve 6.5+ for clearly positive features.`,
     `- Visible soft-tissue fullness can lower definition-based scores, but do not guess body fat percentage.`,
     ``,
     `EVIDENCE AND LIMITS:`,
@@ -143,7 +144,7 @@ function buildSystemPrompt(gender) {
     `9. grooming: brows, facial hair, cleanliness, deliberate presentation.`,
     `10. appeal: the holistic impression. How attractive the face reads as a whole, beyond any single feature.`,
     ``,
-    `SCORING ANCHORS: 5.0 is exactly average. 3.0 to 3.9 is below average with visible issues. 4.0 to 4.9 is slightly below average to ordinary. 6.0 to 6.9 is clearly above average. 7.0 to 7.9 is attractive and uncommon. 8.0 to 8.9 is very attractive and rare. 9.0 and above is exceptional. Most dimensions for a typical face sit between 4.0 and 6.0. Do not treat 5.0 as a floor or 6.0 as a default.`,
+    `SCORING ANCHORS: 5.0 is exactly average. 3.0 to 3.9 is below average with visible issues. 4.0 to 4.9 is slightly below average to ordinary. 5.0 to 5.4 is average. 5.5 to 5.9 is a bit above average. 6.0 to 6.9 is clearly above average. 7.0 to 7.9 is attractive and uncommon. 8.0 to 8.9 is very attractive and rare. 9.0 and above is exceptional. Most dimensions for a typical face sit between 3.8 and 5.8. Do not treat 5.0 as a floor or 6.0 as a default. When in doubt between two scores, choose the lower one.`,
     ``,
     `NOTES: for each category, write 1 to 3 sentences that name the visible features that drove the score. Explain the why, not just the what. Be specific to this photo.`,
     ``,
@@ -556,11 +557,10 @@ function sanitizeReport(raw, gender) {
   const weighted = categories.reduce((sum, cat) => sum + cat.score * cat.weight, 0)
 
   // Hair halo: how well the current cut suits this specific face.
-  // A perfect hair halo (9+) bumps the overall by at least two subtiers (~0.7),
-  // a great one (8+) by one subtier (~0.35).
+  // A strong hair-face match gives a small bump; keep it modest to avoid inflating the overall read.
   const rawHairHalo = clampScore(raw.hairHalo, scoreByKey.hair)
   const hairHalo = rawHairHalo
-  const hairBonus = hairHalo >= 9.0 ? 0.7 : hairHalo >= 8.0 ? 0.35 : 0
+  const hairBonus = hairHalo >= 9.0 ? 0.35 : hairHalo >= 8.0 ? 0.15 : 0
   const overall = clampScore(weighted + hairBonus, 5)
   const structureScore = categories
     .filter((cat) => cat.group === 'structure')
