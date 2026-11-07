@@ -236,24 +236,14 @@ export const EVIDENCE_LEVERS: Array<{ title: string; label: string; tone: 'good'
   },
 ]
 
-export const METHOD_LIMITS: string[] = [
-  'One 2D photo is not a clinical measurement. Lens distance, lighting, angle, expression, filters, makeup and facial hair all shift the read.',
-  'The model estimates. It does not measure bone with calipers, imaging or a physical exam.',
-  'Attractiveness is partly subjective and culturally variable. A score is a structured opinion, not a fact about your worth.',
-  'Community metrics such as canthal tilt, gonial angle and midface ratio are descriptive cues. They are not validated laws of attractiveness.',
-  'Hair and grooming advice is general styling guidance. Your hair type, density, growth pattern and personal preference matter.',
-  'Nothing here is medical advice. See a qualified professional for skin, dental, jaw or mental health concerns.',
-  'No percentile is shown. One photo cannot establish a true population percentile, and inventing one is worse than showing none.',
-]
-
 export const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   {
     q: 'Is the score objective?',
-    a: 'No. It is a structured estimate from one photo. Different photos, lighting and models produce different readings. The method stays consistent, but the output is not a fact about you or your worth.',
+    a: 'No. It is an estimate from one photo. The method is consistent, but different photos, lighting and models can produce different readings.',
   },
   {
     q: 'Is my photo stored?',
-    a: 'Not by this app. The image is compressed in your browser, sent to the analysis endpoint and processed once. There is no account, profile or gallery. The request goes to a third-party model provider to generate the report, so that provider processes the image under its own data policy.',
+    a: 'Not by this app. The image is compressed in your browser, sent to the analysis endpoint and processed once. There is no account, profile or gallery.',
   },
   {
     q: 'Why does my score change between photos?',
@@ -276,14 +266,6 @@ export const FAQ_ITEMS: Array<{ q: string; a: string }> = [
     a: 'They can grow the masseter muscles in some people, which may change how the lower face looks. The evidence is limited, and overdoing it can cause pain or TMJ problems. Do not force it.',
   },
   {
-    q: 'Is this medical advice?',
-    a: 'No. This is cosmetic and grooming guidance. See a dermatologist, dentist, orthodontist or doctor for medical concerns.',
-  },
-  {
-    q: 'Why no percentile?',
-    a: 'One photo cannot establish a true population percentile. You get the band and the scores behind it instead of invented precision.',
-  },
-  {
     q: 'How is gender handled?',
     a: 'You pick a male or female reference standard, and the analysis compares what it sees to that reference. It does not infer your identity or make claims about who you are.',
   },
@@ -293,7 +275,7 @@ export const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   },
   {
     q: 'Is a low score an insult?',
-    a: 'No. The score describes one photo against a reference, not your value as a person. The plan focuses on what is changeable and worth doing.',
+    a: 'No. The score describes one photo against a chosen reference. The plan focuses on the parts you can actually change.',
   },
 ]
 

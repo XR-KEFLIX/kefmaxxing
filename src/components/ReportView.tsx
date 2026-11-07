@@ -89,8 +89,6 @@ function ScoreSummary({
       '',
       'Top plan:',
       ...report.plan.slice(0, 3).map((item) => `${item.rank}. ${item.action} (${item.impact} impact, ${item.timeframe})`),
-      '',
-      'Single-photo estimate. Not medical advice.',
     ]
     void copy(lines.join('\n'))
   }
@@ -147,15 +145,15 @@ function ScoreSummary({
               hint="PSL-style, secondary"
             />
             <Stat label="Overall appeal" value={`${formatScore(report.appealIndex)} / 10`} hint="Overall impression" />
-            <Stat label="Confidence" value={`${confidence}%`} hint="Single-photo estimate" />
+            <Stat label="Confidence" value={`${confidence}%`} hint="One photo, best effort" />
           </dl>
 
           <div className="mt-6 border-t border-line pt-5">
             <p className="eyebrow">Reads as</p>
             <p className="mt-1.5 font-display text-[20px] capitalize leading-tight text-ink">{report.archetype}</p>
             <p className="mt-1 text-[12px] leading-relaxed text-ink3">
-              Face shape: <span className="capitalize text-ink2">{report.faceShape}</span>. Descriptive, not a label.
-            </p>
+            Face shape: <span className="capitalize text-ink2">{report.faceShape}</span>. Descriptive, not a label.
+          </p>
           </div>
 
           <figure className="mt-6 flex items-center gap-3 border-t border-line pt-5">
@@ -330,7 +328,7 @@ function DetailedAnalysis({ report }: { report: RatingReport }) {
           {titleCase(report.band)} Ãƒâ€šÃ‚Â· {levelLabel(report.level)}
         </span>
       </div>
-      <p className="mt-4 text-[14px] leading-[1.75] text-ink2 first-letter:float-left first-letter:mr-2 first-letter:font-display first-letter:text-[44px] first-letter:leading-[0.78] first-letter:text-accent">
+      <p className="mt-4 text-[14px] leading-[1.75] text-ink2">
         {report.analysis}
       </p>
     </div>
@@ -346,7 +344,7 @@ function Recommendations({ report }: { report: RatingReport }) {
           <h3 className="mt-1 text-[22px] leading-tight tracking-[-0.02em] text-ink">What to do next</h3>
         </div>
         <p className="max-w-md text-[12px] leading-relaxed text-ink3">
-          General cosmetic guidance, not medical advice. Your hair type, skin and taste all matter here.
+            Your hair type, skin and personal taste all matter here.
         </p>
       </div>
 
@@ -634,10 +632,6 @@ function PhotoNotes({ report }: { report: RatingReport }) {
         <div>
           <p className="text-[13px] font-medium text-ink">About this photo and this score</p>
           <p className="mt-1 text-[12.5px] leading-relaxed text-ink2">{report.photoNotes}</p>
-          <p className="mt-2 text-[12px] leading-relaxed text-ink3">
-            Single-photo estimate. Lighting, lens, angle and filters can shift the read. No percentile is shown because
-            a single photo cannot establish a true population percentile. Not medical advice.
-          </p>
           <div className="mt-3 flex items-center gap-3">
             <div className="h-1.5 w-32 overflow-hidden rounded-full bg-sunken">
               <div

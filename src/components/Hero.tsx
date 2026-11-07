@@ -29,16 +29,14 @@ export function Hero({
     <section className="border-b border-line">
       <div className="container-page grid gap-10 py-10 sm:py-14 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-12 lg:py-16 xl:gap-16">
         <div className="min-w-0">
-          <Suspense fallback={<div className="h-28 w-28 sm:h-32 sm:w-32 lg:h-36 lg:w-36" />}>
-            <BlackPill3D className="-ml-2 h-28 w-28 select-none sm:h-32 sm:w-32 lg:h-36 lg:w-36" />
-          </Suspense>
-
-          <div className="mt-4 flex items-center gap-2.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-            <p className="eyebrow">An honest assessment of your facial features</p>
+          <div className="flex items-center gap-4 sm:gap-5">
+            <Suspense fallback={<div className="h-24 w-24 shrink-0" />}>
+              <BlackPill3D className="h-24 w-24 shrink-0 select-none sm:h-28 sm:w-28 lg:h-32 lg:w-32" />
+            </Suspense>
+            <p className="eyebrow max-w-[18ch] leading-[1.5]">An honest assessment of your facial features</p>
           </div>
 
-          <h1 className="mt-4 max-w-2xl text-balance font-display text-[clamp(2.4rem,7.5vw,4.4rem)] leading-[1.02] tracking-[-0.035em] text-ink">
+          <h1 className="mt-5 max-w-2xl text-balance font-display text-[clamp(2.4rem,7.5vw,4.4rem)] leading-[1.02] tracking-[-0.035em] text-ink">
             See how your features compare,{' '}
             <span className="italic text-accent">and where to improve.</span>
           </h1>
@@ -94,21 +92,21 @@ export function Hero({
 
             <div className="p-4 sm:p-5">
               {FRAMEWORK_GROUPS.map((group) => (
-                <div key={group.key} className="border-b border-line py-3 first:pt-0 last:border-b-0 sm:py-3.5">
+                <div key={group.key} className="border-b border-line py-4 first:pt-0 last:border-b-0">
                   <div className="flex items-baseline justify-between gap-3">
                     <p className="text-[12.5px] font-semibold text-ink">{group.label}</p>
                     <span className="font-mono text-[11px] tabular text-ink2">
                       {Math.round(group.weight * 100)}%
                     </span>
                   </div>
-                  <p className="mt-0.5 text-[11.5px] leading-snug text-ink2">{group.description}</p>
-                  <div className="mt-1.5 h-[3px] overflow-hidden rounded-full bg-sunken">
+                  <p className="mt-1 text-[11.5px] leading-normal text-ink2">{group.description}</p>
+                  <div className="mt-2 h-[3px] overflow-hidden rounded-full bg-sunken">
                     <div
                       className="h-full rounded-full bg-accent"
                       style={{ width: `${group.weight * 100}%` }}
                     />
                   </div>
-                  <p className="mt-1.5 font-mono text-[9px] uppercase leading-relaxed tracking-[0.06em] text-ink3">
+                  <p className="mt-2 font-mono text-[9px] uppercase leading-relaxed tracking-[0.06em] text-ink2/80">
                     {group.keys
                       .map((key) => DIMENSIONS.find((dimension) => dimension.key === key)?.name)
                       .filter(Boolean)
@@ -147,10 +145,9 @@ export function Hero({
             </form>
           </div>
 
-          <div className="mt-2 flex flex-wrap items-center justify-between gap-2 px-1 font-mono text-[9px] uppercase tracking-[0.08em] text-ink3">
-            <span>PSL-style index shown separately</span>
-            <span>Not medical advice</span>
-          </div>
+          <p className="mt-2 max-w-full px-1 font-mono text-[9px] uppercase tracking-[0.08em] text-ink3">
+            PSL-style index shown separately
+          </p>
         </div>
       </div>
     </section>

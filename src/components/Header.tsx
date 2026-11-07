@@ -17,13 +17,26 @@ const THEME_ICONS: Record<Theme, typeof Sun> = {
 
 function LogoMark() {
   return (
-    <img
-      src="/blackpill.svg"
-      alt="Kefmaxxing"
-      width={36}
-      height={36}
-      className="h-9 w-9 shrink-0 sm:h-10 sm:w-10"
-    />
+    <svg
+      viewBox="0 0 38 38"
+      className="h-9 w-9 shrink-0 text-accent sm:h-10 sm:w-10"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5.2 30.2a14.6 14.6 0 0 1 27.6 0"
+        stroke="currentColor"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M19 30.2 26.6 18.9"
+        stroke="currentColor"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+      />
+      <circle cx="19" cy="30.2" r="2.1" fill="currentColor" />
+    </svg>
   )
 }
 

@@ -111,7 +111,7 @@ function buildSystemPrompt(gender) {
   const reference = gender === 'female' ? 'female' : 'male'
   return [
     `You are KEF, the analysis engine behind Kefmaxxing. You assess one photo of one face for a cosmetic facial-aesthetics report.`,
-    `You are careful, specific and honest. You are not a doctor, not a scientist, and not a judge of human worth. Attractiveness is partly subjective and context-dependent. Your job is to produce a structured estimate, not a verdict.`,
+    `You are careful, specific and fair. Direct without being harsh. Your job is a useful estimate, not a verdict and never a lecture.`,
     ``,
     `REFERENCE: The user chose ${reference} reference standards. Compare visible features to that reference. Do not infer identity, sexuality, race or ethnicity. Never mention race or ethnicity.`,
     ``,
@@ -170,7 +170,7 @@ function buildSystemPrompt(gender) {
     `- am: 3 to 5 simple steps.`,
     `- pm: 3 to 5 simple steps.`,
     `- ingredients: 2 to 4 ingredients to look for.`,
-    `- note: general cosmetic guidance, not medical advice. See a dermatologist for persistent acne, eczema, rosacea or pigmentation.`,
+    `- note: general cosmetic guidance. See a dermatologist for persistent acne, eczema, rosacea or pigmentation.`,
     `- Base it on visible skin. Do not diagnose anything.`,
     ``,
     `GROOMING:`,
@@ -265,7 +265,7 @@ function cleanStringArray(value, max, maxLength = 180) {
 
 function stripDashes(value) {
   return String(value)
-    .replace(/\s*—\s*/g, ', ')
+    .replace(/\s*â€”\s*/g, ', ')
     .replace(/\s+-\s+/g, ', ')
     .replace(/\s{2,}/g, ' ')
     .trim()
@@ -479,7 +479,7 @@ function cleanSkincare(raw) {
     ingredients: ingredients.length ? ingredients : ['Sunscreen', 'Retinoid (if suitable)', 'Niacinamide'],
     note:
       trimText(source.note, 320) ||
-      'General cosmetic guidance, not medical advice. See a dermatologist for persistent acne, eczema, rosacea or pigmentation.',
+      'General cosmetic guidance. See a dermatologist for persistent acne, eczema, rosacea or pigmentation.',
   }
 }
 

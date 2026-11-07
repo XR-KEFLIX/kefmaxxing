@@ -1,10 +1,8 @@
-import { Info } from 'lucide-react'
 import {
   DIMENSIONS,
   EVIDENCE_LEVERS,
   FAQ_ITEMS,
   FRAMEWORK_GROUPS,
-  METHOD_LIMITS,
   REFERENCES,
   SCORE_BANDS,
 } from '../lib/content'
@@ -183,22 +181,6 @@ export function MethodSection() {
               </ul>
             </div>
           ))}
-        </div>
-      </div>
-
-      <div className="card mt-6 p-5 sm:p-7">
-        <div className="flex items-start gap-3">
-          <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={1.8} />
-          <div>
-            <p className="text-[13.5px] font-medium text-ink">Limits worth stating plainly</p>
-            <ul className="mt-3 space-y-2">
-              {METHOD_LIMITS.map((limit) => (
-                <li key={limit} className="text-[12.5px] leading-relaxed text-ink2">
-                  {limit}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </div>
 

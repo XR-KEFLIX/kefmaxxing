@@ -147,7 +147,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
       <button
         type="button"
         onClick={onOpen}
-        className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] right-[max(0.75rem,env(safe-area-inset-right))] z-40 flex h-11 w-11 items-center justify-center gap-2 rounded-button bg-accent text-[13px] font-medium text-onAccent shadow-lift transition-colors hover:bg-accentStrong sm:bottom-[max(1.5rem,env(safe-area-inset-bottom))] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:h-11 sm:w-auto sm:px-4"
+        className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-40 flex h-10 w-10 items-center justify-center gap-2 rounded-button border border-accentStrong/40 bg-accent text-[13px] font-medium text-onAccent opacity-90 shadow-card transition-all duration-150 hover:opacity-100 focus-visible:opacity-100 sm:bottom-[max(1.75rem,env(safe-area-inset-bottom))] sm:right-[max(1.75rem,env(safe-area-inset-right))] sm:h-11 sm:w-auto sm:px-4"
         aria-label="Open the Kef chat"
       >
         <MessageSquare className="h-4 w-4" strokeWidth={1.8} />
@@ -169,7 +169,11 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
       >
         <div className="flex items-start justify-between gap-3 border-b border-line px-4 py-4">
           <div className="flex items-center gap-2.5">
-            <img src="/blackpill.svg" alt="" width={32} height={32} className="h-8 w-8 shrink-0" />
+            <svg viewBox="0 0 38 38" className="h-8 w-8 shrink-0 text-accent" fill="none" aria-hidden="true">
+              <path d="M5.2 30.2a14.6 14.6 0 0 1 27.6 0" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
+              <path d="M19 30.2 26.6 18.9" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
+              <circle cx="19" cy="30.2" r="2.4" fill="currentColor" />
+            </svg>
             <div>
               <p className="text-[14px] font-medium text-ink">Kef</p>
               <p className="flex items-center gap-1.5 text-[11px] text-ink3">
@@ -192,7 +196,11 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
               {message.role === 'coach' ? (
                 <div className="flex max-w-[88%] gap-2.5">
                   <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center">
-                    <img src="/blackpill.svg" alt="Kef" width={22} height={22} className="h-5 w-5" />
+                    <svg viewBox="0 0 38 38" className="h-5 w-5 text-accent" fill="none" aria-hidden="true">
+                      <path d="M5.2 30.2a14.6 14.6 0 0 1 27.6 0" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" />
+                      <path d="M19 30.2 26.6 18.9" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" />
+                      <circle cx="19" cy="30.2" r="2.6" fill="currentColor" />
+                    </svg>
                   </span>
                   <div className="whitespace-pre-wrap rounded-[8px] border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed text-ink2">
                     {message.content}
@@ -272,7 +280,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
             </button>
           </div>
           <p className="mt-2 text-[10.5px] leading-relaxed text-ink3">
-            Enter to send, Shift+Enter for a new line. General guidance, not medical advice.
+            Enter to send, Shift+Enter for a new line.
           </p>
         </div>
       </div>

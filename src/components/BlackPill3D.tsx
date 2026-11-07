@@ -30,8 +30,6 @@ export function BlackPill3D({ className }: { className?: string }) {
     }
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
-    renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.15
@@ -49,15 +47,6 @@ export function BlackPill3D({ className }: { className?: string }) {
 
     const keyLight = new THREE.DirectionalLight(0xffffff, 2.0)
     keyLight.position.set(3.2, 5.2, 3.6)
-    keyLight.castShadow = true
-    keyLight.shadow.mapSize.set(1024, 1024)
-    keyLight.shadow.camera.near = 1
-    keyLight.shadow.camera.far = 16
-    keyLight.shadow.camera.left = -5
-    keyLight.shadow.camera.right = 5
-    keyLight.shadow.camera.top = 5
-    keyLight.shadow.camera.bottom = -5
-    keyLight.shadow.bias = -0.0004
     scene.add(keyLight)
 
     const rimLight = new THREE.DirectionalLight(0xc9ffe2, 0.9)
@@ -109,13 +98,31 @@ export function BlackPill3D({ className }: { className?: string }) {
     body.rotation.z = Math.PI / 2.35
     root.position.y = 0.25
 
-    const shadowPlane = new THREE.Mesh(
-      new THREE.PlaneGeometry(12, 12),
-      new THREE.ShadowMaterial({ opacity: 0.36, color: 0x000000 }),
-    )
+    // Soft contact shadow: radial-gradient sprite, stretched into an ellipse.
+    const shadowCanvas = document.createElement('canvas')
+    shadowCanvas.width = 256
+    shadowCanvas.height = 256
+    const shadowContext = shadowCanvas.getContext('2d')
+    if (shadowContext) {
+      const gradient = shadowContext.createRadialGradient(128, 128, 6, 128, 128, 124)
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 0.85)')
+      gradient.addColorStop(0.42, 'rgba(0, 0, 0, 0.38)')
+      gradient.addColorStop(0.75, 'rgba(0, 0, 0, 0.1)')
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)')
+      shadowContext.fillStyle = gradient
+      shadowContext.fillRect(0, 0, 256, 256)
+    }
+    const shadowTexture = new THREE.CanvasTexture(shadowCanvas)
+    shadowTexture.colorSpace = THREE.SRGBColorSpace
+    const shadowMaterial = new THREE.MeshBasicMaterial({
+      map: shadowTexture,
+      transparent: true,
+      depthWrite: false,
+      opacity: 0.55,
+    })
+    const shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(5.1, 3.4), shadowMaterial)
     shadowPlane.rotation.x = -Math.PI / 2
-    shadowPlane.position.y = -1.75
-    shadowPlane.receiveShadow = true
+    shadowPlane.position.y = -1.72
     scene.add(shadowPlane)
     // ------------------------------------------------------------------
 
@@ -227,8 +234,10 @@ export function BlackPill3D({ className }: { className?: string }) {
       root.position.x = view.offsetX
 
       if (!reducedMotion) {
-        root.position.y = 0.25 + view.offsetY + Math.sin(t * 1.1) * 0.1
-        shadowPlane.scale.setScalar(1 - Math.sin(t * 1.1) * 0.06)
+        const lift = Math.sin(t * 1.1)
+        root.position.y = 0.25 + view.offsetY + lift * 0.1
+        shadowPlane.scale.set(1 - lift * 0.09, 1 - lift * 0.09, 1)
+        shadowMaterial.opacity = 0.55 - lift * 0.18
       } else {
         root.position.y = 0.25 + view.offsetY
       }
@@ -257,7 +266,8 @@ export function BlackPill3D({ className }: { className?: string }) {
       seamRing.geometry.dispose()
       ;(seamRing.material as THREE.Material).dispose()
       shadowPlane.geometry.dispose()
-      ;(shadowPlane.material as THREE.Material).dispose()
+      shadowMaterial.dispose()
+      shadowTexture.dispose()
       scene.environment?.dispose()
       renderer.dispose()
     }
