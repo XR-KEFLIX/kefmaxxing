@@ -161,11 +161,12 @@ export function BlackPill3D({ className }) {
     observer.observe(container)
     resize()
 
-    const clock = new THREE.Clock()
+    const timer = new THREE.Timer()
     let frame = 0
 
     const render = () => {
-      const t = clock.getElapsedTime()
+      timer.update()
+      const t = timer.getElapsed()
 
       if (!dragging) {
         view.yaw += motion.yawVelocity
@@ -212,6 +213,7 @@ export function BlackPill3D({ className }) {
       shadowPlane.geometry.dispose()
       shadowMaterial.dispose()
       shadowTexture.dispose()
+      timer.dispose()
       renderer.dispose()
     }
   }, [])
