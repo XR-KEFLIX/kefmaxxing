@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { AlertTriangle, Check, ImagePlus, Loader2, ScanFace, ShieldCheck, X } from 'lucide-react'
+import { SectionHeading } from './ui'
 import { DELIVERABLES, PHOTO_PROTOCOL, PRIVACY_POINTS } from '../lib/content'
 import { cn } from '../lib/utils'
 
