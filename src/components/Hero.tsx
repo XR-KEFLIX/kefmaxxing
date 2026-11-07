@@ -25,19 +25,26 @@ export function Hero({
     <section className="border-b border-line">
       <div className="container-page grid gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-start lg:gap-16 lg:py-24">
         <div className="max-w-2xl">
-          <div className="flex items-center gap-2.5">
-            <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />
-            <p className="eyebrow">Facial aesthetics, measured honestly</p>
+          <div className="mb-6 flex items-end gap-5 sm:gap-6">
+            <img
+              src="/blackpill.svg"
+              alt="The blackpill"
+              className="pill-float pill-hero-shadow w-24 shrink-0 sm:w-28 xl:w-36"
+            />
+            <div className="flex items-center gap-2.5 pb-2">
+              <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />
+              <p className="eyebrow">Facial aesthetics, zero flattery</p>
+            </div>
           </div>
 
-          <h1 className="mt-6 text-balance font-display text-[clamp(2.8rem,6vw,5rem)] leading-[0.98] tracking-[-0.045em] text-ink">
+          <h1 className="text-balance font-display text-[clamp(2.8rem,6vw,5rem)] leading-[0.98] tracking-[-0.045em] text-ink">
             Understand your face.{' '}
             <span className="italic text-accent">Improve what you can.</span>
           </h1>
 
           <p className="mt-6 max-w-xl text-pretty text-[16px] leading-relaxed text-ink2">
-            A multi-dimensional facial aesthetics analysis. One photo in, a transparent 10-point read across
-            structure, presentation and overall appeal, plus a realistic plan for what you can actually change.
+            One photo in. A ten-point read across structure, skin, grooming and overall appeal, plus a plan for the
+            parts you can actually change.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -53,7 +60,7 @@ export function Hero({
 
           <p className="mt-4 flex items-center gap-2 text-[11.5px] leading-relaxed text-ink3">
             <Lock className="h-3.5 w-3.5 text-accent" strokeWidth={1.8} />
-            Private by design. Photos are processed once and not stored by this app.
+            Your photo never gets stored. Analysed once, then it is gone.
           </p>
 
           <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-line pt-5">
@@ -78,7 +85,7 @@ export function Hero({
               <div>
                 <p className="eyebrow">The assessment</p>
                 <h2 className="mt-2 max-w-sm text-[21px] leading-[1.18] tracking-[-0.02em] text-ink">
-                  Ten dimensions. Three groups. One transparent score.
+                  Ten dimensions. Three groups. One score.
                 </h2>
               </div>
               <span className="chip shrink-0">weighted</span>
@@ -114,7 +121,7 @@ export function Hero({
                   id="hero-ask"
                   value={ask}
                   onChange={(event) => setAsk(event.target.value)}
-                  placeholder="Ask about facial aesthetics..."
+                  placeholder="Ask about haircuts, skin, your score..."
                   maxLength={500}
                   className="field h-10 text-[13px]"
                   autoComplete="off"
@@ -129,7 +136,7 @@ export function Hero({
                 </button>
               </div>
               <p className="mt-2 text-[11px] leading-relaxed text-ink3">
-                General questions now. Personal answers after a rating.
+                General questions until you rate. Personal answers after.
               </p>
             </form>
           </div>

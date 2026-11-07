@@ -3,11 +3,11 @@ import { Loader2, X } from 'lucide-react'
 import { cn } from '../lib/utils'
 
 const PHASES = [
-  { title: 'Preparing the image', detail: 'Normalising size and compression before the model sees it.' },
-  { title: 'Reading facial structure', detail: 'Harmony, proportions, eye area, midface, jawline and cheekbones.' },
-  { title: 'Assessing presentation', detail: 'Skin, hair, grooming and how the features read together.' },
-  { title: 'Checking photo quality', detail: 'Lighting, angle and clarity, and how much they limit confidence.' },
-  { title: 'Writing your report', detail: 'Scores, strengths, realistic plan and caveats.' },
+  { title: 'Preparing the image', detail: 'Cleaning it up: size and compression before the model sees it.' },
+  { title: 'Reading facial structure', detail: 'Harmony, proportions, eyes, midface, jawline, cheekbones.' },
+  { title: 'Assessing presentation', detail: 'Skin, hair, grooming and how the features play together.' },
+  { title: 'Checking photo quality', detail: 'Light, angle and clarity, and how much they limit confidence.' },
+  { title: 'Writing your report', detail: 'Scores, your strengths, a plan you can follow, and the caveats.' },
 ]
 
 const PHASE_SECONDS = 6

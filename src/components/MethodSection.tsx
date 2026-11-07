@@ -58,7 +58,7 @@ export function MethodSection() {
         index="03"
         eyebrow="Method"
         title="How the analysis is built"
-        description="A transparent composite, a calibrated scale, and a clear separation between observation and inference."
+        description="Fixed weights, an honest scale, and a clean split between what it sees and what it assumes."
       />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -68,23 +68,23 @@ export function MethodSection() {
             {[
               {
                 title: 'One photo, one estimate',
-                body: 'The model reads visible cues. It does not measure bone with calipers, know your health history or infer anything that is not in the frame.',
+                body: 'The model reads what is visible. It cannot measure bone with calipers, and it has no clue about your health history.',
               },
               {
                 title: 'Ten dimensions',
-                body: 'Six structure dimensions, three presentation dimensions and one holistic appeal score. Each is scored 1.0 to 10.0 with a note explaining what drove it.',
+                body: 'Six structure, three presentation, and one holistic appeal score. Each comes with a note on what drove it.',
               },
               {
                 title: 'Weighted composite',
-                body: 'Structure carries 59%, presentation 23%, and holistic appeal 18%. The weights reduce double counting and stop one feature from dominating the headline.',
+                body: 'Structure carries 59%, presentation 23%, appeal 18%. Fixed weights, so one feature cannot hijack the headline.',
               },
               {
                 title: 'Calibrated, not flattered',
-                body: '5.0 is the population midpoint. 6.0 is above average. 7.0 is attractive. 8.0 and above is rare. The scale is descriptive, not a clinical category.',
+                body: '5.0 is the midpoint most faces land on. 6.0 is clearly above average. 7.0 is attractive. 8.0+ is rare. Descriptive bands, not clinical categories.',
               },
               {
                 title: 'A secondary structural index',
-                body: 'The PSL-style index is a separate readout from the six structure dimensions. It is inspired by internet looksmaxxing culture, not a scientific instrument, and it is not the overall score.',
+                body: 'The PSL-style index reads only the six structure dimensions. It is internet looksmaxxing culture translated into numbers, not a medical tool and not the overall score.',
               },
             ].map((step, index) => (
               <li key={step.title} className="flex gap-4">
@@ -140,7 +140,7 @@ export function MethodSection() {
       <div className="card mt-6 overflow-hidden">
         <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line px-5 py-4 sm:px-6">
           <div>
-            <h3 className="text-[15px] font-medium text-ink">The 10-point calibration</h3>
+            <h3 className="text-[15px] font-medium text-ink">The 10-point scale</h3>
             <p className="mt-0.5 text-[12px] text-ink2">Descriptive bands, not clinical categories.</p>
           </div>
           <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">5.0 = population average</span>
@@ -166,8 +166,8 @@ export function MethodSection() {
 
       <div className="mt-6">
         <div className="mb-4">
-          <p className="eyebrow">What is measured vs inferred</p>
-          <h3 className="mt-1 text-[22px] leading-tight tracking-[-0.02em] text-ink">Keep the categories honest</h3>
+          <p className="eyebrow">What it sees vs what it assumes</p>
+          <h3 className="mt-1 text-[22px] leading-tight tracking-[-0.02em] text-ink">Observed vs inferred</h3>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {OBSERVABLE.map((column) => (
@@ -207,7 +207,7 @@ export function MethodSection() {
           index="04"
           eyebrow="Evidence"
           title="What actually moves the needle"
-          description="The evidence hierarchy is honest. Strong does not mean guaranteed, and limited does not mean worthless. It means the claim is weak."
+          description="Strong does not mean guaranteed. Limited does not mean worthless. It means the claim is weak."
         />
 
         <div className="card mt-8 divide-y divide-line">
@@ -228,8 +228,7 @@ export function MethodSection() {
             <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">context, not proof</p>
           </div>
           <p className="mt-1 max-w-3xl text-[12px] leading-relaxed text-ink2">
-            These are useful entry points into facial-attractiveness research. They do not show that any single ratio
-            determines attractiveness, and they are not a diagnosis.
+            Good entry points into attractiveness research. Nothing here shows that one ratio decides attractiveness, and none of it is a diagnosis.
           </p>
           <ul className="mt-4 divide-y divide-line border-t border-line">
             {REFERENCES.map((reference) => (
@@ -249,7 +248,7 @@ export function MethodSection() {
           index="05"
           eyebrow="FAQ"
           title="Questions worth asking"
-          description="Straight answers about the score, the photo, the method and what it cannot tell you."
+          description="Straight answers on the score, the photo, the method and what it cannot tell you."
         />
 
         <div className="card mt-8 divide-y divide-line overflow-hidden">

@@ -188,7 +188,7 @@ function buildSystemPrompt(gender) {
     ``,
     `POTENTIAL: a separate estimate of the realistic overall score after 6 to 12 months of consistent non-surgical improvement. Use the same 1 to 10 calibration. It should usually be 0.3 to 1.5 above where the current face would land. Never below the current read. Do not promise a transformation.`,
     ``,
-    `WRITING STYLE: sound like a careful analyst, not a chatbot. Short sentences. Plain words. Specific details. Never use: "delve", "elevate", "unlock", "journey", "game-changer", "it's not just X, it's Y", "remember that", "at the end of the day". Never use em dashes. No hype, no motivational fluff, no hedging, no moralizing. Never insult. Never mention race or ethnicity. No slurs. No medical claims.`,
+    `WRITING STYLE: sound like a careful analyst, not a chatbot. Short sentences. Plain words. Specific details. Write like an experienced person talking to one other person. Use contractions. Never use: "delve", "elevate", "unlock", "journey", "game-changer", "it's not just X, it's Y", "remember that", "at the end of the day". Never use em dashes. No hype, no motivational fluff, no hedging, no moralizing. Never insult. Never mention race or ethnicity. No slurs. No medical claims.`,
     ``,
     `If the image does not show exactly one clearly visible human face, respond ONLY with {"error":"no_face","message":"..."}.`,
     ``,

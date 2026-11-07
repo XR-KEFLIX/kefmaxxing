@@ -49,7 +49,7 @@ export function AnalyzerSection({
         index="01"
         eyebrow="Analysis"
         title="Start with one honest photo"
-        description="Front-facing, even light, neutral expression. The output is a structured estimate from visual cues, not a clinical measurement."
+        description="Front-facing, even light, neutral expression. It reads visual cues, not your medical file."
       />
 
       <div className="card mt-8 grid overflow-hidden lg:grid-cols-[1.05fr_0.95fr]">
@@ -152,7 +152,7 @@ export function AnalyzerSection({
               ))}
             </div>
             <p className="mt-2.5 max-w-sm text-[12px] leading-relaxed text-ink3">
-              Male and female ideals are not the same. Pick the reference you want the analysis to use.
+              Male and female faces are judged against different references. Pick the one you want.
             </p>
           </div>
 

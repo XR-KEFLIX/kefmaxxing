@@ -41,7 +41,7 @@ export function ReportView({ report, photo, onReset, onOpenChat }: Props) {
         index="02"
         eyebrow="Report"
         title="Your facial analysis"
-        description="A weighted read from one photo. The overall is a composite of ten dimensions, with holistic appeal kept as its own input."
+        description="One photo, ten scores, one weighted composite. Appeal keeps its own input so no single feature rules the show."
       />
 
       <div className="mt-8 space-y-6">
@@ -140,7 +140,7 @@ function ScoreSummary({
 
         <div className="border-t border-line p-5 sm:p-7 lg:border-l lg:border-t-0">
           <dl className="grid grid-cols-2 gap-x-5 gap-y-5">
-            <Stat label="Potential" value={`${formatScore(report.potential)} / 10`} hint="Realistic non-surgical range" />
+            <Stat label="Potential" value={`${formatScore(report.potential)} / 10`} hint="Realistic, non-surgical ceiling" />
             <Stat
               label="Structural index"
               value={`${formatScore(report.structuralIndex)} / 10`}
@@ -183,9 +183,7 @@ function ScoreMethodNote() {
         <div>
           <p className="eyebrow">How the score is built</p>
           <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-ink2">
-            The overall is a weighted composite, not an equal average. Structure carries 59%, presentation 23%, and
-            the holistic appeal score 18%. The PSL-style structural index is shown separately and does not drive the
-            headline score.
+            The headline is a weighted composite, not an average of everything. Structure carries 59%, presentation 23%, appeal 18%. The PSL-style structural index sits separately and never feeds the headline.
           </p>
         </div>
         <a href="#method" className="btn btn-ghost btn-sm shrink-0">
@@ -227,8 +225,8 @@ function DimensionLedger({ report }: { report: RatingReport }) {
     <div className="card overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
         <div>
-          <h3 className="text-[15px] font-medium text-ink">Dimension ledger</h3>
-          <p className="mt-0.5 text-[12px] text-ink2">Every score, its weight, and the note behind it.</p>
+          <h3 className="text-[15px] font-medium text-ink">Score by score</h3>
+          <p className="mt-0.5 text-[12px] text-ink2">All ten scores, their weights, and the note behind each one.</p>
         </div>
         <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">5.0 = population average</span>
       </div>
@@ -305,7 +303,7 @@ function InsightCards({ report }: { report: RatingReport }) {
       <div className="card p-5 sm:p-6">
         <div className="flex items-center gap-2.5">
           <AlertCircle className="h-4 w-4 text-clay" strokeWidth={1.8} />
-          <h3 className="text-[15px] font-medium text-ink">What is holding the read back</h3>
+          <h3 className="text-[15px] font-medium text-ink">What is holding it back</h3>
         </div>
         <ul className="mt-4 space-y-4">
           {report.improvements.map((item) => (
@@ -348,7 +346,7 @@ function Recommendations({ report }: { report: RatingReport }) {
           <h3 className="mt-1 text-[22px] leading-tight tracking-[-0.02em] text-ink">What to do with the read</h3>
         </div>
         <p className="max-w-md text-[12px] leading-relaxed text-ink3">
-          General cosmetic guidance, not medical advice. Hair type, skin condition and personal preference matter.
+          General cosmetic guidance, not medical advice. Your hair type, skin and taste all matter here.
         </p>
       </div>
 
@@ -664,11 +662,10 @@ function ChatCta({ onOpenChat }: { onOpenChat: (seed?: string) => void }) {
         <div>
           <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-onAccent/80">Ask Kef</p>
           <h3 className="mt-2 font-display text-[26px] leading-tight tracking-[-0.02em] text-onAccent">
-            Have a question about your report?
+            Questions about your report?
           </h3>
           <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-onAccent/80">
-            Ask about a score, your plan, hair, skin, grooming or what is genetic. The assistant has this report in
-            front of it.
+            Ask about a score, your plan, hair, skin or what is just genetics. Kef has your report in front of it.
           </p>
         </div>
         <button

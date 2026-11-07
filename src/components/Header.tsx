@@ -17,9 +17,13 @@ const THEME_ICONS: Record<Theme, typeof Sun> = {
 
 function LogoMark() {
   return (
-    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-line bg-raised">
-      <img src="/blackpill.svg" alt="" width={20} height={20} className="h-5 w-5" />
-    </span>
+    <img
+      src="/blackpill.svg"
+      alt="Kefmaxxing blackpill icon"
+      width={44}
+      height={44}
+      className="pill-float-soft h-10 w-10 shrink-0 sm:h-11 sm:w-11"
+    />
   )
 }
 

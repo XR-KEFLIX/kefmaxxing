@@ -15,11 +15,11 @@ export function formatWeight(weight: number): string {
 }
 
 export function scoreHex(score: number): string {
-  if (score >= 7.5) return '#27694C'
-  if (score >= 6) return '#1E5C4C'
-  if (score >= 4.5) return '#4C4F46'
-  if (score >= 3) return '#8F611C'
-  return '#99382E'
+  if (score >= 7.5) return 'rgb(var(--good))'
+  if (score >= 6) return 'rgb(var(--accent))'
+  if (score >= 4.5) return 'rgb(var(--ink-3))'
+  if (score >= 3) return 'rgb(var(--warn))'
+  return 'rgb(var(--bad))'
 }
 
 export function scoreTextClass(score: number): string {

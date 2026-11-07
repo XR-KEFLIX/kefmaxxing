@@ -1,4 +1,4 @@
-import { callAgnes } from './_agnes.js'
+﻿import { callAgnes } from './_agnes.js'
 import { providerChain } from './_providers.js'
 
 const MAX_QUESTION = 500
@@ -7,7 +7,7 @@ const MAX_REPORT_JSON = 14000
 
 function stripDashes(value) {
   return String(value)
-    .replace(/\s*—\s*/g, ', ')
+    .replace(/\s*[–—]\s*/g, ', ')
     .replace(/\s+-\s+/g, ', ')
     .replace(/\s{2,}/g, ' ')
     .trim()
@@ -37,6 +37,7 @@ function buildSystem(report, gender) {
   lines.push(
     ``,
     `Rules:`,
+    `- Talk like a person, not an essay. Contractions are fine.`,
     `- Be blunt but on their side. Every criticism comes attached to a fix.`,
     `- Keep answers under 160 words unless they ask for a full routine or a full plan.`,
     `- Plain words, short sentences. Never use em dashes.`,

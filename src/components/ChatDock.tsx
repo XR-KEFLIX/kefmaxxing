@@ -19,7 +19,7 @@ function greeting(report: RatingReport | null): ChatMessage {
   return {
     role: 'coach',
     content: report
-      ? 'I have your report in front of me. Ask about a score, your plan, hair, skin, grooming or what is genetic.'
+      ? 'Your report is right in front of me. Ask about a score, your plan, hair, skin, grooming or what is just genetic.'
       : 'Ask me about facial aesthetics, the method, photo quality or what can realistically change. Upload a photo for a personalised read.',
   }
 }
@@ -169,9 +169,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
       >
         <div className="flex items-start justify-between gap-3 border-b border-line px-4 py-4">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-[5px] bg-accent font-mono text-[11px] font-semibold text-onAccent">
-              K
-            </span>
+            <img src="/blackpill.svg" alt="" width={32} height={32} className="h-8 w-8 shrink-0" />
             <div>
               <p className="text-[14px] font-medium text-ink">Kef</p>
               <p className="flex items-center gap-1.5 text-[11px] text-ink3">
@@ -193,8 +191,8 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
             >
               {message.role === 'coach' ? (
                 <div className="flex max-w-[88%] gap-2.5">
-                  <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border border-line bg-paper font-mono text-[10px] text-accent">
-                    K
+                  <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center">
+                    <img src="/blackpill.svg" alt="Kef" width={22} height={22} className="h-5 w-5" />
                   </span>
                   <div className="whitespace-pre-wrap rounded-[8px] border border-line bg-paper px-3.5 py-2.5 text-[13px] leading-relaxed text-ink2">
                     {message.content}

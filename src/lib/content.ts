@@ -7,14 +7,14 @@ export interface ScoreBand {
 }
 
 export const SCORE_BANDS: ScoreBand[] = [
-  { min: 9.0, label: 'Exceptional', note: 'A rare, highly cohesive read with several standout features.' },
-  { min: 8.0, label: 'Very attractive', note: 'A striking face that reads as distinctive in most settings.' },
-  { min: 7.0, label: 'Attractive', note: 'Clearly stands out. Strong features and few visible weaknesses.' },
-  { min: 6.0, label: 'Above average', note: 'Several dimensions are working well. Noticeably better than the middle.' },
-  { min: 5.0, label: 'Average', note: 'The population midpoint. Balanced, normal, and responsive to presentation changes.' },
-  { min: 4.0, label: 'Slightly below average', note: 'A normal face with a few dimensions that pull the read down.' },
-  { min: 3.0, label: 'Below average', note: 'Multiple visible features are working against the read. Presentation can change a lot here.' },
-  { min: 1.0, label: 'Very low', note: 'Several dimensions sit outside common aesthetic ranges. A structured, non-surgical plan matters most.' },
+  { min: 9.0, label: 'Exceptional', note: 'Rare. Almost everything works together, and several features stand out.' },
+  { min: 8.0, label: 'Very attractive', note: 'A striking face. Hard to miss in a room.' },
+  { min: 7.0, label: 'Attractive', note: 'Clearly above average. Strong features, little visibly working against it.' },
+  { min: 6.0, label: 'Above average', note: 'A few things working clearly in its favour. Better than the middle.' },
+  { min: 5.0, label: 'Average', note: 'The population midpoint. A normal, balanced face. Responds well to presentation work.' },
+  { min: 4.0, label: 'Slightly below average', note: 'A normal face with a few dimensions pulling the read down.' },
+  { min: 3.0, label: 'Below average', note: 'Several visible problems. Presentation changes can still move this a lot.' },
+  { min: 1.0, label: 'Very low', note: 'Multiple features sit outside common ranges. A structured plan matters more than any score.' },
 ]
 
 export interface DimensionMeta {
@@ -32,7 +32,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Facial Harmony',
     group: 'structure',
     weight: 0.13,
-    short: 'How the features work together as a whole.',
+    short: 'Whether the features belong together.',
     influence: 'structural',
   },
   {
@@ -40,7 +40,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Proportions & Symmetry',
     group: 'structure',
     weight: 0.11,
-    short: 'Vertical thirds, horizontal fifths, approximate symmetry and balance.',
+    short: 'Thirds, fifths, approximate symmetry, general balance.',
     influence: 'structural',
   },
   {
@@ -48,7 +48,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Eye Area',
     group: 'structure',
     weight: 0.11,
-    short: 'Canthal tilt, spacing, shape, lid exposure and under-eye quality.',
+    short: 'Canthal tilt, spacing, shape, lid exposure and the under-eye.',
     influence: 'structural',
   },
   {
@@ -56,7 +56,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Midface',
     group: 'structure',
     weight: 0.07,
-    short: 'Midface compactness, projection, cheek support and nose balance.',
+    short: 'Compactness, projection, cheek support and nose balance.',
     influence: 'structural',
   },
   {
@@ -64,7 +64,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Jawline & Chin',
     group: 'structure',
     weight: 0.1,
-    short: 'Mandibular definition, gonial angle, chin projection and lower-third balance.',
+    short: 'Definition, gonial angle, chin projection and lower-third balance.',
     influence: 'mixed',
   },
   {
@@ -72,7 +72,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Cheekbones & Definition',
     group: 'structure',
     weight: 0.07,
-    short: 'Malar prominence, cheek support and how sharply the bone reads through soft tissue.',
+    short: 'Malar prominence and how sharply the bone reads through soft tissue.',
     influence: 'mixed',
   },
   {
@@ -80,7 +80,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Skin Quality',
     group: 'presentation',
     weight: 0.1,
-    short: 'Texture, clarity, tone evenness, shine and under-eye appearance.',
+    short: 'Texture, clarity, tone, shine and the under-eye.',
     influence: 'modifiable',
   },
   {
@@ -88,7 +88,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Hair',
     group: 'presentation',
     weight: 0.08,
-    short: 'Hairline, density, cut, styling and how well it frames the face.',
+    short: 'Hairline, density, cut, styling, how it frames the face.',
     influence: 'modifiable',
   },
   {
@@ -96,7 +96,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Grooming',
     group: 'presentation',
     weight: 0.05,
-    short: 'Brows, facial hair, cleanliness and deliberate presentation.',
+    short: 'Brows, facial hair and deliberate presentation.',
     influence: 'modifiable',
   },
   {
@@ -104,7 +104,7 @@ export const DIMENSIONS: DimensionMeta[] = [
     name: 'Overall Appeal',
     group: 'gestalt',
     weight: 0.18,
-    short: 'The combined impression: how the features read together, beyond any single measurement.',
+    short: 'The combined impression. How the whole thing reads, beyond any single measurement.',
     influence: 'mixed',
   },
 ]
@@ -122,61 +122,61 @@ export const FRAMEWORK_GROUPS: FrameworkGroup[] = [
     key: 'structure',
     label: 'Structure',
     weight: 0.59,
-    description: 'Harmony, proportions, eye area, midface, jawline and cheekbones. The architectural read.',
+    description: 'Harmony, proportions, eyes, midface, jawline and cheekbones. The architecture.',
     keys: ['harmony', 'proportions', 'eyeArea', 'midface', 'jawline', 'cheekbones'],
   },
   {
     key: 'presentation',
     label: 'Presentation',
     weight: 0.23,
-    description: 'Skin, hair and grooming. The dimensions you can change most directly.',
+    description: 'Skin, hair and grooming. The dimensions you can change the most.',
     keys: ['skin', 'hair', 'grooming'],
   },
   {
     key: 'gestalt',
     label: 'Overall appeal',
     weight: 0.18,
-    description: 'The holistic impression, weighted separately so no single feature dominates.',
+    description: 'The holistic impression, weighted on its own so no single feature dominates.',
     keys: ['appeal'],
   },
 ]
 
 export const DELIVERABLES: Array<{ title: string; body: string }> = [
   {
-    title: 'A 10-point overall read',
-    body: 'A calibrated score, a descriptive band, and the weighted dimensions behind it.',
+    title: 'A score out of 10',
+    body: 'A weighted composite with a band, so you know where you actually sit.',
   },
   {
-    title: 'Dimension-by-dimension analysis',
-    body: 'Ten scores with notes on what drove each one, plus your strongest and weakest areas.',
+    title: 'Ten scores, one photo',
+    body: 'Every dimension scored separately with a note on what drove it, and your strongest and weakest areas.',
   },
   {
-    title: 'A realistic plan',
+    title: 'A plan you can follow',
     body: 'Grooming, hair, skin and lifestyle steps ranked by impact, with honest evidence tags.',
   },
   {
     title: 'Genetic vs changeable',
-    body: 'A clear split between structure you cannot change and presentation you can.',
+    body: 'A straight split between the structure you cannot change and the presentation you can.',
   },
   {
     title: 'A chat with Kef',
-    body: 'Ask follow-up questions about your report, your plan or the method. Available immediately.',
+    body: 'Ask follow-up questions about your report, your plan or the method. Available right away.',
   },
 ]
 
 export const PHOTO_PROTOCOL: Array<{ title: string; detail: string }> = [
   { title: 'Front-facing', detail: 'Camera at eye level, face square to the lens.' },
-  { title: 'Even light', detail: 'Soft, indirect light. Avoid flash, ring lights and hard shadows.' },
+  { title: 'Even light', detail: 'Soft, indirect light. Skip flash, ring lights and hard shadows.' },
   { title: 'Neutral expression', detail: 'Relaxed face, eyes open, no smiling or posing.' },
   { title: 'No filters', detail: 'No beauty mode, edits, heavy makeup or lens distortion.' },
-  { title: 'Hair back', detail: 'If possible, keep the hairline and jaw visible.' },
+  { title: 'Hair back', detail: 'Where possible, keep the hairline and jaw visible.' },
 ]
 
 export const PRIVACY_POINTS: string[] = [
   'Compressed in your browser before sending',
   'Processed once by the analysis endpoint',
-  'Not stored by this app. No account, profile or gallery',
-  'The chat sends your report context, not your photo',
+  'Not stored by this app. No account, no profile, no gallery',
+  'The chat sends your report, not your photo',
 ]
 
 export const EVIDENCE_LEVERS: Array<{ title: string; label: string; tone: 'good' | 'warn' | 'neutral' | 'bad'; body: string }> = [
@@ -184,55 +184,55 @@ export const EVIDENCE_LEVERS: Array<{ title: string; label: string; tone: 'good'
     title: 'Sun protection and not smoking',
     label: 'Strong evidence',
     tone: 'good',
-    body: 'The clearest evidence for reducing visible skin ageing. Daily broad-spectrum sunscreen and avoiding smoke are the highest-confidence skin levers.',
+    body: 'The most reliable thing you can do for visible skin ageing. Daily broad-spectrum sunscreen and staying away from smoke.',
   },
   {
     title: 'Body composition in a healthy range',
     label: 'Moderate evidence',
     tone: 'warn',
-    body: 'Facial adiposity changes how the jaw and cheekbones read. The goal is a healthy range, not an extreme cut. Severe restriction is not a looksmaxxing shortcut.',
+    body: 'Facial fullness changes how your jaw and cheekbones read. The goal is a healthy range, not a crash cut. Severe restriction is not a looksmaxxing shortcut.',
   },
   {
     title: 'Sleep and under-eye appearance',
     label: 'Moderate evidence',
     tone: 'warn',
-    body: 'Short sleep can be visible to observers and is linked to lower perceived health and attractiveness. Seven to nine hours is the practical target.',
+    body: 'Short sleep shows. People look less healthy and less attractive when they are run down. Seven to nine hours is the practical target.',
   },
   {
     title: 'Haircut and styling',
     label: 'Moderate evidence',
     tone: 'warn',
-    body: 'A cut changes the frame of the face quickly. Face-shape matching is a useful stylist heuristic, not a scientific rule. Hair type, density and growth pattern matter more than any chart.',
+    body: 'A cut changes how the face is framed, quickly. Face-shape matching is a useful stylist heuristic, not a rule. Your hair type and growth pattern matter more than any chart.',
   },
   {
     title: 'Basic skin care',
     label: 'Strong evidence',
     tone: 'good',
-    body: 'A gentle cleanser, moisturiser and sunscreen are the foundation. Retinoids have good evidence for photoageing and acne, but introduce them slowly and get medical advice for persistent problems.',
+    body: 'A gentle cleanser, moisturiser and sunscreen are the foundation. Retinoids have real evidence behind them, but go slowly and see a professional if you have persistent problems.',
   },
   {
     title: 'Brow and facial-hair grooming',
     label: 'Moderate evidence',
     tone: 'warn',
-    body: 'Small, reversible changes can sharpen the eye area and lower-face frame. Keep the natural shape and avoid over-plucking.',
+    body: 'Small, reversible changes that sharpen the eye area and lower-face frame. Keep your natural shape and do not over-pluck.',
   },
   {
     title: 'Mewing, gua sha and massage',
     label: 'Limited evidence',
     tone: 'neutral',
-    body: 'No good evidence that these reshape adult bone. Massage can temporarily reduce puffiness. Treat any lasting structural claim with scepticism.',
+    body: 'There is no decent evidence these reshape adult bone. Massage can briefly reduce puffiness. Be sceptical of lasting structural claims.',
   },
   {
     title: 'Jaw exercises and hard chewing',
     label: 'Limited evidence',
     tone: 'neutral',
-    body: 'Masseter hypertrophy may change the look of the lower face for some people, but the evidence is thin and overuse can cause jaw pain or TMJ problems. Not a reliable bone-building method.',
+    body: 'Masseter growth may change how the lower face looks for some people. The evidence is thin, and overuse can hurt your jaw or trigger TMJ problems. Not a reliable bone-building method.',
   },
   {
     title: 'Bone smashing',
     label: 'Avoid',
     tone: 'bad',
-    body: 'Do not do this. It is dangerous, unproven and can cause permanent injury. No responsible analysis recommends it.',
+    body: 'Do not do this. It is dangerous, unproven and can leave permanent damage. No responsible analysis recommends it.',
   },
 ]
 
@@ -241,15 +241,15 @@ export const METHOD_LIMITS: string[] = [
   'The model estimates. It does not measure bone with calipers, imaging or a physical exam.',
   'Attractiveness is partly subjective and culturally variable. A score is a structured opinion, not a fact about your worth.',
   'Community metrics such as canthal tilt, gonial angle and midface ratio are descriptive cues. They are not validated laws of attractiveness.',
-  'Hair and grooming advice is general styling guidance. Hair type, density, growth pattern and personal preference matter.',
+  'Hair and grooming advice is general styling guidance. Your hair type, density, growth pattern and personal preference matter.',
   'Nothing here is medical advice. See a qualified professional for skin, dental, jaw or mental health concerns.',
-  'No percentile is shown. A single photo cannot establish a true population percentile, and false precision is worse than no number.',
+  'No percentile is shown. One photo cannot establish a true population percentile, and inventing one is worse than showing none.',
 ]
 
 export const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   {
     q: 'Is the score objective?',
-    a: 'No. It is a structured estimate from one photo. Different photos, lighting and models can produce different readings. The method is consistent, but the output is not a measurement of truth or worth.',
+    a: 'No. It is a structured estimate from one photo. Different photos, lighting and models produce different readings. The method stays consistent, but the output is not a fact about you or your worth.',
   },
   {
     q: 'Is my photo stored?',
@@ -257,43 +257,43 @@ export const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   },
   {
     q: 'Why does my score change between photos?',
-    a: 'Perspective, light, expression, compression and filters can move the reading by a meaningful amount. For progress tracking, use the same camera, distance, room and light each time.',
+    a: 'Perspective, light, expression, compression and filters can shift the read by a meaningful amount. If you want to track progress, use the same camera, distance, room and light each time.',
   },
   {
     q: 'What is the PSL-style structural index?',
-    a: 'It is a secondary readout built from the six structure dimensions. It is inspired by internet looksmaxxing culture, not a scientific instrument, and it is not the overall score.',
+    a: 'A secondary readout built from the six structure dimensions. It is inspired by internet looksmaxxing culture, not by science, and it is not the overall score.',
   },
   {
     q: 'Can I change my bone structure?',
-    a: 'After growth, no, not without surgery. Body composition, skin, hair and grooming change how the existing structure reads. Be sceptical of anyone selling non-surgical bone change.',
+    a: 'Not after growth, short of surgery. Body composition, skin, hair and grooming change how your existing structure reads. Be sceptical of anyone selling non-surgical bone change.',
   },
   {
     q: 'Does mewing work?',
-    a: 'There is no good evidence that it reshapes adult bone. It may help some people with oral posture or nasal breathing. It is not a substitute for orthodontic or medical care.',
+    a: 'There is no good evidence it reshapes adult bone. It may help some people with oral posture or nasal breathing. It is not a substitute for orthodontic or medical care.',
   },
   {
     q: 'Do jaw exercises work?',
-    a: 'They can grow the masseter muscles in some people, which may change the look of the lower face. Evidence is limited, and overuse can cause pain or TMJ problems. Do not force it.',
+    a: 'They can grow the masseter muscles in some people, which may change how the lower face looks. The evidence is limited, and overdoing it can cause pain or TMJ problems. Do not force it.',
   },
   {
     q: 'Is this medical advice?',
-    a: 'No. It is cosmetic and grooming guidance. See a dermatologist, dentist, orthodontist or doctor for medical concerns.',
+    a: 'No. This is cosmetic and grooming guidance. See a dermatologist, dentist, orthodontist or doctor for medical concerns.',
   },
   {
     q: 'Why no percentile?',
-    a: 'A single photo cannot establish a true population percentile. We show a calibrated band and the dimensions behind the score instead of inventing precision.',
+    a: 'One photo cannot establish a true population percentile. You get a calibrated band and the dimension scores behind it, instead of invented precision.',
   },
   {
     q: 'How is gender handled?',
-    a: 'You choose a male or female reference standard. The analysis compares visible features to that reference. It does not infer identity or make claims about who you are.',
+    a: 'You pick a male or female reference standard, and the analysis compares what it sees to that reference. It does not infer your identity or make claims about who you are.',
   },
   {
     q: 'What if I wear makeup, a beard or a filter?',
-    a: 'They can change the read. The report lowers confidence and notes it when relevant. For the cleanest comparison, use a neutral photo.',
+    a: 'They change the read. The report lowers its confidence and notes it when relevant. For the cleanest comparison, use a neutral photo.',
   },
   {
     q: 'Is a low score an insult?',
-    a: 'No. The score describes a single photo against a reference, not your value as a person. The plan focuses on what is changeable and worth doing.',
+    a: 'No. The score describes one photo against a reference, not your value as a person. The plan focuses on what is changeable and worth doing.',
   },
 ]
 
@@ -363,8 +363,8 @@ export const REFERENCES: Array<{ authors: string; year: string; title: string; s
 export const CHAT_STARTERS_WITH_REPORT: string[] = [
   'What should I improve first?',
   'What haircut suits my face?',
-  'Build a simple skin routine.',
-  'Which parts are genetic?',
+  'Build me a simple skin routine.',
+  'Which parts are just genetics?',
 ]
 
 export const CHAT_STARTERS_GENERAL: string[] = [
