@@ -12,6 +12,19 @@ import { requestRating } from './lib/api'
 
 export default function App() {
   const [photo, setPhoto] = useState(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' })
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
   const [gender, setGender] = useState('male')
   const [status, setStatus] = useState('idle')
   const [report, setReport] = useState(null)
@@ -112,10 +125,10 @@ export default function App() {
       <Header onOpenChat={() => openChat()} onStart={startAnalysis} />
 
       <main>
-        <Hero onStart={startAnalysis} onOpenChat={() => openChat()} onAsk={(question) => openChat(question)} />
+        <Hero onStart={startAnalysis} onOpenChat={() => openChat()} onAsk={(question) => openChat(question)} className="reveal" />
 
         {showAnalyzer && (
-          <AnalyzerSection
+          <AnalyzerSection className="reveal"
             photo={photo}
             gender={gender}
             status={status}
@@ -139,7 +152,7 @@ export default function App() {
           />
         )}
 
-        <MethodSection />
+        <MethodSection className="reveal" />
       </main>
 
       <Footer />

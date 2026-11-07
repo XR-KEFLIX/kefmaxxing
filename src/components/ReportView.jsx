@@ -4,7 +4,7 @@ import { cn, formatScore, formatWeight, levelLabel, scoreHex, titleCase } from '
 import { useCopy } from '../lib/useCopy'
 import { EvidenceTag, InfluenceTag, Meter, ScoreScale, SectionHeading, Stat, Tag } from './ui'
 
-export function ReportView({ report, photo, onReset, onOpenChat }) {
+export function ReportView({ report, photo, onReset, onOpenChat, className }) {
   const { copied, copy } = useCopy()
   const confidence = Math.round(report.confidence * 100)
 
@@ -28,7 +28,7 @@ export function ReportView({ report, photo, onReset, onOpenChat }) {
   }
 
   return (
-    <section id="report" className="container-page scroll-mt-20 py-16 sm:py-20">
+    <section id="report" className={cn('container-page scroll-mt-20 sm:py-20', className)}>
       <SectionHeading eyebrow="Report" title="Your results" description="One photo, 10 scores and a weighted composite. Overall appeal is scored separately so no single feature rules the result." />
 
       <div className="mt-8 space-y-6">
@@ -72,8 +72,8 @@ function ScoreSummary({ report, photo, onReset, onOpenChat }) {
   }
 
   return (
-    <div className="card overflow-hidden animate-fade-up">
-      <div className="grid lg:grid-cols-[1.15fr_0.85fr]">
+    <div className="card card-lift overflow-hidden animate-fade-up">
+      <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-0">
         <div className="p-5 sm:p-7">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="eyebrow">Overall assessment</p>
@@ -81,7 +81,7 @@ function ScoreSummary({ report, photo, onReset, onOpenChat }) {
           </div>
 
           <div className="mt-5 flex flex-wrap items-end gap-x-4 gap-y-2">
-            <span className="font-mono text-[64px] leading-none tracking-[-0.06em] text-ink sm:text-[76px]">{formatScore(report.overall)}</span>
+            <span className="font-mono text-[72px] leading-none tracking-[-0.07em] text-ink sm:text-[92px]">{formatScore(report.overall)}</span>
             <span className="mb-2 font-mono text-[14px] text-ink3">/ 10</span>
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <Tag tone="accent">{report.band}</Tag>
@@ -104,7 +104,7 @@ function ScoreSummary({ report, photo, onReset, onOpenChat }) {
         </div>
 
         <div className="border-t border-line p-5 sm:p-7 lg:border-l lg:border-t-0">
-          <dl className="grid grid-cols-2 gap-x-5 gap-y-5">
+          <dl className="grid grid-cols-2 gap-x-5 gap-y-5 md:gap-y-6">
             <Stat label="Potential" value={`${formatScore(report.potential)} / 10`} hint="Realistic non-surgical potential" />
             <Stat label="Structural index" value={`${formatScore(report.structuralIndex)} / 10`} hint="PSL-style, secondary" />
             <Stat label="Overall appeal" value={`${formatScore(report.appealIndex)} / 10`} hint="Overall impression" />
@@ -158,7 +158,7 @@ function ScoreMethodNote() {
 
 function DimensionLedger({ report }) {
   return (
-    <div className="card overflow-hidden">
+    <div className="card card-lift overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
         <div>
           <h3 className="text-[15px] font-medium text-ink">Every score, explained</h3>
@@ -239,7 +239,7 @@ function InsightCards({ report }) {
 
 function DetailedAnalysis({ report }) {
   return (
-    <div className="card p-5 sm:p-7">
+    <div className="card card-lift p-5 sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-[15px] font-medium text-ink">The full analysis</h3>
         <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">{titleCase(report.band)} - {levelLabel(report.level)}</span>
@@ -362,7 +362,7 @@ function Roadmap({ report }) {
   if (!report.roadmap.length) return null
 
   return (
-    <div className="card overflow-hidden">
+    <div className="card card-lift overflow-hidden">
       <div className="border-b border-line px-5 py-4 sm:px-6">
         <h3 className="text-[15px] font-medium text-ink">Roadmap</h3>
         <p className="mt-1 text-[12px] leading-relaxed text-ink2">Do them in order. Each phase builds on the last.</p>
@@ -385,7 +385,7 @@ function Roadmap({ report }) {
 
 function Genetics({ report }) {
   return (
-    <div className="card p-5 sm:p-7">
+    <div className="card card-lift p-5 sm:p-7">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="eyebrow">What is fixed vs what you can change</p>
@@ -406,7 +406,7 @@ function Genetics({ report }) {
 
 function PhotoNotes({ report }) {
   return (
-    <div className="card p-5 sm:p-6">
+    <div className="card card-lift p-5 sm:p-6">
       <div className="flex items-start gap-3">
         <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={1.8} />
         <div>

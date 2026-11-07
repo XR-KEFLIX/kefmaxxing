@@ -4,7 +4,7 @@ import { DELIVERABLES, PHOTO_PROTOCOL, PRIVACY_POINTS } from '../lib/content'
 import { cn } from '../lib/utils'
 import { SectionHeading } from './ui'
 
-export function AnalyzerSection({ photo, gender, status, error, onFile, onGender, onAnalyze, onClearError, onClearPhoto }) {
+export function AnalyzerSection({ photo, gender, status, error, onFile, onGender, onAnalyze, onClearError, onClearPhoto, className }) {
   const inputRef = useRef(null)
   const [dragging, setDragging] = useState(false)
 
@@ -18,10 +18,10 @@ export function AnalyzerSection({ photo, gender, status, error, onFile, onGender
   }, [onFile])
 
   return (
-    <section id="analysis" className="container-page scroll-mt-20 py-16 sm:py-20">
+    <section id="analysis" className={cn('container-page scroll-mt-20 py-16 sm:py-20', className)}>
       <SectionHeading eyebrow="Analysis" title="Upload a front-facing photo" description="Front-facing, even light, neutral expression. It reads what is visible in the photo, nothing else." />
 
-      <div className="card mt-8 grid overflow-hidden lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="card card-lift overflow-hidden mt-8 grid lg:grid-cols-[1.05fr_0.95fr]">
         <div className="border-b border-line p-5 sm:p-7 lg:border-b-0 lg:border-r">
           <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) onFile(file); event.target.value = '' }} />
 
@@ -71,7 +71,7 @@ export function AnalyzerSection({ photo, gender, status, error, onFile, onGender
             </div>
           )}
 
-          <button type="button" disabled={!photo || status === 'analyzing'} onClick={onAnalyze} className="btn btn-primary mt-7 h-12 w-full text-[14px]">
+          <button type="button" disabled={!photo || status === 'analyzing'} onClick={onAnalyze} className="btn btn-primary btn-press card-lift mt-7 h-12 w-full text-[14px]">
             {status === 'analyzing' ? (<><Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />Analyzing...</>) : (<><ScanFace className="h-4 w-4" strokeWidth={1.9} />Analyze my photo</>)}
           </button>
         </div>

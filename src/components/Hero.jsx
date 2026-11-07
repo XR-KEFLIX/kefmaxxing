@@ -1,12 +1,13 @@
 import { useState, lazy, Suspense } from 'react'
 import { ArrowRight, ArrowUp, MessageSquare } from 'lucide-react'
+import { cn } from '../lib/utils'
 import { DIMENSIONS, FRAMEWORK_GROUPS } from '../lib/content'
 
 const BlackPill3D = lazy(() =>
   import('./BlackPill3D').then((module) => ({ default: module.BlackPill3D })),
 )
 
-export function Hero({ onStart, onOpenChat, onAsk }) {
+export function Hero({ onStart, onOpenChat, onAsk, className }) {
   const [ask, setAsk] = useState('')
 
   const submit = (event) => {
@@ -18,7 +19,7 @@ export function Hero({ onStart, onOpenChat, onAsk }) {
   }
 
   return (
-    <section className="border-b border-line">
+    <section className={cn('border-b border-line', className)}>
       <div className="container-page grid gap-10 py-10 sm:py-14 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-12 lg:py-16 xl:gap-16">
         <div className="min-w-0">
           <div className="flex items-center gap-4 sm:gap-5">
@@ -28,9 +29,9 @@ export function Hero({ onStart, onOpenChat, onAsk }) {
             <p className="eyebrow max-w-[18ch] leading-[1.5]">An honest assessment of your facial features</p>
           </div>
 
-          <h1 className="mt-5 max-w-2xl text-balance font-display text-[clamp(2.4rem,7.5vw,4.4rem)] leading-[1.02] tracking-[-0.035em] text-ink">
+          <h1 className="mt-5 max-w-2xl text-balance font-display text-[clamp(2.4rem,7.5vw,4.6rem)] leading-[1.0] tracking-[-0.04em] text-ink">
             See how your features compare,{' '}
-            <span className="italic text-accent">and where to improve.</span>
+            <span className="italic accent-text">and where to improve.</span>
           </h1>
 
           <p className="mt-5 max-w-xl text-pretty text-[15px] leading-relaxed text-ink2 sm:text-[16px]">
@@ -38,18 +39,18 @@ export function Hero({ onStart, onOpenChat, onAsk }) {
             for the parts you can actually change.
           </p>
 
-          <div className="mt-7 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-            <button type="button" onClick={onStart} className="btn btn-primary btn-md h-12 sm:h-11">
+          <div className="mt-8 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+            <button type="button" onClick={onStart} className="btn btn-primary btn-md h-12 sm:h-11 btn-press card-lift">
               Analyze my photo
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </button>
-            <button type="button" onClick={onOpenChat} className="btn btn-secondary btn-md h-12 sm:h-11">
+            <button type="button" onClick={onOpenChat} className="btn btn-secondary btn-md h-12 sm:h-11 btn-press card-lift">
               <MessageSquare className="h-4 w-4" strokeWidth={1.8} />
               Ask Kef
             </button>
           </div>
 
-          <dl className="mt-8 grid max-w-lg grid-cols-3 gap-3 border-t border-line pt-5">
+          <dl className="mt-10 grid max-w-lg grid-cols-3 gap-3 border-t border-line pt-6">
             <div>
               <dt className="eyebrow">Scores</dt>
               <dd className="mt-1 font-mono text-[13px] font-medium text-ink sm:text-[15px]">10</dd>

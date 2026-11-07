@@ -1,5 +1,5 @@
 import { DIMENSIONS, EVIDENCE_LEVERS, FAQ_ITEMS, FRAMEWORK_GROUPS, REFERENCES, SCORE_BANDS } from '../lib/content'
-import { formatWeight } from '../lib/utils'
+import { cn, formatWeight } from '../lib/utils'
 import { SectionHeading, Tag } from './ui'
 
 const OBSERVABLE = [
@@ -9,9 +9,9 @@ const OBSERVABLE = [
   { title: 'Not assessed', items: ['Health or medical status', 'Personality or intelligence', 'Worth or character', 'Anything not visible in the photo'] },
 ]
 
-export function MethodSection() {
+export function MethodSection({ className }) {
   return (
-    <section id="method" className="container-page scroll-mt-20 py-16 sm:py-20">
+    <section id="method" className={cn('container-page scroll-mt-20 py-16 sm:py-20', className)}>
       <SectionHeading eyebrow="Method" title="How the analysis works" description="Fixed weights across 10 scores, and a clear line between what the photo shows and what it assumes." />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -60,7 +60,7 @@ export function MethodSection() {
         </div>
       </div>
 
-      <div className="card mt-6 overflow-hidden">
+      <div className="card card-lift mt-6 overflow-hidden">
         <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line px-5 py-4 sm:px-6">
           <div>
             <h3 className="text-[15px] font-medium text-ink">The 10-point scale</h3>
@@ -99,7 +99,7 @@ export function MethodSection() {
         </div>
       </div>
 
-      <div id="evidence" className="mt-16 scroll-mt-20">
+      <div id="evidence" className="mt-16 scroll-mt-20 reveal">
         <SectionHeading eyebrow="Evidence" title="What the evidence supports" description="Strong evidence is not a promise, and limited evidence is not useless. It reflects the strength of the claim." />
 
         <div className="card mt-8 divide-y divide-line">
@@ -130,7 +130,7 @@ export function MethodSection() {
         </div>
       </div>
 
-      <div id="faq" className="mt-16 scroll-mt-20">
+      <div id="faq" className="mt-16 scroll-mt-20 reveal">
         <SectionHeading eyebrow="FAQ" title="Frequently asked questions" description="Straight answers about the score, your photo, the method and what it cannot tell you." />
 
         <div className="card mt-8 divide-y divide-line overflow-hidden">
