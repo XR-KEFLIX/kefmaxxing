@@ -2,7 +2,7 @@
   "name": "kefmaxxing",
   "private": true,
   "version": "1.0.0",
-  "description": "kefmaxxing — AI face rating against modern looksmaxxing standards. One photo in, a candid scorecard and a ranked improvement plan out. Backend: Vercel serverless vision-model proxy in api/.",
+  "description": "Kefmaxxing: a multi-dimensional facial-aesthetics analysis. One photo in, a transparent 10-point weighted assessment, a realistic improvement plan and a contextual chat assistant. Backend: Vercel serverless vision-model proxy in api/.",
   "type": "module",
   "scripts": {
     "dev": "vite",

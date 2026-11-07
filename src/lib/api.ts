@@ -12,7 +12,14 @@ export async function requestRating(
     signal,
   })
 
-  let payload: { ok?: boolean; model?: string; report?: RateResponse['report']; error?: string; message?: string } = {}
+  let payload: {
+    ok?: boolean
+    model?: string
+    provider?: string
+    report?: RateResponse['report']
+    error?: string
+    message?: string
+  } = {}
   try {
     payload = await res.json()
   } catch {
@@ -20,18 +27,23 @@ export async function requestRating(
   }
 
   if (!res.ok) {
-    throw new Error(payload.message || payload.error || `Rating failed (${res.status}). Try again.`)
+    throw new Error(payload.message || payload.error || `Analysis failed (${res.status}). Try again.`)
   }
   if (!payload.ok || !payload.report) {
-    throw new Error('The rating came back incomplete. Try again.')
+    throw new Error('The analysis came back incomplete. Try again.')
   }
 
-  return { ok: true, model: payload.model || 'model', report: payload.report }
+  return {
+    ok: true,
+    model: payload.model || 'model',
+    provider: payload.provider || 'unknown',
+    report: payload.report,
+  }
 }
 
 export async function askCoach(
   question: string,
-  report: RatingReport,
+  report: RatingReport | null,
   gender: Gender,
   history: ChatMessage[],
   signal?: AbortSignal,

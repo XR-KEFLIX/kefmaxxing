@@ -1,10 +1,10 @@
 {
   "functions": {
     "api/rate.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     },
     "api/chat.js": {
-      "maxDuration": 60
+      "maxDuration": 120
     }
   }
 }

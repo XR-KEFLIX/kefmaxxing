@@ -51,8 +51,9 @@ function devApiPlugin(): Plugin {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
+  const apiPrefixes = ['RATE_', 'UNOROUTER_', 'OPENROUTER_', 'GEMINI_']
   for (const [key, value] of Object.entries(env)) {
-    if (key.startsWith('RATE_') && !process.env[key]) process.env[key] = value
+    if (apiPrefixes.some((prefix) => key.startsWith(prefix)) && !process.env[key]) process.env[key] = value
   }
   return {
     plugins: [react(), devApiPlugin()],

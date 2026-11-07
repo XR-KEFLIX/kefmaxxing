@@ -1,29 +1,23 @@
-const DEFAULT_MODELS = ['agnes-3.0-flash'];
-
-const ALLOWED_MODELS = (process.env.RATE_MODELS || DEFAULT_MODELS.join(','))
-  .split(',')
-  .map((s) => s.trim())
-  .filter(Boolean);
-
-const BASE_URL = (process.env.RATE_BASE_URL || 'https://apihub.agnes-ai.com/v1').replace(/\/+$/, '');
+import { providerChain } from './_providers.js';
 
 const PER_MODEL_TIMEOUT_MS = 25000;
 
-async function callModel(model, messages, { maxTokens, temperature }) {
+async function callModel(entry, messages, { maxTokens, temperature }) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), PER_MODEL_TIMEOUT_MS);
 
   try {
-    const upstream = await fetch(`${BASE_URL}/chat/completions`, {
+    const upstream = await fetch(`${entry.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.RATE_API_KEY}`,
+        Authorization: `Bearer ${entry.apiKey}`,
+        ...entry.headers,
       },
       body: JSON.stringify({
-        model,
+        model: entry.model,
         stream: false,
-        max_tokens: maxTokens,
+        max_tokens: Math.max(maxTokens || 0, entry.minTokens || 0),
         temperature,
         messages,
       }),
@@ -45,7 +39,7 @@ async function callModel(model, messages, { maxTokens, temperature }) {
       return { ok: false, status: 502, text: 'empty completion' };
     }
 
-    return { ok: true, status: 200, text: content.trim(), model };
+    return { ok: true, status: 200, text: content.trim(), model: entry.model, provider: entry.provider };
   } catch (err) {
     return { ok: false, status: 0, text: err && err.message ? err.message : 'network error' };
   } finally {
@@ -54,15 +48,22 @@ async function callModel(model, messages, { maxTokens, temperature }) {
 }
 
 export async function callAgnes(messages, options = {}) {
-  const { maxTokens = 500, temperature = 0.6, attempts = 2 } = options;
+  const { maxTokens = 500, temperature = 0.6, attempts = 2, vision = false } = options;
+  const chain = providerChain({ vision });
   const log = [];
 
-  for (const model of ALLOWED_MODELS) {
+  for (const entry of chain) {
     for (let i = 0; i < attempts; i++) {
-      const result = await callModel(model, messages, { maxTokens, temperature });
+      const result = await callModel(entry, messages, { maxTokens, temperature });
       if (result.ok) return { ...result, attempts: log };
 
-      log.push({ model, attempt: i, status: result.status, message: String(result.text).slice(0, 160) });
+      log.push({
+        provider: entry.provider,
+        model: entry.model,
+        attempt: i,
+        status: result.status,
+        message: String(result.text).slice(0, 160),
+      });
 
       const retryable = result.status === 0 || result.status === 429 || result.status >= 500;
       if (!retryable) break;

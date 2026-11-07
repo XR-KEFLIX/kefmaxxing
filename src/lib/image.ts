@@ -1,9 +1,10 @@
 const MAX_EDGE = 1280
-const JPEG_QUALITY = 0.85
+const JPEG_QUALITY = 0.84
+const MAX_DATA_URL_CHARS = 5_200_000
 
 export async function preparePhoto(file: File): Promise<string> {
   if (!file.type.startsWith('image/')) {
-    throw new Error('That file is not an image. Use a JPEG, PNG, or WebP photo.')
+    throw new Error('That file is not an image. Use a JPEG, PNG or WebP photo.')
   }
   if (file.size > 15 * 1024 * 1024) {
     throw new Error('Photo is over 15 MB. Use a smaller one.')
@@ -25,7 +26,7 @@ export async function preparePhoto(file: File): Promise<string> {
   if ('close' in bitmap && typeof bitmap.close === 'function') bitmap.close()
 
   const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY)
-  if (dataUrl.length > 5_500_000) {
+  if (dataUrl.length > MAX_DATA_URL_CHARS) {
     throw new Error('Photo is still too large after compression. Try a tighter crop.')
   }
   return dataUrl
@@ -34,7 +35,8 @@ export async function preparePhoto(file: File): Promise<string> {
 async function loadBitmap(file: File): Promise<ImageBitmap | HTMLImageElement> {
   if ('createImageBitmap' in window) {
     try {
-      return await createImageBitmap(file)
+      // Apply EXIF orientation so portrait phone photos are not rotated.
+      return await createImageBitmap(file, { imageOrientation: 'from-image' })
     } catch {
       /* fall through to the <img> path */
     }

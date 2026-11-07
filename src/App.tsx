@@ -1,11 +1,12 @@
 import { useCallback, useRef, useState } from 'react'
 import { Header } from './components/Header'
-import { UploadPanel } from './components/UploadPanel'
+import { Hero } from './components/Hero'
+import { AnalyzerSection } from './components/AnalyzerSection'
 import { Analyzing } from './components/Analyzing'
 import { ReportView } from './components/ReportView'
-import { ChatPanel } from './components/ChatPanel'
-import { StandardsSection } from './components/StandardsSection'
+import { MethodSection } from './components/MethodSection'
 import { Footer } from './components/Footer'
+import { ChatDock } from './components/ChatDock'
 import { preparePhoto } from './lib/image'
 import { requestRating } from './lib/api'
 import type { Gender, RatingReport, ScanStatus } from './lib/types'
@@ -16,6 +17,8 @@ export default function App() {
   const [status, setStatus] = useState<ScanStatus>('idle')
   const [report, setReport] = useState<RatingReport | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [chatOpen, setChatOpen] = useState(false)
+  const [chatSeed, setChatSeed] = useState<string | null>(null)
   const abortRef = useRef<AbortController | null>(null)
 
   const handleFile = useCallback(async (file: File) => {
@@ -36,9 +39,10 @@ export default function App() {
     setError(null)
     const controller = new AbortController()
     abortRef.current = controller
+
     try {
-      const res = await requestRating(photo, gender, controller.signal)
-      setReport(res.report)
+      const response = await requestRating(photo, gender, controller.signal)
+      setReport(response.report)
       setStatus('done')
       requestAnimationFrame(() => {
         document.getElementById('report')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -48,12 +52,12 @@ export default function App() {
         setStatus('idle')
         return
       }
-      setError(err instanceof Error ? err.message : 'Rating failed. Try again.')
+      setError(err instanceof Error ? err.message : 'The analysis failed. Try again.')
       setStatus('error')
     } finally {
-      abortRef.current = null
+      if (abortRef.current === controller) abortRef.current = null
     }
-  }, [photo, gender])
+  }, [gender, photo])
 
   const handleCancel = useCallback(() => {
     abortRef.current?.abort()
@@ -67,14 +71,52 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
-  const showUpload = status === 'idle' || status === 'error' || (status === 'done' && !report)
+  const handleClearPhoto = useCallback(() => {
+    setPhoto(null)
+    setReport(null)
+    setError(null)
+    setStatus('idle')
+  }, [])
+
+  const startAnalysis = useCallback(() => {
+    if (status === 'analyzing') abortRef.current?.abort()
+    if (status === 'done' || status === 'error' || status === 'analyzing') {
+      setPhoto(null)
+      setReport(null)
+      setError(null)
+      setStatus('idle')
+    }
+    requestAnimationFrame(() => {
+      document.getElementById('analysis')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }, [status])
+
+  const openChat = useCallback((seed?: string) => {
+    setChatSeed(seed ?? null)
+    setChatOpen(true)
+  }, [])
+
+  const closeChat = useCallback(() => setChatOpen(false), [])
+  const consumeSeed = useCallback(() => setChatSeed(null), [])
+
+  const showAnalyzer = status === 'idle' || status === 'error' || (status === 'done' && !report)
 
   return (
-    <div id="top" className="grain min-h-dvh">
-      <Header />
-      <main className="mx-auto w-full max-w-content px-5 pb-24 pt-24 sm:px-8">
-        {showUpload && (
-          <UploadPanel
+    <div id="top" className="min-h-dvh bg-paper">
+      <a
+        href="#analysis"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-button focus:bg-accent focus:px-4 focus:py-2 focus:text-[13px] focus:text-white"
+      >
+        Skip to analysis
+      </a>
+
+      <Header onOpenChat={() => openChat()} onStart={startAnalysis} />
+
+      <main>
+        <Hero onStart={startAnalysis} onOpenChat={() => openChat()} onAsk={(question) => openChat(question)} />
+
+        {showAnalyzer && (
+          <AnalyzerSection
             photo={photo}
             gender={gender}
             status={status}
@@ -83,18 +125,35 @@ export default function App() {
             onGender={setGender}
             onAnalyze={handleAnalyze}
             onClearError={() => setError(null)}
+            onClearPhoto={handleClearPhoto}
           />
         )}
+
         {status === 'analyzing' && photo && <Analyzing photo={photo} onCancel={handleCancel} />}
+
         {status === 'done' && report && photo && (
-          <>
-            <ReportView report={report} photo={photo} onReset={handleReset} />
-            <ChatPanel report={report} gender={gender} />
-          </>
+          <ReportView
+            report={report}
+            photo={photo}
+            onReset={handleReset}
+            onOpenChat={openChat}
+          />
         )}
-        <StandardsSection />
+
+        <MethodSection />
       </main>
+
       <Footer />
+
+      <ChatDock
+        open={chatOpen}
+        onOpen={() => openChat()}
+        onClose={closeChat}
+        report={report}
+        gender={gender}
+        seed={chatSeed}
+        onSeedConsumed={consumeSeed}
+      />
     </div>
   )
 }
