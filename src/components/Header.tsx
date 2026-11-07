@@ -19,10 +19,10 @@ function LogoMark() {
   return (
     <img
       src="/blackpill.svg"
-      alt="Kefmaxxing blackpill icon"
-      width={44}
-      height={44}
-      className="h-10 w-10 shrink-0 sm:h-11 sm:w-11"
+      alt="Kefmaxxing"
+      width={36}
+      height={36}
+      className="h-9 w-9 shrink-0 sm:h-10 sm:w-10"
     />
   )
 }
@@ -52,11 +52,11 @@ function ThemeToggle() {
             title={THEME_META[option].title}
             aria-label={THEME_META[option].title}
             aria-pressed={active}
-            className={`grid h-7 w-7 place-items-center rounded-[5px] transition-colors duration-150 ${
+            className={`grid h-8 w-8 place-items-center rounded-[5px] transition-colors duration-150 sm:h-7 sm:w-7 ${
               active ? 'bg-raised text-ink shadow-card' : 'text-ink3 hover:text-ink'
             }`}
           >
-            <Icon className="h-3.5 w-3.5" strokeWidth={1.8} />
+            <Icon className="h-4 w-4 sm:h-3.5 sm:w-3.5" strokeWidth={1.8} />
           </button>
         )
       })}
@@ -70,11 +70,13 @@ export function Header({ onOpenChat, onStart }: { onOpenChat: () => void; onStar
   const close = () => setOpen(false)
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper">
-      <div className="container-page flex h-16 items-center justify-between gap-4">
-        <a href="#top" className="flex items-center gap-2.5" aria-label="Kefmaxxing, back to top">
+    <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-sm">
+      <div className="container-page flex h-14 items-center justify-between gap-3 sm:h-16">
+        <a href="#top" className="flex min-w-0 items-center gap-2 sm:gap-2.5" aria-label="Kefmaxxing, back to top">
           <LogoMark />
-          <span className="font-display text-[18px] tracking-[-0.02em] text-ink">Kefmaxxing</span>
+          <span className="truncate font-display text-[16px] tracking-[-0.02em] text-ink sm:text-[18px]">
+            Kefmaxxing
+          </span>
         </a>
 
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
@@ -82,7 +84,7 @@ export function Header({ onOpenChat, onStart }: { onOpenChat: () => void; onStar
             <a
               key={item.href}
               href={item.href}
-              className="text-[13px] font-medium text-ink2 transition-colors hover:text-ink"
+              className="relative py-2 text-[13px] font-medium text-ink2 transition-colors duration-150 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-200 hover:text-ink hover:after:scale-x-100"
             >
               {item.label}
             </a>
@@ -96,21 +98,25 @@ export function Header({ onOpenChat, onStart }: { onOpenChat: () => void; onStar
             Ask Kef
           </button>
           <button type="button" onClick={onStart} className="btn btn-primary btn-sm">
-            Start analysis
+            Analyze my photo
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
           </button>
         </div>
 
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-1.5 sm:gap-2 lg:hidden">
           <ThemeToggle />
-          <button type="button" onClick={onOpenChat} className="btn btn-ghost btn-sm px-3" aria-label="Ask Kef">
+          <button
+            type="button"
+            onClick={onOpenChat}
+            className="btn btn-ghost btn-sm h-10 w-10 px-0"
+            aria-label="Ask Kef"
+          >
             <MessageSquare className="h-4 w-4" strokeWidth={1.7} />
-            <span className="hidden sm:inline">Ask Kef</span>
           </button>
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className="btn btn-ghost btn-sm px-2.5"
+            className="btn btn-ghost btn-sm h-10 w-10 px-0"
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
             aria-controls="mobile-nav"
@@ -128,7 +134,7 @@ export function Header({ onOpenChat, onStart }: { onOpenChat: () => void; onStar
                 key={item.href}
                 href={item.href}
                 onClick={close}
-                className="rounded-button px-3 py-2.5 text-[14px] font-medium text-ink2 transition-colors hover:bg-sunken hover:text-ink"
+                className="flex min-h-[48px] items-center rounded-button px-3 text-[15px] font-medium text-ink2 transition-colors hover:bg-sunken hover:text-ink"
               >
                 {item.label}
               </a>
@@ -140,7 +146,7 @@ export function Header({ onOpenChat, onStart }: { onOpenChat: () => void; onStar
                   close()
                   onOpenChat()
                 }}
-                className="btn btn-secondary btn-sm"
+                className="btn btn-secondary h-12 text-[14px]"
               >
                 Ask Kef
               </button>
@@ -150,9 +156,9 @@ export function Header({ onOpenChat, onStart }: { onOpenChat: () => void; onStar
                   close()
                   onStart()
                 }}
-                className="btn btn-primary btn-sm"
+                className="btn btn-primary h-12 text-[14px]"
               >
-                Start analysis
+                Analyze my photo
               </button>
             </div>
           </nav>

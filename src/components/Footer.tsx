@@ -8,7 +8,7 @@ export function Footer() {
             Kefmaxxing
           </p>
           <p className="mt-2 max-w-sm text-[12.5px] leading-relaxed text-ink2">
-            One photo, ten scores, a plan you can follow. No single number deciding your face.
+            Get a 10-point read on your features from one photo, plus a realistic plan for what to work on.
           </p>
           <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">We do not store your photo</p>
         </div>

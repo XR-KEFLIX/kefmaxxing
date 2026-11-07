@@ -92,6 +92,11 @@
       radial-gradient(700px 500px at 85% 110%, rgb(var(--accent) / 0.05), transparent 60%);
   }
 
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   body {
     @apply bg-paper font-sans text-ink antialiased;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';

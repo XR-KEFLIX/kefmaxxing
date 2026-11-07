@@ -47,7 +47,7 @@ export function Analyzing({ photo, onCancel }: { photo: string; onCancel: () => 
           <div className="p-5 sm:p-7">
             <div className="flex items-center gap-2.5">
               <Loader2 className="h-3.5 w-3.5 animate-spin text-accent" strokeWidth={2} />
-              <p className="eyebrow text-accent">Analysis in progress</p>
+              <p className="eyebrow text-accent">Analyzing your photo</p>
             </div>
 
             <h2 aria-live="polite" className="mt-4 text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.08] tracking-[-0.03em] text-ink">

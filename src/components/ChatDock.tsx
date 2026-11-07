@@ -147,7 +147,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
       <button
         type="button"
         onClick={onOpen}
-        className="fixed bottom-5 right-5 z-40 flex h-11 w-11 items-center justify-center gap-2 rounded-button bg-accent text-[13px] font-medium text-onAccent shadow-lift transition-colors hover:bg-accentStrong sm:bottom-6 sm:right-6 sm:w-auto sm:px-4"
+        className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] right-[max(0.75rem,env(safe-area-inset-right))] z-40 flex h-11 w-11 items-center justify-center gap-2 rounded-button bg-accent text-[13px] font-medium text-onAccent shadow-lift transition-colors hover:bg-accentStrong sm:bottom-[max(1.5rem,env(safe-area-inset-bottom))] sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:h-11 sm:w-auto sm:px-4"
         aria-label="Open the Kef chat"
       >
         <MessageSquare className="h-4 w-4" strokeWidth={1.8} />

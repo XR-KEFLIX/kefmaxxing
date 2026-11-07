@@ -57,8 +57,8 @@ export function MethodSection() {
       <SectionHeading
         index="03"
         eyebrow="Method"
-        title="How the analysis is built"
-        description="Fixed weights, an honest scale, and a clean split between what it sees and what it assumes."
+        title="How the analysis works"
+        description="Fixed weights across 10 scores, and a clear line between what the photo shows and what it assumes."
       />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -72,15 +72,15 @@ export function MethodSection() {
               },
               {
                 title: 'Ten dimensions',
-                body: 'Six structure, three presentation, and one holistic appeal score. Each comes with a note on what drove it.',
+                body: 'Six scores for structure, three for presentation and one for overall appeal. Each comes with a note on what drove it.',
               },
               {
                 title: 'Weighted composite',
                 body: 'Structure carries 59%, presentation 23%, appeal 18%. Fixed weights, so one feature cannot hijack the headline.',
               },
               {
-                title: 'Calibrated, not flattered',
-                body: '5.0 is the midpoint most faces land on. 6.0 is clearly above average. 7.0 is attractive. 8.0+ is rare. Descriptive bands, not clinical categories.',
+                title: 'What the scale means',
+                body: '5 is the midpoint most faces land on. 6 is clearly above average. 7 is attractive. 8 and above is rare. Descriptive bands, not clinical categories.',
               },
               {
                 title: 'A secondary structural index',
@@ -206,8 +206,8 @@ export function MethodSection() {
         <SectionHeading
           index="04"
           eyebrow="Evidence"
-          title="What actually moves the needle"
-          description="Strong does not mean guaranteed. Limited does not mean worthless. It means the claim is weak."
+          title="What the evidence supports"
+          description="Strong evidence is not a promise, and limited evidence is not useless. It reflects the strength of the claim."
         />
 
         <div className="card mt-8 divide-y divide-line">
@@ -247,8 +247,8 @@ export function MethodSection() {
         <SectionHeading
           index="05"
           eyebrow="FAQ"
-          title="Questions worth asking"
-          description="Straight answers on the score, the photo, the method and what it cannot tell you."
+          title="Frequently asked questions"
+          description="Straight answers about the score, your photo, the method and what it cannot tell you."
         />
 
         <div className="card mt-8 divide-y divide-line overflow-hidden">

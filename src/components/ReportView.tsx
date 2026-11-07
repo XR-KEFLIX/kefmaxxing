@@ -40,8 +40,8 @@ export function ReportView({ report, photo, onReset, onOpenChat }: Props) {
       <SectionHeading
         index="02"
         eyebrow="Report"
-        title="Your facial analysis"
-        description="One photo, ten scores, one weighted composite. Appeal keeps its own input so no single feature rules the show."
+        title="Your results"
+        description="One photo, 10 scores and a weighted composite. Overall appeal is scored separately so no single feature rules the result."
       />
 
       <div className="mt-8 space-y-6">
@@ -140,13 +140,13 @@ function ScoreSummary({
 
         <div className="border-t border-line p-5 sm:p-7 lg:border-l lg:border-t-0">
           <dl className="grid grid-cols-2 gap-x-5 gap-y-5">
-            <Stat label="Potential" value={`${formatScore(report.potential)} / 10`} hint="Realistic, non-surgical ceiling" />
+            <Stat label="Potential" value={`${formatScore(report.potential)} / 10`} hint="Realistic non-surgical potential" />
             <Stat
               label="Structural index"
               value={`${formatScore(report.structuralIndex)} / 10`}
               hint="PSL-style, secondary"
             />
-            <Stat label="Overall appeal" value={`${formatScore(report.appealIndex)} / 10`} hint="Holistic impression" />
+            <Stat label="Overall appeal" value={`${formatScore(report.appealIndex)} / 10`} hint="Overall impression" />
             <Stat label="Confidence" value={`${confidence}%`} hint="Single-photo estimate" />
           </dl>
 
@@ -225,7 +225,7 @@ function DimensionLedger({ report }: { report: RatingReport }) {
     <div className="card overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
         <div>
-          <h3 className="text-[15px] font-medium text-ink">Score by score</h3>
+          <h3 className="text-[15px] font-medium text-ink">Every score, explained</h3>
           <p className="mt-0.5 text-[12px] text-ink2">All ten scores, their weights, and the note behind each one.</p>
         </div>
         <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">5.0 = population average</span>
@@ -255,7 +255,7 @@ function DimensionLedger({ report }: { report: RatingReport }) {
                         <InfluenceTag influence={category.influence} />
                       </div>
                       <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">
-                        Weight {formatWeight(category.weight)} · contributes {formatScore(category.score * category.weight)} pts
+                        Weight {formatWeight(category.weight)} Ãƒâ€šÃ‚Â· contributes {formatScore(category.score * category.weight)} pts
                       </p>
                     </div>
                     <div className="flex items-baseline gap-1.5">
@@ -285,7 +285,7 @@ function InsightCards({ report }: { report: RatingReport }) {
       <div className="card p-5 sm:p-6">
         <div className="flex items-center gap-2.5">
           <TrendingUp className="h-4 w-4 text-good" strokeWidth={1.8} />
-          <h3 className="text-[15px] font-medium text-ink">What is working</h3>
+          <h3 className="text-[15px] font-medium text-ink">Strengths</h3>
         </div>
         <ul className="mt-4 space-y-4">
           {report.strengths.map((item) => (
@@ -303,7 +303,7 @@ function InsightCards({ report }: { report: RatingReport }) {
       <div className="card p-5 sm:p-6">
         <div className="flex items-center gap-2.5">
           <AlertCircle className="h-4 w-4 text-clay" strokeWidth={1.8} />
-          <h3 className="text-[15px] font-medium text-ink">What is holding it back</h3>
+          <h3 className="text-[15px] font-medium text-ink">Areas to improve</h3>
         </div>
         <ul className="mt-4 space-y-4">
           {report.improvements.map((item) => (
@@ -325,9 +325,9 @@ function DetailedAnalysis({ report }: { report: RatingReport }) {
   return (
     <div className="card p-5 sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-[15px] font-medium text-ink">The detailed read</h3>
+        <h3 className="text-[15px] font-medium text-ink">The full analysis</h3>
         <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">
-          {titleCase(report.band)} · {levelLabel(report.level)}
+          {titleCase(report.band)} Ãƒâ€šÃ‚Â· {levelLabel(report.level)}
         </span>
       </div>
       <p className="mt-4 text-[14px] leading-[1.75] text-ink2 first-letter:float-left first-letter:mr-2 first-letter:font-display first-letter:text-[44px] first-letter:leading-[0.78] first-letter:text-accent">
@@ -343,7 +343,7 @@ function Recommendations({ report }: { report: RatingReport }) {
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="eyebrow">Recommendations</p>
-          <h3 className="mt-1 text-[22px] leading-tight tracking-[-0.02em] text-ink">What to do with the read</h3>
+          <h3 className="mt-1 text-[22px] leading-tight tracking-[-0.02em] text-ink">What to do next</h3>
         </div>
         <p className="max-w-md text-[12px] leading-relaxed text-ink3">
           General cosmetic guidance, not medical advice. Your hair type, skin and taste all matter here.
@@ -501,10 +501,10 @@ function Plan({ report }: { report: RatingReport }) {
     <div className="card overflow-hidden">
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
         <div>
-          <h3 className="text-[15px] font-medium text-ink">Prioritised plan</h3>
+          <h3 className="text-[15px] font-medium text-ink">Your plan</h3>
           <p className="mt-1 max-w-2xl text-[12px] leading-relaxed text-ink2">
-            Ranked by realistic impact. Every step is a presentation or lifestyle lever. None of it changes bone
-            structure.
+            Ranked by realistic impact. Every step here is a presentation or lifestyle lever, nothing that changes
+            bone structure.
           </p>
         </div>
         <button type="button" onClick={copyPlan} className="btn btn-secondary btn-sm shrink-0">
@@ -551,7 +551,7 @@ function Roadmap({ report }: { report: RatingReport }) {
     <div className="card overflow-hidden">
       <div className="border-b border-line px-5 py-4 sm:px-6">
         <h3 className="text-[15px] font-medium text-ink">Roadmap</h3>
-        <p className="mt-1 text-[12px] leading-relaxed text-ink2">The order to work through it. Keep the phases sequential.</p>
+        <p className="mt-1 text-[12px] leading-relaxed text-ink2">Do them in order. Each phase builds on the last.</p>
       </div>
       <div className="grid divide-y divide-line md:grid-cols-3 md:divide-x md:divide-y-0">
         {report.roadmap.map((phase, index) => (
@@ -582,7 +582,7 @@ function Genetics({ report }: { report: RatingReport }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="eyebrow">Genetics vs changeable</p>
-          <h3 className="mt-1 text-[22px] leading-tight tracking-[-0.02em] text-ink">What you can change, and what you cannot</h3>
+          <h3 className="mt-1 text-[22px] leading-tight tracking-[-0.02em] text-ink">What is fixed vs what you can change</h3>
         </div>
         <p className="max-w-md text-[12px] leading-relaxed text-ink3">
           Bone structure is largely fixed after growth. Presentation is where most realistic change happens.

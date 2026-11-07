@@ -47,7 +47,7 @@ export function BlackPill3D({ className }: { className?: string }) {
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
     pmrem.dispose()
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.4)
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.0)
     keyLight.position.set(3.2, 5.2, 3.6)
     keyLight.castShadow = true
     keyLight.shadow.mapSize.set(1024, 1024)
@@ -60,7 +60,7 @@ export function BlackPill3D({ className }: { className?: string }) {
     keyLight.shadow.bias = -0.0004
     scene.add(keyLight)
 
-    const rimLight = new THREE.DirectionalLight(0xc9ffe2, 1.35)
+    const rimLight = new THREE.DirectionalLight(0xc9ffe2, 0.9)
     rimLight.position.set(-4.2, 2.6, -3.4)
     scene.add(rimLight)
 
@@ -78,13 +78,13 @@ export function BlackPill3D({ className }: { className?: string }) {
     const cylinderLength = 1.95
 
     const capsuleMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x0b0b10,
-      metalness: 0.28,
-      roughness: 0.15,
-      clearcoat: 1,
-      clearcoatRoughness: 0.06,
-      envMapIntensity: 1.35,
-      specularIntensity: 1.15,
+      color: 0x121218,
+      metalness: 0.12,
+      roughness: 0.23,
+      clearcoat: 0.8,
+      clearcoatRoughness: 0.14,
+      envMapIntensity: 1.0,
+      specularIntensity: 1.0,
     })
 
     const capsule = new THREE.Mesh(
@@ -111,7 +111,7 @@ export function BlackPill3D({ className }: { className?: string }) {
 
     const shadowPlane = new THREE.Mesh(
       new THREE.PlaneGeometry(12, 12),
-      new THREE.ShadowMaterial({ opacity: 0.42, color: 0x000000 }),
+      new THREE.ShadowMaterial({ opacity: 0.36, color: 0x000000 }),
     )
     shadowPlane.rotation.x = -Math.PI / 2
     shadowPlane.position.y = -1.75
@@ -217,7 +217,7 @@ export function BlackPill3D({ className }: { className?: string }) {
         motion.yawVelocity *= 0.94
         if (Math.abs(motion.yawVelocity) < 0.0015) {
           motion.yawVelocity = 0
-          view.yaw += reducedMotion ? 0 : 0.0042
+          view.yaw += reducedMotion ? 0 : 0.0032
         }
       }
 
@@ -227,7 +227,7 @@ export function BlackPill3D({ className }: { className?: string }) {
       root.position.x = view.offsetX
 
       if (!reducedMotion) {
-        root.position.y = 0.25 + view.offsetY + Math.sin(t * 1.1) * 0.13
+        root.position.y = 0.25 + view.offsetY + Math.sin(t * 1.1) * 0.1
         shadowPlane.scale.setScalar(1 - Math.sin(t * 1.1) * 0.06)
       } else {
         root.position.y = 0.25 + view.offsetY

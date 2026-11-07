@@ -27,35 +27,33 @@ export function Hero({
 
   return (
     <section className="border-b border-line">
-      <div className="container-page grid gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-start lg:gap-16 lg:py-24">
-        <div className="max-w-2xl">
-          <div className="-ml-2 mb-4 h-44 w-full max-w-md select-none sm:h-52 lg:h-56">
-            <Suspense fallback={null}>
-              <BlackPill3D className="h-full w-full" />
-            </Suspense>
+      <div className="container-page grid gap-10 py-10 sm:py-14 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-12 lg:py-16 xl:gap-16">
+        <div className="min-w-0">
+          <Suspense fallback={<div className="h-28 w-28 sm:h-32 sm:w-32 lg:h-36 lg:w-36" />}>
+            <BlackPill3D className="-ml-2 h-28 w-28 select-none sm:h-32 sm:w-32 lg:h-36 lg:w-36" />
+          </Suspense>
 
-          </div>
-          <div className="flex items-center gap-2.5">
-            <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />
-            <p className="eyebrow">Facial aesthetics, zero flattery</p>
+          <div className="mt-4 flex items-center gap-2.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+            <p className="eyebrow">An honest assessment of your facial features</p>
           </div>
 
-          <h1 className="text-balance font-display text-[clamp(2.8rem,6vw,5rem)] leading-[0.98] tracking-[-0.045em] text-ink">
-            Understand your face.{' '}
-            <span className="italic text-accent">Improve what you can.</span>
+          <h1 className="mt-4 max-w-2xl text-balance font-display text-[clamp(2.4rem,7.5vw,4.4rem)] leading-[1.02] tracking-[-0.035em] text-ink">
+            See how your features compare,{' '}
+            <span className="italic text-accent">and where to improve.</span>
           </h1>
 
-          <p className="mt-6 max-w-xl text-pretty text-[16px] leading-relaxed text-ink2">
-            One photo in. A ten-point read across structure, skin, grooming and overall appeal, plus a plan for the
-            parts you can actually change.
+          <p className="mt-5 max-w-xl text-pretty text-[15px] leading-relaxed text-ink2 sm:text-[16px]">
+            One photo in, and you get a 10-point read across structure, skin, hair and grooming, plus a clear plan
+            for the parts you can actually change.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <button type="button" onClick={onStart} className="btn btn-primary btn-md">
-              Start free analysis
+          <div className="mt-7 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+            <button type="button" onClick={onStart} className="btn btn-primary btn-md h-12 sm:h-11">
+              Analyze my photo
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </button>
-            <button type="button" onClick={onOpenChat} className="btn btn-secondary btn-md">
+            <button type="button" onClick={onOpenChat} className="btn btn-secondary btn-md h-12 sm:h-11">
               <MessageSquare className="h-4 w-4" strokeWidth={1.8} />
               Ask Kef
             </button>
@@ -63,49 +61,54 @@ export function Hero({
 
           <p className="mt-4 flex items-center gap-2 text-[11.5px] leading-relaxed text-ink3">
             <Lock className="h-3.5 w-3.5 text-accent" strokeWidth={1.8} />
-            Your photo never gets stored. Analysed once, then it is gone.
+            Analysed once. Never stored.
           </p>
 
-          <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-line pt-5">
+          <dl className="mt-8 grid max-w-lg grid-cols-3 gap-3 border-t border-line pt-5">
             <div>
-              <dt className="eyebrow">Dimensions</dt>
-              <dd className="mt-1 font-mono text-[15px] font-medium text-ink">10</dd>
+              <dt className="eyebrow">Scores</dt>
+              <dd className="mt-1 font-mono text-[13px] font-medium text-ink sm:text-[15px]">10</dd>
             </div>
             <div>
               <dt className="eyebrow">Scale</dt>
-              <dd className="mt-1 font-mono text-[15px] font-medium text-ink">1.0-10.0</dd>
+              <dd className="mt-1 font-mono text-[13px] font-medium text-ink sm:text-[15px]">1.0-10.0</dd>
             </div>
             <div>
               <dt className="eyebrow">Photo storage</dt>
-              <dd className="mt-1 font-mono text-[15px] font-medium text-ink">None</dd>
+              <dd className="mt-1 font-mono text-[13px] font-medium text-ink sm:text-[15px]">None</dd>
             </div>
           </dl>
         </div>
 
-        <div>
-          <div className="card p-5 sm:p-6">
-            <div className="flex items-start justify-between gap-4 border-b border-line pb-4">
-              <div>
-                <p className="eyebrow">The assessment</p>
-                <h2 className="mt-2 max-w-sm text-[21px] leading-[1.18] tracking-[-0.02em] text-ink">
-                  Ten dimensions. Three groups. One score.
-                </h2>
+        <div className="min-w-0">
+          <div className="card overflow-hidden">
+            <div className="border-b border-line p-4 sm:p-5">
+              <div className="flex items-center justify-between gap-3">
+                <p className="eyebrow">How we score you</p>
+                <span className="chip">Fixed weights</span>
               </div>
-              <span className="chip shrink-0">weighted</span>
+              <h2 className="mt-2 text-[17px] leading-snug tracking-[-0.01em] text-ink sm:text-[19px]">
+                How your results are calculated
+              </h2>
             </div>
 
-            <div>
+            <div className="p-4 sm:p-5">
               {FRAMEWORK_GROUPS.map((group) => (
-                <div key={group.key} className="border-b border-line py-4 last:border-b-0">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <p className="text-[13.5px] font-medium text-ink">{group.label}</p>
-                    <span className="font-mono text-[12px] text-ink3">{Math.round(group.weight * 100)}%</span>
+                <div key={group.key} className="border-b border-line py-3 first:pt-0 last:border-b-0 sm:py-3.5">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="text-[12.5px] font-semibold text-ink">{group.label}</p>
+                    <span className="font-mono text-[11px] tabular text-ink2">
+                      {Math.round(group.weight * 100)}%
+                    </span>
                   </div>
-                  <p className="mt-1 text-[12px] leading-relaxed text-ink2">{group.description}</p>
-                  <div className="mt-2 h-1 bg-sunken">
-                    <div className="h-full bg-accent" style={{ width: `${group.weight * 100}%` }} />
+                  <p className="mt-0.5 text-[11.5px] leading-snug text-ink2">{group.description}</p>
+                  <div className="mt-1.5 h-[3px] overflow-hidden rounded-full bg-sunken">
+                    <div
+                      className="h-full rounded-full bg-accent"
+                      style={{ width: `${group.weight * 100}%` }}
+                    />
                   </div>
-                  <p className="mt-2 font-mono text-[10px] uppercase leading-relaxed tracking-[0.07em] text-ink3">
+                  <p className="mt-1.5 font-mono text-[9px] uppercase leading-relaxed tracking-[0.06em] text-ink3">
                     {group.keys
                       .map((key) => DIMENSIONS.find((dimension) => dimension.key === key)?.name)
                       .filter(Boolean)
@@ -115,7 +118,7 @@ export function Hero({
               ))}
             </div>
 
-            <form onSubmit={submit} className="pt-5">
+            <form onSubmit={submit} className="border-t border-line p-4 sm:p-5">
               <label htmlFor="hero-ask" className="eyebrow">
                 Ask Kef
               </label>
@@ -126,25 +129,25 @@ export function Hero({
                   onChange={(event) => setAsk(event.target.value)}
                   placeholder="Ask about haircuts, skin, your score..."
                   maxLength={500}
-                  className="field h-10 text-[13px]"
+                  className="field h-11 text-[13px] sm:h-10"
                   autoComplete="off"
                 />
                 <button
                   type="submit"
                   disabled={!ask.trim()}
-                  className="btn btn-primary h-10 w-10 shrink-0 p-0"
+                  className="btn btn-primary h-11 w-11 shrink-0 p-0 sm:h-10 sm:w-10"
                   aria-label="Send question to Kef"
                 >
                   <ArrowUp className="h-4 w-4" strokeWidth={2} />
                 </button>
               </div>
               <p className="mt-2 text-[11px] leading-relaxed text-ink3">
-                General questions until you rate. Personal answers after.
+                General answers until you analyze. Personal answers after.
               </p>
             </form>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-2 px-1 font-mono text-[9px] uppercase tracking-[0.08em] text-ink3">
             <span>PSL-style index shown separately</span>
             <span>Not medical advice</span>
           </div>

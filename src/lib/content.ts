@@ -122,14 +122,14 @@ export const FRAMEWORK_GROUPS: FrameworkGroup[] = [
     key: 'structure',
     label: 'Structure',
     weight: 0.59,
-    description: 'Harmony, proportions, eyes, midface, jawline and cheekbones. The architecture.',
+    description: 'Harmony, proportions, eyes, midface, jawline and cheekbones.',
     keys: ['harmony', 'proportions', 'eyeArea', 'midface', 'jawline', 'cheekbones'],
   },
   {
     key: 'presentation',
     label: 'Presentation',
     weight: 0.23,
-    description: 'Skin, hair and grooming. The dimensions you can change the most.',
+    description: 'Skin, hair and grooming. The parts you can change most directly.',
     keys: ['skin', 'hair', 'grooming'],
   },
   {
@@ -281,7 +281,7 @@ export const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   },
   {
     q: 'Why no percentile?',
-    a: 'One photo cannot establish a true population percentile. You get a calibrated band and the dimension scores behind it, instead of invented precision.',
+    a: 'One photo cannot establish a true population percentile. You get the band and the scores behind it instead of invented precision.',
   },
   {
     q: 'How is gender handled?',

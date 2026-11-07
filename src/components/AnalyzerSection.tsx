@@ -48,8 +48,8 @@ export function AnalyzerSection({
       <SectionHeading
         index="01"
         eyebrow="Analysis"
-        title="Start with one honest photo"
-        description="Front-facing, even light, neutral expression. It reads visual cues, not your medical file."
+        title="Upload a front-facing photo"
+        description="Front-facing, even light, neutral expression. It reads what is visible in the photo, nothing else."
       />
 
       <div className="card mt-8 grid overflow-hidden lg:grid-cols-[1.05fr_0.95fr]">
@@ -182,12 +182,12 @@ export function AnalyzerSection({
             {status === 'analyzing' ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
-                Analysing
+                Analyzing...
               </>
             ) : (
               <>
                 <ScanFace className="h-4 w-4" strokeWidth={1.9} />
-                Run the analysis
+                Analyze my photo
               </>
             )}
           </button>
