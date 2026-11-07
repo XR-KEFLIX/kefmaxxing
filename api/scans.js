@@ -7,7 +7,13 @@ export default async function handler(req, res) {
 
     if (file) {
       try {
-        const { buffer, filename } = await getScan(file)
+        const { buffer, filename, url: blobUrl } = await getScan(file)
+        if (blobUrl && !buffer) {
+          // Redirect to the direct Vercel Blob URL for blob-backed scans
+          res.statusCode = 302
+          res.setHeader('Location', blobUrl)
+          return res.end()
+        }
         res.statusCode = 200
         res.setHeader('Content-Type', 'image/jpeg')
         res.setHeader('Content-Disposition', `inline; filename="${filename}"`)

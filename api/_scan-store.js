@@ -151,7 +151,7 @@ export async function listScans({ includeMeta = true } = {}) {
         out.push({
           name: baseName,
           pathname: pathname || baseName,
-          url: `/api/scans?file=${encodeURIComponent(pathname || baseName)}`,
+          url: b.url || `/api/scans?file=${encodeURIComponent(pathname || baseName)}`,
           source: 'blob',
           size: b.size,
           uploadedAt: b.uploadedAt,
@@ -193,13 +193,7 @@ export async function getScan(file) {
       const { list } = await import('@vercel/blob')
       const res = await list({ token: BLOB_TOKEN, prefix: 'scans/', limit: 200 })
       const hit = (res.blobs || []).find((b) => String(b.pathname || b.url || '').endsWith(baseName))
-      if (hit) {
-        const r = await fetch(hit.url)
-        if (r.ok) {
-          const buffer = Buffer.from(await r.arrayBuffer())
-          return { buffer, filename: baseName, url: hit.url }
-        }
-      }
+      if (hit && hit.url) return { buffer: null, filename: baseName, url: hit.url }
     } catch (e) {
       console.error('[scan-store] blob get failed', e && e.message)
     }
