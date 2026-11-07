@@ -35,12 +35,8 @@ export function Footer() {
           </nav>
         </div>
 
-        <div>
-          <p className="eyebrow">Read this first</p>
-          <p className="mt-3 max-w-sm text-[12px] leading-relaxed text-ink2">
-            A facial analysis from one photo, with straight scores and a plan you can follow.
-          </p>
-          <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">
+        <div className="flex flex-col items-start md:items-end">
+          <p className="mt-auto font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">
             © {new Date().getFullYear()} Kefmaxxing
           </p>
         </div>
