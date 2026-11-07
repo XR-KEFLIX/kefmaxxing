@@ -152,8 +152,8 @@ export function BlackPill3D({ className }: { className?: string }) {
       lastX = event.clientX
       lastY = event.clientY
       if (dragMode === 'pan') {
-        view.offsetX = Math.max(-1.6, Math.min(1.6, view.offsetX + dx * 0.009))
-        view.offsetY = Math.max(-1.1, Math.min(1.1, view.offsetY - dy * 0.009))
+        view.offsetX = Math.max(-3.6, Math.min(3.6, view.offsetX + dx * 0.011))
+        view.offsetY = Math.max(-2.3, Math.min(2.3, view.offsetY - dy * 0.011))
         return
       }
       view.yaw += dx * 0.011

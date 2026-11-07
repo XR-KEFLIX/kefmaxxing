@@ -33,9 +33,7 @@ export function Hero({
             <Suspense fallback={null}>
               <BlackPill3D className="h-full w-full" />
             </Suspense>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">
-              Drag to spin · Shift-drag to move · Double-click to reset
-            </p>
+
           </div>
           <div className="flex items-center gap-2.5">
             <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />
