@@ -4,7 +4,7 @@ export function Footer() {
       <div className="container-page grid gap-10 py-12 md:grid-cols-[1.2fr_0.8fr_1fr]">
         <div>
           <p className="flex items-center gap-2.5 font-display text-[20px] tracking-[-0.02em] text-ink">
-            <img src="/blackpill.svg" alt="" width={26} height={26} className="pill-float-soft h-6 w-6" />
+            <img src="/blackpill.svg" alt="" width={26} height={26} className="h-6 w-6" />
             Kefmaxxing
           </p>
           <p className="mt-2 max-w-sm text-[12.5px] leading-relaxed text-ink2">

@@ -1,6 +1,10 @@
-import { useState, type FormEvent } from 'react'
+import { useState, lazy, Suspense, type FormEvent } from 'react'
 import { ArrowRight, ArrowUp, Lock, MessageSquare } from 'lucide-react'
 import { DIMENSIONS, FRAMEWORK_GROUPS } from '../lib/content'
+
+const BlackPill3D = lazy(() =>
+  import('./BlackPill3D').then((module) => ({ default: module.BlackPill3D })),
+)
 
 export function Hero({
   onStart,
@@ -25,16 +29,17 @@ export function Hero({
     <section className="border-b border-line">
       <div className="container-page grid gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-start lg:gap-16 lg:py-24">
         <div className="max-w-2xl">
-          <div className="mb-6 flex items-end gap-5 sm:gap-6">
-            <img
-              src="/blackpill.svg"
-              alt="The blackpill"
-              className="pill-float pill-hero-shadow w-24 shrink-0 sm:w-28 xl:w-36"
-            />
-            <div className="flex items-center gap-2.5 pb-2">
-              <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />
-              <p className="eyebrow">Facial aesthetics, zero flattery</p>
-            </div>
+          <div className="-ml-2 mb-4 h-44 w-full max-w-md select-none sm:h-52 lg:h-56">
+            <Suspense fallback={null}>
+              <BlackPill3D className="h-full w-full" />
+            </Suspense>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">
+              Drag to spin · Shift-drag to move · Double-click to reset
+            </p>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />
+            <p className="eyebrow">Facial aesthetics, zero flattery</p>
           </div>
 
           <h1 className="text-balance font-display text-[clamp(2.8rem,6vw,5rem)] leading-[0.98] tracking-[-0.045em] text-ink">

@@ -22,7 +22,7 @@ function LogoMark() {
       alt="Kefmaxxing blackpill icon"
       width={44}
       height={44}
-      className="pill-float-soft h-10 w-10 shrink-0 sm:h-11 sm:w-11"
+      className="h-10 w-10 shrink-0 sm:h-11 sm:w-11"
     />
   )
 }
