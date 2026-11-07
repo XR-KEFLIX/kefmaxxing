@@ -35,9 +35,9 @@ The model scores each dimension from 1.0 to 10.0 with a note explaining what dro
 | --- | --- |
 | 9.0-10.0 | Chad |
 | 8.0-8.9 | Chadlite |
-| 7.0-7.9 | HTN |
-| 6.0-6.9 | MTN |
-| 5.0-5.9 | LTN |
+| 7.0-7.9 | HTN (High Tier Normie) |
+| 6.0-6.9 | MTN (Mid Tier Normie) |
+| 5.0-5.9 | LTN (Low Tier Normie) |
 | 4.0-4.9 | Sub-5 |
 | 3.0-3.9 | Sub-4 |
 | 1.0-2.9 | Sub-3 |

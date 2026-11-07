@@ -23,7 +23,7 @@ export function MethodSection() {
               { title: 'Ten dimensions', body: 'Six scores for structure, three for presentation and one for overall appeal. Each comes with a note on what drove it.' },
               { title: 'Weighted composite', body: 'Structure carries 59%, presentation 23%, appeal 18%. Fixed weights, so one feature cannot hijack the headline.' },
               { title: 'Hair halo bonus', body: 'If your hair halo hits 9.0 or higher, meaning the cut genuinely suits your face, the overall score gets at least two subtiers (about 0.7) added. A hair halo of 8.0 or higher adds one subtier. A strong haircut on the wrong face adds nothing.' },
-              { title: 'What the scale means', body: '5 is LTN. 6 is MTN. 7 is HTN. 8 is Chadlite. 9+ is Chad. Sub-5 and below are the lower tiers. Ranks from looksmaxxing culture.' },
+              { title: 'What the scale means', body: '5 is LTN (Low Tier Normie). 6 is MTN (Mid Tier Normie). 7 is HTN (High Tier Normie). 8 is Chadlite. 9+ is Chad. Sub-5 and below are the lower tiers. Ranks from looksmaxxing culture.' },
               { title: 'A secondary structural index', body: 'The PSL-style index reads only the six structure dimensions. It is internet looksmaxxing culture translated into numbers, not a medical tool and not the overall score.' },
             ].map((step, index) => (
               <li key={step.title} className="flex gap-4">
