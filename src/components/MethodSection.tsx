@@ -53,7 +53,6 @@ export function MethodSection() {
   return (
     <section id="method" className="container-page scroll-mt-20 py-16 sm:py-20">
       <SectionHeading
-        index="03"
         eyebrow="Method"
         title="How the analysis works"
         description="Fixed weights across 10 scores, and a clear line between what the photo shows and what it assumes."
@@ -127,7 +126,7 @@ export function MethodSection() {
                   {group.keys
                     .map((key) => DIMENSIONS.find((dimension) => dimension.key === key)?.name)
                     .filter(Boolean)
-                    .join(' · ')}
+                    .join(' Â· ')}
                 </p>
               </div>
             ))}
@@ -186,7 +185,6 @@ export function MethodSection() {
 
       <div id="evidence" className="mt-16 scroll-mt-20">
         <SectionHeading
-          index="04"
           eyebrow="Evidence"
           title="What the evidence supports"
           description="Strong evidence is not a promise, and limited evidence is not useless. It reflects the strength of the claim."
@@ -227,7 +225,6 @@ export function MethodSection() {
 
       <div id="faq" className="mt-16 scroll-mt-20">
         <SectionHeading
-          index="05"
           eyebrow="FAQ"
           title="Frequently asked questions"
           description="Straight answers about the score, your photo, the method and what it cannot tell you."

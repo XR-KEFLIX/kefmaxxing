@@ -3,13 +3,11 @@ import { cn, formatScore, influenceLabel, scoreHex } from '../lib/utils'
 import type { EvidenceLevel, Influence } from '../lib/types'
 
 export function SectionHeading({
-  index,
   eyebrow,
   title,
   description,
   className,
 }: {
-  index?: string
   eyebrow: string
   title: string
   description?: string
@@ -18,7 +16,6 @@ export function SectionHeading({
   return (
     <div className={cn('max-w-3xl', className)}>
       <div className="flex items-center gap-3">
-        {index && <span className="eyebrow">{index}</span>}
         <span className="h-px w-8 bg-lineStrong" aria-hidden="true" />
         <span className="eyebrow">{eyebrow}</span>
       </div>

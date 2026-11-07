@@ -46,7 +46,6 @@ export function AnalyzerSection({
   return (
     <section id="analysis" className="container-page scroll-mt-20 py-16 sm:py-20">
       <SectionHeading
-        index="01"
         eyebrow="Analysis"
         title="Upload a front-facing photo"
         description="Front-facing, even light, neutral expression. It reads what is visible in the photo, nothing else."
@@ -68,7 +67,7 @@ export function AnalyzerSection({
 
           <div className="mb-3 flex items-center justify-between gap-4">
             <p className="eyebrow">Photo</p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">JPEG · PNG · WEBP · 15 MB</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">JPEG Â· PNG Â· WEBP Â· 15 MB</p>
           </div>
 
           <div
