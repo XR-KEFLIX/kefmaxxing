@@ -68,7 +68,7 @@ export const FAQ_ITEMS = [
   { q: 'Is my photo stored?', a: 'Not by this app. The image is compressed in your browser, sent to the analysis endpoint and processed once. There is no account, profile or gallery.' },
   { q: 'Why does my score change between photos?', a: 'Perspective, light, expression, compression and filters can shift the read by a meaningful amount. If you want to track progress, use the same camera, distance, room and light each time.' },
   { q: 'What is the PSL-style structural index?', a: 'A secondary readout built from the six structure dimensions. It is inspired by internet looksmaxxing culture, not by science, and it is not the overall score.' },
-  { q: 'What do the ranks mean?', a: 'They are looksmaxxing-culture ranks. Sub-3 to Sub-5 are the lower tiers. LTN, MTN and HTN are the normie tiers. Above that are Chadlite and Chad.' },
+  { q: 'What do the ranks mean?', a: 'They are looksmaxxing-culture ranks. Sub-3 to Sub-5 are the lower tiers. LTN, MTN and HTN are the normal tiers. Above that are Chadlite and Chad.' },
   { q: 'What is the hair halo?', a: 'A separate score for how well your current hair and cut suit your specific face. A hair halo of 9.0 or above adds at least two subtiers to the overall score. Great hair on the wrong face does not count.' },
   { q: 'Can I change my bone structure?', a: 'Not after growth, short of surgery. Body composition, skin, hair and grooming change how your existing structure reads. Be sceptical of anyone selling non-surgical bone change.' },
   { q: 'Does mewing work?', a: 'There is no good evidence it reshapes adult bone. It may help some people with oral posture or nasal breathing. It is not a substitute for orthodontic or medical care.' },
