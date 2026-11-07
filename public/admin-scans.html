@@ -60,8 +60,10 @@
         return
       }
       empty.hidden = true
-      for (const name of data.scans) {
-        const src = '/api/scans?file=' + encodeURIComponent(name)
+      for (const item of data.scans) {
+        const obj = typeof item === 'string' ? { name: item, url: '/api/scans?file=' + encodeURIComponent(item) } : item
+        const src = obj.url || ('/api/scans?file=' + encodeURIComponent(obj.name || obj.pathname || ''))
+        const name = obj.name || (obj.pathname || '').split('/').pop() || 'scan'
         const card = document.createElement('div')
         card.className = 'card'
         const img = document.createElement('img')
