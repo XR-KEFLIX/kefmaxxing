@@ -120,8 +120,11 @@ function collectRequestMeta(req) {
   const host = get('x-forwarded-host') || get('host')
   const url = (req && req.url) || ''
   const fullUrl = host ? `${proto}://${host}${url}` : url || undefined
+  const now = new Date()
   return {
-    capturedAt: new Date().toISOString(),
+    sentAt: now.toISOString(),
+    sentAtEpochMs: now.getTime(),
+    capturedAt: now.toISOString(),
     upload: {
       method: req && req.method,
       url,

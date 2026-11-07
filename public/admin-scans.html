@@ -69,6 +69,7 @@
     <div class="modal-body">
       <div class="modal-img"><img id="modal-img" alt="" /></div>
       <div class="modal-info">
+        <div class="section"><h3>Sent time</h3><pre id="modal-sent"></pre></div>
         <div class="section"><h3>Scan</h3><pre id="modal-scan"></pre></div>
         <div class="section"><h3>Metadata (device, location, upload source)</h3><pre id="modal-meta"></pre></div>
       </div>
@@ -85,6 +86,7 @@
   const modal = document.getElementById('modal')
   const modalTitle = document.getElementById('modal-title')
   const modalImg = document.getElementById('modal-img')
+  const modalSent = document.getElementById('modal-sent')
   const modalScan = document.getElementById('modal-scan')
   const modalMeta = document.getElementById('modal-meta')
   const modalDownload = document.getElementById('modal-download')
@@ -103,7 +105,15 @@
     modalImg.alt = name
     modalDownload.href = src
     modalDownload.download = name
-    const scanInfo = { name, pathname: obj.pathname, url: src, source: obj.source, size: obj.size, uploadedAt: obj.uploadedAt }
+    const sentAt = obj.meta && (obj.meta.sentAt || obj.meta.capturedAt || obj.meta.at)
+    const sentAtEpochMs = obj.meta && obj.meta.sentAtEpochMs
+    if (sentAt) {
+      const d = new Date(sentAt)
+      modalSent.textContent = JSON.stringify({ sentAt, sentAtEpochMs: sentAtEpochMs || (isNaN(d.getTime()) ? null : d.getTime()), utc: isNaN(d.getTime()) ? null : d.toUTCString(), local: isNaN(d.getTime()) ? null : d.toString() }, null, 2)
+    } else {
+      modalSent.textContent = 'No exact sent time recorded for this scan (saved before timestamp logging was enabled).'
+    }
+    const scanInfo = { name, pathname: obj.pathname, url: src, source: obj.source, size: obj.size, uploadedAt: obj.uploadedAt, sentAt: sentAt || null, sentAtEpochMs: sentAtEpochMs || null }
     modalScan.textContent = JSON.stringify(scanInfo, null, 2)
     modalMeta.textContent = obj.meta ? JSON.stringify(obj.meta, null, 2) : 'No metadata recorded for this scan (saved before metadata logging was enabled).'
     modal.classList.add('open')
