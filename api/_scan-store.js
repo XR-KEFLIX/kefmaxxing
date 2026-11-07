@@ -32,6 +32,8 @@ async function writeMeta(name, meta) {
         access: 'public',
         contentType: 'application/json',
         token: BLOB_TOKEN,
+        addRandomSuffix: false,
+        allowOverwrite: true,
       })
     } catch (e) {
       console.error('[scan-store] meta blob save failed', e && e.message)
@@ -77,6 +79,7 @@ export async function saveScan(image, meta) {
           access: 'public',
           contentType: 'image/jpeg',
           token: BLOB_TOKEN,
+          addRandomSuffix: false,
         })
         await writeMeta(filename, metaPayload)
         // Also write locally in dev so /scans folder stays populated
