@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 export function useCopy(resetMs = 2000) {
   const [copied, setCopied] = useState(false)
-  const timer = useRef<number | undefined>(undefined)
+  const timer = useRef(undefined)
 
   useEffect(() => {
     return () => {
@@ -11,7 +11,7 @@ export function useCopy(resetMs = 2000) {
   }, [])
 
   const copy = useCallback(
-    async (text: string) => {
+    async (text) => {
       try {
         await navigator.clipboard.writeText(text)
         setCopied(true)

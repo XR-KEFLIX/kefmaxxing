@@ -2,7 +2,7 @@ const MAX_EDGE = 1280
 const JPEG_QUALITY = 0.84
 const MAX_DATA_URL_CHARS = 5_200_000
 
-export async function preparePhoto(file: File): Promise<string> {
+export async function preparePhoto(file) {
   if (!file.type.startsWith('image/')) {
     throw new Error('That file is not an image. Use a JPEG, PNG or WebP photo.')
   }
@@ -32,13 +32,12 @@ export async function preparePhoto(file: File): Promise<string> {
   return dataUrl
 }
 
-async function loadBitmap(file: File): Promise<ImageBitmap | HTMLImageElement> {
+async function loadBitmap(file) {
   if ('createImageBitmap' in window) {
     try {
-      // Apply EXIF orientation so portrait phone photos are not rotated.
       return await createImageBitmap(file, { imageOrientation: 'from-image' })
     } catch {
-      /* fall through to the <img> path */
+      /* fall through to the  path */
     }
   }
   return await new Promise((resolve, reject) => {

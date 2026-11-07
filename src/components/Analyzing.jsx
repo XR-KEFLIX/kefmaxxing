@@ -12,7 +12,7 @@ const PHASES = [
 
 const PHASE_SECONDS = 6
 
-export function Analyzing({ photo, onCancel }: { photo: string; onCancel: () => void }) {
+export function Analyzing({ photo, onCancel }) {
   const [elapsed, setElapsed] = useState(0)
 
   useEffect(() => {
@@ -60,23 +60,8 @@ export function Analyzing({ photo, onCancel }: { photo: string; onCancel: () => 
                 const done = index < phaseIndex
                 const active = index === phaseIndex
                 return (
-                  <li
-                    key={item.title}
-                    className={cn(
-                      'flex items-center gap-3 text-[13px] transition-colors',
-                      done ? 'text-ink2' : active ? 'text-ink' : 'text-ink3',
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        'flex h-5 w-5 shrink-0 items-center justify-center rounded-[4px] border font-mono text-[10px]',
-                        done
-                          ? 'border-accent/30 bg-accentSoft text-accent'
-                          : active
-                            ? 'border-accent text-accent'
-                            : 'border-lineStrong text-ink3',
-                      )}
-                    >
+                  <li key={item.title} className={cn('flex items-center gap-3 text-[13px] transition-colors', done ? 'text-ink2' : active ? 'text-ink' : 'text-ink3')}>
+                    <span className={cn('flex h-5 w-5 shrink-0 items-center justify-center rounded-[4px] border font-mono text-[10px]', done ? 'border-accent/30 bg-accentSoft text-accent' : active ? 'border-accent text-accent' : 'border-lineStrong text-ink3')}>
                       {done ? String(index + 1) : index + 1}
                     </span>
                     {item.title}

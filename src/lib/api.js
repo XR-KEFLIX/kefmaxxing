@@ -1,10 +1,4 @@
-import type { ChatMessage, Gender, RateResponse, RatingReport } from './types'
-
-export async function requestRating(
-  image: string,
-  gender: Gender,
-  signal?: AbortSignal,
-): Promise<RateResponse> {
+export async function requestRating(image, gender, signal) {
   const res = await fetch('/api/rate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -12,14 +6,7 @@ export async function requestRating(
     signal,
   })
 
-  let payload: {
-    ok?: boolean
-    model?: string
-    provider?: string
-    report?: RateResponse['report']
-    error?: string
-    message?: string
-  } = {}
+  let payload = {}
   try {
     payload = await res.json()
   } catch {
@@ -41,13 +28,7 @@ export async function requestRating(
   }
 }
 
-export async function askCoach(
-  question: string,
-  report: RatingReport | null,
-  gender: Gender,
-  history: ChatMessage[],
-  signal?: AbortSignal,
-): Promise<string> {
+export async function askCoach(question, report, gender, history, signal) {
   const res = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -60,7 +41,7 @@ export async function askCoach(
     signal,
   })
 
-  let payload: { ok?: boolean; answer?: string; error?: string; message?: string } = {}
+  let payload = {}
   try {
     payload = await res.json()
   } catch {

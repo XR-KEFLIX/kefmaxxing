@@ -1,5 +1,4 @@
-﻿import { callAgnes } from './_agnes.js'
-import { providerChain } from './_providers.js'
+﻿import { askCoach } from './chat.js'
 
 const MAX_QUESTION = 500
 const MAX_HISTORY = 10
@@ -60,13 +59,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed', message: 'POST only.' })
   }
 
-  if (!providerChain().length) {
-    return res.status(500).json({
-      error: 'Server configuration error',
-      message: 'No model provider is configured. Set GEMINI_API_KEY (and any fallbacks) in Vercel.',
-    })
-  }
-
   const body = req.body || {}
   const question = typeof body.question === 'string' ? body.question.trim() : ''
   if (!question || question.length > MAX_QUESTION) {
@@ -88,7 +80,7 @@ export default async function handler(req, res) {
 
   messages.push({ role: 'user', content: question })
 
-  const result = await callAgnes(messages, { maxTokens: 600, temperature: 0.5 })
+  const result = await askCoach(messages, { maxTokens: 600, temperature: 0.5 })
   if (!result.ok) {
     return res.status(502).json({
       error: 'Upstream error',

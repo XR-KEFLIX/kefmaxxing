@@ -3,19 +3,8 @@ import { ArrowUp, MessageSquare, X } from 'lucide-react'
 import { askCoach } from '../lib/api'
 import { CHAT_STARTERS_GENERAL, CHAT_STARTERS_WITH_REPORT } from '../lib/content'
 import { cn } from '../lib/utils'
-import type { ChatMessage, Gender, RatingReport } from '../lib/types'
 
-interface Props {
-  open: boolean
-  onOpen: () => void
-  onClose: () => void
-  report: RatingReport | null
-  gender: Gender
-  seed: string | null
-  onSeedConsumed: () => void
-}
-
-function greeting(report: RatingReport | null): ChatMessage {
+function greeting(report) {
   return {
     role: 'coach',
     content: report
@@ -24,17 +13,17 @@ function greeting(report: RatingReport | null): ChatMessage {
   }
 }
 
-export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedConsumed }: Props) {
-  const [messages, setMessages] = useState<ChatMessage[]>([greeting(report)])
+export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedConsumed }) {
+  const [messages, setMessages] = useState([greeting(report)])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState(null)
   const [lastQuestion, setLastQuestion] = useState('')
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLTextAreaElement>(null)
-  const dialogRef = useRef<HTMLDivElement>(null)
-  const lastSeedRef = useRef<string | null>(null)
-  const lastHistoryRef = useRef<ChatMessage[]>([])
+  const scrollRef = useRef(null)
+  const inputRef = useRef(null)
+  const dialogRef = useRef(null)
+  const lastSeedRef = useRef(null)
+  const lastHistoryRef = useRef([])
 
   useEffect(() => {
     setMessages([greeting(report)])
@@ -49,7 +38,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null
     document.body.style.overflow = 'hidden'
 
-    const onKeyDown = (event: KeyboardEvent) => {
+    const onKeyDown = (event) => {
       if (event.key === 'Escape') {
         onClose()
         return
@@ -59,9 +48,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
       const dialog = dialogRef.current
       if (!dialog) return
       const focusable = Array.from(
-        dialog.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), textarea:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
-        ),
+        dialog.querySelectorAll('button:not([disabled]), textarea:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'),
       ).filter((element) => element.offsetParent !== null)
       if (!focusable.length) return
 
@@ -75,6 +62,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
         first.focus()
       }
     }
+
     window.addEventListener('keydown', onKeyDown)
 
     const timer = window.setTimeout(() => inputRef.current?.focus(), 80)
@@ -92,35 +80,32 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
     if (element) element.scrollTop = element.scrollHeight
   }, [messages, loading, error])
 
-  const send = useCallback(
-    async (raw: string, options?: { append?: boolean; history?: ChatMessage[] }) => {
-      const question = raw.trim()
-      if (!question || loading) return
+  const send = useCallback(async (raw, options) => {
+    const question = raw.trim()
+    if (!question || loading) return
 
-      setError(null)
-      setLastQuestion(question)
-      const history = options?.history ?? messages
-      lastHistoryRef.current = history
+    setError(null)
+    setLastQuestion(question)
+    const history = options?.history ?? messages
+    lastHistoryRef.current = history
 
-      if (options?.append !== false) {
-        setMessages((previous) => [...previous, { role: 'user', content: question }])
-      }
+    if (options?.append !== false) {
+      setMessages((previous) => [...previous, { role: 'user', content: question }])
+    }
 
-      setInput('')
-      setLoading(true)
+    setInput('')
+    setLoading(true)
 
-      try {
-        const answer = await askCoach(question, report, gender, history)
-        setMessages((previous) => [...previous, { role: 'coach', content: answer }])
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'That did not go through. Try again.')
-      } finally {
-        setLoading(false)
-        inputRef.current?.focus()
-      }
-    },
-    [gender, loading, messages, report],
-  )
+    try {
+      const answer = await askCoach(question, report, gender, history)
+      setMessages((previous) => [...previous, { role: 'coach', content: answer }])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'That did not go through. Try again.')
+    } finally {
+      setLoading(false)
+      inputRef.current?.focus()
+    }
+  }, [gender, loading, messages, report])
 
   useEffect(() => {
     if (!seed) {
@@ -189,10 +174,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
 
         <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4" aria-live="polite">
           {messages.map((message, index) => (
-            <div
-              key={`${message.role}-${index}`}
-              className={cn('flex', message.role === 'user' ? 'justify-end' : 'justify-start')}
-            >
+            <div key={`${message.role}-${index}`} className={cn('flex', message.role === 'user' ? 'justify-end' : 'justify-start')}>
               {message.role === 'coach' ? (
                 <div className="flex max-w-[88%] gap-2.5">
                   <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center">
@@ -238,13 +220,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
             <p className="eyebrow mb-2">Start with</p>
             <div className="flex flex-wrap gap-1.5">
               {starters.map((starter) => (
-                <button
-                  key={starter}
-                  type="button"
-                  onClick={() => void send(starter)}
-                  disabled={loading}
-                  className="rounded-[4px] border border-line bg-paper px-2.5 py-1.5 text-left text-[11.5px] leading-snug text-ink2 transition-colors hover:border-accent/40 hover:text-ink disabled:opacity-50"
-                >
+                <button key={starter} type="button" onClick={() => void send(starter)} disabled={loading} className="rounded-[4px] border border-line bg-paper px-2.5 py-1.5 text-left text-[11.5px] leading-snug text-ink2 transition-colors hover:border-accent/40 hover:text-ink disabled:opacity-50">
                   {starter}
                 </button>
               ))}
@@ -269,13 +245,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
               placeholder="Ask a question..."
               className="field max-h-32 min-h-[42px] resize-none py-2.5 text-[13px]"
             />
-            <button
-              type="button"
-              onClick={() => void send(input)}
-              disabled={!input.trim() || loading}
-              aria-label="Send question"
-              className="btn btn-primary h-10 w-10 shrink-0 p-0"
-            >
+            <button type="button" onClick={() => void send(input)} disabled={!input.trim() || loading} aria-label="Send question" className="btn btn-primary h-10 w-10 shrink-0 p-0">
               <ArrowUp className="h-4 w-4" strokeWidth={2} />
             </button>
           </div>

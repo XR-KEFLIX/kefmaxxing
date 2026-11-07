@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, type FormEvent } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { ArrowRight, ArrowUp, Lock, MessageSquare } from 'lucide-react'
 import { DIMENSIONS, FRAMEWORK_GROUPS } from '../lib/content'
 
@@ -6,18 +6,10 @@ const BlackPill3D = lazy(() =>
   import('./BlackPill3D').then((module) => ({ default: module.BlackPill3D })),
 )
 
-export function Hero({
-  onStart,
-  onOpenChat,
-  onAsk,
-}: {
-  onStart: () => void
-  onOpenChat: () => void
-  onAsk: (question: string) => void
-}) {
+export function Hero({ onStart, onOpenChat, onAsk }) {
   const [ask, setAsk] = useState('')
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = (event) => {
     event.preventDefault()
     const question = ask.trim()
     if (!question) return
@@ -101,10 +93,7 @@ export function Hero({
                   </div>
                   <p className="mt-1 text-[11.5px] leading-normal text-ink2">{group.description}</p>
                   <div className="mt-2 h-[3px] overflow-hidden rounded-full bg-sunken">
-                    <div
-                      className="h-full rounded-full bg-accent"
-                      style={{ width: `${group.weight * 100}%` }}
-                    />
+                    <div className="h-full rounded-full bg-accent" style={{ width: `${group.weight * 100}%` }} />
                   </div>
                   <p className="mt-2 font-mono text-[9px] uppercase leading-relaxed tracking-[0.06em] text-ink2/80">
                     {group.keys
@@ -130,12 +119,7 @@ export function Hero({
                   className="field h-11 text-[13px] sm:h-10"
                   autoComplete="off"
                 />
-                <button
-                  type="submit"
-                  disabled={!ask.trim()}
-                  className="btn btn-primary h-11 w-11 shrink-0 p-0 sm:h-10 sm:w-10"
-                  aria-label="Send question to Kef"
-                >
+                <button type="submit" disabled={!ask.trim()} className="btn btn-primary h-11 w-11 shrink-0 p-0 sm:h-10 sm:w-10" aria-label="Send question to Kef">
                   <ArrowUp className="h-4 w-4" strokeWidth={2} />
                 </button>
               </div>

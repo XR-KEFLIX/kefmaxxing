@@ -9,19 +9,18 @@ import { Footer } from './components/Footer'
 import { ChatDock } from './components/ChatDock'
 import { preparePhoto } from './lib/image'
 import { requestRating } from './lib/api'
-import type { Gender, RatingReport, ScanStatus } from './lib/types'
 
 export default function App() {
-  const [photo, setPhoto] = useState<string | null>(null)
-  const [gender, setGender] = useState<Gender>('male')
-  const [status, setStatus] = useState<ScanStatus>('idle')
-  const [report, setReport] = useState<RatingReport | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [photo, setPhoto] = useState(null)
+  const [gender, setGender] = useState('male')
+  const [status, setStatus] = useState('idle')
+  const [report, setReport] = useState(null)
+  const [error, setError] = useState(null)
   const [chatOpen, setChatOpen] = useState(false)
-  const [chatSeed, setChatSeed] = useState<string | null>(null)
-  const abortRef = useRef<AbortController | null>(null)
+  const [chatSeed, setChatSeed] = useState(null)
+  const abortRef = useRef(null)
 
-  const handleFile = useCallback(async (file: File) => {
+  const handleFile = useCallback(async (file) => {
     setError(null)
     try {
       const dataUrl = await preparePhoto(file)
@@ -91,7 +90,7 @@ export default function App() {
     })
   }, [status])
 
-  const openChat = useCallback((seed?: string) => {
+  const openChat = useCallback((seed) => {
     setChatSeed(seed ?? null)
     setChatOpen(true)
   }, [])

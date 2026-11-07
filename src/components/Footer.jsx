@@ -20,18 +20,10 @@ export function Footer() {
         <div>
           <p className="eyebrow">Explore</p>
           <nav className="mt-3 grid gap-2 text-[12.5px] text-ink2" aria-label="Footer">
-            <a href="#analysis" className="transition-colors hover:text-ink">
-              Analysis
-            </a>
-            <a href="#method" className="transition-colors hover:text-ink">
-              Method
-            </a>
-            <a href="#evidence" className="transition-colors hover:text-ink">
-              Evidence
-            </a>
-            <a href="#faq" className="transition-colors hover:text-ink">
-              FAQ
-            </a>
+            <a href="#analysis" className="transition-colors hover:text-ink">Analysis</a>
+            <a href="#method" className="transition-colors hover:text-ink">Method</a>
+            <a href="#evidence" className="transition-colors hover:text-ink">Evidence</a>
+            <a href="#faq" className="transition-colors hover:text-ink">FAQ</a>
           </nav>
         </div>
 
