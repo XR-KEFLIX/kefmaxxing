@@ -12,12 +12,62 @@ function diskFilePath(name) {
   return path.resolve(SCAN_DIR, path.basename(name))
 }
 
-export async function saveScan(image) {
+function metaPathFor(name) {
+  return diskFilePath(name).replace(/\.jpg$/i, '.json')
+}
+
+async function writeMeta(name, meta) {
+  if (!meta || typeof meta !== 'object') return
+  const payload = JSON.stringify(meta, null, 2)
+  // Disk
+  try {
+    await fs.mkdir(SCAN_DIR, { recursive: true })
+    await fs.writeFile(metaPathFor(name), payload, 'utf8')
+  } catch {}
+  // Blob
+  if (BLOB_TOKEN) {
+    try {
+      const { put } = await import('@vercel/blob')
+      await put(`scans/${name.replace(/\.jpg$/i, '.json')}`, Buffer.from(payload, 'utf8'), {
+        access: 'public',
+        contentType: 'application/json',
+        token: BLOB_TOKEN,
+      })
+    } catch (e) {
+      console.error('[scan-store] meta blob save failed', e && e.message)
+    }
+  }
+}
+
+async function readMeta(name) {
+  // Disk first
+  try {
+    const raw = await fs.readFile(metaPathFor(name), 'utf8')
+    return JSON.parse(raw)
+  } catch {}
+  // Blob
+  if (BLOB_TOKEN) {
+    try {
+      const { list } = await import('@vercel/blob')
+      const metaName = name.replace(/\.jpg$/i, '.json')
+      const res = await list({ token: BLOB_TOKEN, prefix: `scans/${metaName}`, limit: 5 })
+      const hit = (res.blobs || []).find((b) => String(b.pathname || '').endsWith(metaName))
+      if (hit) {
+        const r = await fetch(hit.url)
+        if (r.ok) return await r.json()
+      }
+    } catch {}
+  }
+  return null
+}
+
+export async function saveScan(image, meta) {
   try {
     const base64 = String(image || '').replace(/^data:image\/[a-z0-9.]+;base64,/, '')
     const buffer = Buffer.from(base64, 'base64')
     if (!buffer.length) return null
     const filename = scanFilename()
+    const metaPayload = { filename, savedAt: new Date().toISOString(), ...(meta && typeof meta === 'object' ? meta : {}) }
 
     // Prefer persistent Blob storage when deployed
     if (BLOB_TOKEN) {
@@ -28,6 +78,7 @@ export async function saveScan(image) {
           contentType: 'image/jpeg',
           token: BLOB_TOKEN,
         })
+        await writeMeta(filename, metaPayload)
         // Also write locally in dev so /scans folder stays populated
         if (!process.env.VERCEL) {
           await fs.mkdir(SCAN_DIR, { recursive: true })
@@ -41,6 +92,7 @@ export async function saveScan(image) {
 
     await fs.mkdir(SCAN_DIR, { recursive: true })
     await fs.writeFile(diskFilePath(filename), buffer)
+    await writeMeta(filename, metaPayload)
     return { url: null, pathname: filename }
   } catch (e) {
     console.error('[scan-store] scan save failed', e && e.message)
@@ -48,10 +100,10 @@ export async function saveScan(image) {
   }
 }
 
-export async function listScans() {
-  const out = [] // [{name, pathname, url, source}]
+export async function listScans({ includeMeta = true } = {}) {
+  const out = [] // [{name, pathname, url, source, meta?}]
 
-  // Local disk (dev + /tmp fallback) always, so the folder is authoritative locally
+  // Local disk (dev + /tmp fallback)
   try {
     await fs.mkdir(SCAN_DIR, { recursive: true })
     const entries = await fs.readdir(SCAN_DIR).catch(() => [])
@@ -77,7 +129,7 @@ export async function listScans() {
       for (const b of res.blobs || []) {
         const pathname = b.pathname || b.url || ''
         const baseName = pathname.split('/').pop()
-        // avoid duplicate if already listed from disk
+        if (!/^scan-.*\.jpg$/i.test(baseName || '')) continue
         if (out.some((s) => s.name === baseName)) continue
         out.push({
           name: baseName,
@@ -93,12 +145,16 @@ export async function listScans() {
     }
   }
 
-  // Newest first: disk names embed timestamps, blobs have uploadedAt
+  // Newest first
   out.sort((a, b) => {
     const da = a.uploadedAt ? new Date(a.uploadedAt).getTime() : (a.name.match(/scan-(\d{4}-\d{2}-\d{2}T[\d-:]+)/) || [null, a.name])[1]
     const db = b.uploadedAt ? new Date(b.uploadedAt).getTime() : (b.name.match(/scan-(\d{4}-\d{2}-\d{2}T[\d-:]+)/) || [null, b.name])[1]
     return String(db) > String(da) ? 1 : -1
   })
+
+  if (includeMeta) {
+    await Promise.all(out.map(async (s) => { try { s.meta = await readMeta(s.name) } catch { s.meta = null } }))
+  }
 
   return out
 }

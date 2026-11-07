@@ -18,6 +18,9 @@
   .card img { width: 100%; height: auto; display: block; background: #0a0a0a; }
   .card .row { padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .name { font-size: 11px; font-family: ui-monospace, monospace; color: #9a9790; word-break: break-all; }
+  .meta-block { padding: 0 12px 12px; font-size: 11px; color: #b7b4ad; font-family: ui-monospace, monospace; white-space: pre-wrap; word-break: break-word; line-height: 1.45; border-top: 1px solid #232422; margin-top: 0; }
+  .meta-block summary { cursor: pointer; color: #9a9790; padding: 8px 0 4px; font-size: 11px; list-style: none; }
+  .meta-block summary::-webkit-details-marker { display: none; }
   .empty { color: #9a9790; padding: 48px 24px; text-align: center; font-size: 14px; }
   .error { color: #f0a08a; padding: 12px 24px; font-size: 13px; }
 </style>
@@ -90,6 +93,17 @@
         row.appendChild(a)
         card.appendChild(img)
         card.appendChild(row)
+        if (obj.meta && typeof obj.meta === 'object') {
+          const details = document.createElement('details')
+          details.className = 'meta-block'
+          const sum = document.createElement('summary')
+          sum.textContent = 'Metadata'
+          const pre = document.createElement('div')
+          pre.textContent = JSON.stringify(obj.meta, null, 2)
+          details.appendChild(sum)
+          details.appendChild(pre)
+          card.appendChild(details)
+        }
         grid.appendChild(card)
       }
     } catch (err) {

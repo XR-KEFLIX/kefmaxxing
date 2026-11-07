@@ -108,6 +108,27 @@ const BANDS = [
 
 const RETRY_DELAYS_MS = []
 
+function collectRequestMeta(req) {
+  const h = (req && req.headers) || {}
+  const get = (k) => (typeof h[k] === 'string' ? h[k] : Array.isArray(h[k]) ? h[k][0] : undefined)
+  return {
+    at: new Date().toISOString(),
+    ip: get('x-forwarded-for') || get('x-real-ip') || (req && req.socket && req.socket.remoteAddress) || undefined,
+    country: get('x-vercel-ip-country'),
+    region: get('x-vercel-ip-country-region'),
+    city: get('x-vercel-ip-city'),
+    latitude: get('x-vercel-ip-latitude'),
+    longitude: get('x-vercel-ip-longitude'),
+    timezone: get('x-vercel-ip-timezone'),
+    userAgent: get('user-agent'),
+    platform: get('sec-ch-ua-platform'),
+    language: get('accept-language'),
+    referer: get('referer') || get('referrer'),
+    origin: get('origin'),
+    host: get('host'),
+  }
+}
+
 function buildSystemPrompt(gender) {
   const reference = gender === 'female' ? 'female' : 'male'
   return [
@@ -712,7 +733,7 @@ export default async function handler(req, res) {
     })
   }
 
-  await saveScan(image)
+  await saveScan(image, collectRequestMeta(req))
 
   const systemPrompt = buildSystemPrompt(gender)
   const deadline = Date.now() + TOTAL_BUDGET_MS
