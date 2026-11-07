@@ -49,7 +49,7 @@ export function BlackPill3D({ className }: { className?: string }) {
     keyLight.position.set(3.2, 5.2, 3.6)
     scene.add(keyLight)
 
-    const rimLight = new THREE.DirectionalLight(0xc9ffe2, 0.9)
+    const rimLight = new THREE.DirectionalLight(0xd9e2dc, 0.45)
     rimLight.position.set(-4.2, 2.6, -3.4)
     scene.add(rimLight)
 
@@ -68,11 +68,11 @@ export function BlackPill3D({ className }: { className?: string }) {
 
     const capsuleMaterial = new THREE.MeshPhysicalMaterial({
       color: 0x121218,
-      metalness: 0.12,
-      roughness: 0.23,
-      clearcoat: 0.8,
-      clearcoatRoughness: 0.14,
-      envMapIntensity: 1.0,
+      metalness: 0.08,
+      roughness: 0.27,
+      clearcoat: 0.7,
+      clearcoatRoughness: 0.18,
+      envMapIntensity: 0.75,
       specularIntensity: 1.0,
     })
 
@@ -84,12 +84,11 @@ export function BlackPill3D({ className }: { className?: string }) {
     body.add(capsule)
 
     const seamRing = new THREE.Mesh(
-      new THREE.TorusGeometry(radius + 0.001, 0.016, 16, 72),
+      new THREE.TorusGeometry(radius - 0.004, 0.009, 16, 72),
       new THREE.MeshStandardMaterial({
-        color: 0x34343f,
-        metalness: 0.92,
-        roughness: 0.32,
-        envMapIntensity: 1.1,
+        color: 0x15151b,
+        metalness: 0.6,
+        roughness: 0.5,
       }),
     )
     seamRing.rotation.x = Math.PI / 2
