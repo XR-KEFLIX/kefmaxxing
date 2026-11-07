@@ -88,6 +88,8 @@ export interface RatingReport {
   level: 'low' | 'mid' | 'high'
   structuralIndex: number
   appealIndex: number
+  hairHalo: number
+  hairBonus: number
   confidence: number
   archetype: string
   faceShape: string

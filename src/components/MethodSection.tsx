@@ -76,6 +76,10 @@ export function MethodSection() {
                 body: 'Structure carries 59%, presentation 23%, appeal 18%. Fixed weights, so one feature cannot hijack the headline.',
               },
               {
+                title: 'Hair halo bonus',
+                body: 'If your hair halo hits 9.0 or higher, meaning the cut genuinely suits your face, the overall score gets at least two subtiers (about 0.7) added. A hair halo of 8.0 or higher adds one subtier. A strong haircut on the wrong face adds nothing.',
+              },
+              {
                 title: 'What the scale means',
                 body: '5 is the midpoint most faces land on. 6 is clearly above average. 7 is attractive. 8 and above is rare. Descriptive bands, not clinical categories.',
               },

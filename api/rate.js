@@ -179,6 +179,8 @@ function buildSystemPrompt(gender) {
     `- general: 2 to 4 items.`,
     `- note: one sentence.`,
     ``,
+    `HAIR HALO: also output a separate "hairHalo" field, score 1.0 to 10.0 with one decimal. This rates how well the CURRENT hair, cut and styling suit THIS specific face, not generic attractiveness. A great cut on a face it does not flatter scores low. A simple cut that nails the person's face scores high. If you cannot tell, use 5.0.`,
+    ``,
     `ROADMAP: three phases: "Next 2 weeks", "1-3 months", "3-6 months". Each has phase, focus (one sentence), and actions (2 to 4 concrete steps) tied to this face.`,
     ``,
     `GENETIC VS MODIFIABLE:`,
@@ -193,7 +195,7 @@ function buildSystemPrompt(gender) {
     `If the image does not show exactly one clearly visible human face, respond ONLY with {"error":"no_face","message":"..."}.`,
     ``,
     `Otherwise respond with ONLY one minified JSON object, no markdown, no backticks, exactly this shape. The values below are placeholders that show the field types only: never copy them and never let them influence your scores.`,
-    `{"confidence":0.7,"faceShape":"oval","archetype":"structured","summary":"2-3 sentences.","analysis":"4-6 sentences.","categories":[{"key":"harmony","score":5.0,"note":"..."},{"key":"proportions","score":5.0,"note":"..."},{"key":"eyeArea","score":5.0,"note":"..."},{"key":"midface","score":5.0,"note":"..."},{"key":"jawline","score":5.0,"note":"..."},{"key":"cheekbones","score":5.0,"note":"..."},{"key":"skin","score":5.0,"note":"..."},{"key":"hair","score":5.0,"note":"..."},{"key":"grooming","score":5.0,"note":"..."},{"key":"appeal","score":5.0,"note":"..."}],"strengths":[{"name":"feature","category":"harmony","influence":"structural","note":"..."}],"improvements":[{"name":"feature","category":"jawline","influence":"mixed","note":"..."}],"plan":[{"action":"short imperative","category":"skin","impact":"High","effort":"Low","evidence":"strong","timeframe":"2-4 weeks","detail":"2-3 sentences with specifics.","addresses":"feature"}],"roadmap":[{"phase":"Next 2 weeks","focus":"one sentence","actions":["short step","short step"]}],"hair":{"faceShape":"oval","direction":"one sentence","styles":["style","style"],"avoid":["style","style"],"note":"one sentence"},"skincare":{"am":["step","step"],"pm":["step","step"],"ingredients":["ingredient","ingredient"],"note":"one sentence"},"grooming":{"brows":"one sentence","facialHair":"one sentence","general":["item","item"],"note":"one sentence"},"geneticVsModifiable":{"genetic":["trait","trait"],"modifiable":["change","change"],"note":"one sentence"},"potential":6.0,"photoNotes":"1-2 sentences."}`,
+    `{"confidence":0.7,"faceShape":"oval","archetype":"structured","summary":"2-3 sentences.","analysis":"4-6 sentences.","categories":[{"key":"harmony","score":5.0,"note":"..."},{"key":"proportions","score":5.0,"note":"..."},{"key":"eyeArea","score":5.0,"note":"..."},{"key":"midface","score":5.0,"note":"..."},{"key":"jawline","score":5.0,"note":"..."},{"key":"cheekbones","score":5.0,"note":"..."},{"key":"skin","score":5.0,"note":"..."},{"key":"hair","score":5.0,"note":"..."},{"key":"grooming","score":5.0,"note":"..."},{"key":"appeal","score":5.0,"note":"..."}],"hairHalo":5.0,"strengths":[{"name":"feature","category":"harmony","influence":"structural","note":"..."}],"improvements":[{"name":"feature","category":"jawline","influence":"mixed","note":"..."}],"plan":[{"action":"short imperative","category":"skin","impact":"High","effort":"Low","evidence":"strong","timeframe":"2-4 weeks","detail":"2-3 sentences with specifics.","addresses":"feature"}],"roadmap":[{"phase":"Next 2 weeks","focus":"one sentence","actions":["short step","short step"]}],"hair":{"faceShape":"oval","direction":"one sentence","styles":["style","style"],"avoid":["style","style"],"note":"one sentence"},"skincare":{"am":["step","step"],"pm":["step","step"],"ingredients":["ingredient","ingredient"],"note":"one sentence"},"grooming":{"brows":"one sentence","facialHair":"one sentence","general":["item","item"],"note":"one sentence"},"geneticVsModifiable":{"genetic":["trait","trait"],"modifiable":["change","change"],"note":"one sentence"},"potential":6.0,"photoNotes":"1-2 sentences."}`,
   ].join('\n')
 }
 
@@ -551,7 +553,14 @@ function sanitizeReport(raw, gender) {
 
   const scoreByKey = Object.fromEntries(categories.map((cat) => [cat.key, cat.score]))
   const weighted = categories.reduce((sum, cat) => sum + cat.score * cat.weight, 0)
-  const overall = clampScore(weighted, 5)
+
+  // Hair halo: how well the current cut suits this specific face.
+  // A perfect hair halo (9+) bumps the overall by at least two subtiers (~0.7),
+  // a great one (8+) by one subtier (~0.35).
+  const rawHairHalo = clampScore(raw.hairHalo, scoreByKey.hair)
+  const hairHalo = rawHairHalo
+  const hairBonus = hairHalo >= 9.0 ? 0.7 : hairHalo >= 8.0 ? 0.35 : 0
+  const overall = clampScore(weighted + hairBonus, 5)
   const structureScore = categories
     .filter((cat) => cat.group === 'structure')
     .reduce((sum, cat) => sum + cat.score * cat.weight, 0)
@@ -576,12 +585,13 @@ function sanitizeReport(raw, gender) {
   const weakest = sorted[sorted.length - 1]
   const summary =
     trimText(raw.summary, 900) ||
-    `The strongest part of this read is ${strongest.name.toLowerCase()} at ${formatScore(strongest.score)}. The clearest opportunity is ${weakest.name.toLowerCase()} at ${formatScore(weakest.score)}. This is a single-photo estimate, not a measurement.`
+    `The strongest part of this read is ${strongest.name.toLowerCase()} at ${formatScore(strongest.score)}. The clearest opportunity is ${weakest.name.toLowerCase()} at ${formatScore(weakest.score)}.${hairBonus > 0 ? ` The hair halo added ${formatScore(hairBonus)} to the overall.` : ''}`
 
   const analysis =
     trimText(raw.analysis, 1800) ||
     [
       `The overall read is ${formatScore(overall)} out of 10, which sits in the ${band.toLowerCase()} band.`,
+      `The hair halo is ${formatScore(hairHalo)} out of 10${hairBonus > 0 ? `, which added ${formatScore(hairBonus)} to the overall` : ''}.`,
       `Strongest dimensions: ${sorted
         .slice(0, 3)
         .map((cat) => `${cat.name} (${formatScore(cat.score)})`)
@@ -606,6 +616,8 @@ function sanitizeReport(raw, gender) {
     level,
     structuralIndex,
     appealIndex,
+    hairHalo,
+    hairBonus,
     confidence: clampConfidence(raw.confidence),
     archetype: trimText(raw.archetype, 40) || 'unclassified',
     faceShape,

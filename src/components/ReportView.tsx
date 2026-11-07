@@ -80,6 +80,7 @@ function ScoreSummary({
       `Potential: ${formatScore(report.potential)}/10`,
       `Structural index (PSL-style, secondary): ${formatScore(report.structuralIndex)}/10`,
       `Overall appeal: ${formatScore(report.appealIndex)}/10`,
+      `Hair halo: ${formatScore(report.hairHalo)}/10${report.hairBonus > 0 ? ` (+${formatScore(report.hairBonus)} to overall)` : ''}`,
       '',
       report.summary,
       '',
@@ -144,6 +145,7 @@ function ScoreSummary({
               hint="PSL-style, secondary"
             />
             <Stat label="Overall appeal" value={`${formatScore(report.appealIndex)} / 10`} hint="Overall impression" />
+            <Stat label="Hair halo" value={`${formatScore(report.hairHalo)} / 10`} hint={report.hairBonus > 0 ? `Added +${formatScore(report.hairBonus)} to overall` : 'How well your cut suits your face'} />
             <Stat label="Confidence" value={`${confidence}%`} hint="One photo, best effort" />
           </dl>
 
@@ -156,15 +158,22 @@ function ScoreSummary({
           </div>
 
           <figure className="mt-6 flex items-center gap-3 border-t border-line pt-5">
-            <img
-              src={photo}
-              alt="Rated photo"
-              className="h-16 w-16 rounded-[4px] border border-line object-cover"
-            />
+            <div className="relative">
+              <span
+                aria-hidden="true"
+                className="absolute -inset-1.5 rounded-full border-2 border-yellow-400/70"
+                style={{ boxShadow: '0 0 18px 4px rgba(250,204,21,0.35)' }}
+              />
+              <img
+                src={photo}
+                alt="Rated photo"
+                className="relative h-16 w-16 rounded-[4px] border border-line object-cover"
+              />
+            </div>
             <figcaption className="text-[11.5px] leading-relaxed text-ink3">
               Rated photo
               <br />
-              Processed once, not stored
+              Hair halo: {formatScore(report.hairHalo)}/10
             </figcaption>
           </figure>
         </div>

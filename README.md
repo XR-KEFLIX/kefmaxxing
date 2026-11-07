@@ -14,6 +14,7 @@ It is deliberately not a single-metric "PSL score" site. The overall score is a 
 - Computes the headline score as a fixed weighted composite, not an equal average.
 - Shows a secondary **PSL-style structural index** derived from the six structure dimensions.
 - Produces a detailed read, strengths, improvement areas, hair guidance, skincare suggestions, grooming guidance and a prioritised plan.
+- Includes a **hair halo** score: how well the current cut suits the specific face. A halo of 9.0 or above adds at least two subtiers to the overall score.
 - Separates traits that are largely genetic from presentation changes that are realistically achievable.
 - Provides a persistent chat assistant, Kef, that can answer general questions before a rating and report-specific questions afterwards.
 - Does not store photos. There is no account, profile or gallery.
@@ -28,7 +29,7 @@ The model scores each dimension from 1.0 to 10.0 with a note explaining what dro
 | Presentation | 23% | skin 10%, hair 8%, grooming 5% |
 | Gestalt | 18% | overall appeal 18% |
 
-`5.0` is the population midpoint. The descriptive bands are:
+`5.0` is the population midpoint. A hair halo of 9.0 or above adds at least two subtiers (0.7) to the overall; a halo of 8.0 or above adds one subtier (0.35). The descriptive bands are:
 
 | Score | Band |
 | --- | --- |
