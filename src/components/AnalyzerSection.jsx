@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import { AlertTriangle, Check, ImagePlus, Loader2, ScanFace, ShieldCheck, X } from 'lucide-react'
 import { DELIVERABLES, PHOTO_PROTOCOL, PRIVACY_POINTS } from '../lib/content'
 import { cn } from '../lib/utils'
+import { SectionHeading } from './ui'
 
 export function AnalyzerSection({ photo, gender, status, error, onFile, onGender, onAnalyze, onClearError, onClearPhoto }) {
   const inputRef = useRef(null)
