@@ -29,18 +29,18 @@ The model scores each dimension from 1.0 to 10.0 with a note explaining what dro
 | Presentation | 23% | skin 10%, hair 8%, grooming 5% |
 | Gestalt | 18% | overall appeal 18% |
 
-`5.0` is the population midpoint. A hair halo of 9.0 or above adds at least two subtiers (0.7) to the overall; a halo of 8.0 or above adds one subtier (0.35). The descriptive bands are:
+`5.0` is the population midpoint. A hair halo of 9.0 or above adds at least two subtiers (0.7) to the overall; a halo of 8.0 or above adds one subtier (0.35). The lookism rank bands are:
 
-| Score | Band |
+| Score | Rank |
 | --- | --- |
-| 9.0-10.0 | Exceptional |
-| 8.0-8.9 | Very attractive |
-| 7.0-7.9 | Attractive |
-| 6.0-6.9 | Above average |
-| 5.0-5.9 | Average |
-| 4.0-4.9 | Slightly below average |
-| 3.0-3.9 | Below average |
-| 1.0-2.9 | Very low |
+| 9.0-10.0 | Chad |
+| 8.0-8.9 | Chadlite |
+| 7.0-7.9 | HTN |
+| 6.0-6.9 | MTN |
+| 5.0-5.9 | LTN |
+| 4.0-4.9 | Sub-5 |
+| 3.0-3.9 | Sub-4 |
+| 1.0-2.9 | Sub-3 |
 
 The PSL-style index is a weighted average of the structure dimensions, normalised to the same 1.0-10.0 scale. It is inspired by internet looksmaxxing culture, not a clinical or scientific instrument, and it does not drive the headline score.
 

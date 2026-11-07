@@ -7,14 +7,14 @@ export interface ScoreBand {
 }
 
 export const SCORE_BANDS: ScoreBand[] = [
-  { min: 9.0, label: 'Exceptional', note: 'Rare. Almost everything works together, and several features stand out.' },
-  { min: 8.0, label: 'Very attractive', note: 'A striking face. Hard to miss in a room.' },
-  { min: 7.0, label: 'Attractive', note: 'Clearly above average. Strong features, little visibly working against it.' },
-  { min: 6.0, label: 'Above average', note: 'A few things working clearly in its favour. Better than the middle.' },
-  { min: 5.0, label: 'Average', note: 'The population midpoint. A normal, balanced face. Responds well to presentation work.' },
-  { min: 4.0, label: 'Slightly below average', note: 'A normal face with a few dimensions pulling the read down.' },
-  { min: 3.0, label: 'Below average', note: 'Several visible problems. Presentation changes can still move this a lot.' },
-  { min: 1.0, label: 'Very low', note: 'Multiple features sit outside common ranges. A structured plan matters more than any score.' },
+  { min: 9.0, label: 'Chad', note: 'Elite tier. Everything works together and reads instantly as distinctive.' },
+  { min: 8.0, label: 'Chadlite', note: 'Well above HTN. Distinctively attractive with very few weaknesses.' },
+  { min: 7.0, label: 'HTN', note: 'High Tier Normal. Clearly above average, strong features, few drags.' },
+  { min: 6.0, label: 'MTN', note: 'Mid Tier Normal. A few things work clearly in your favour.' },
+  { min: 5.0, label: 'LTN', note: 'Low Tier Normal. The population midpoint, responsive to presentation changes.' },
+  { min: 4.0, label: 'Sub-5', note: 'Several visible deficits pulling the read down.' },
+  { min: 3.0, label: 'Sub-4', note: 'Several visible problems. Presentation can still change a lot.' },
+  { min: 1.0, label: 'Sub-3', note: 'Multiple features sit outside common ranges. A structured plan matters most.' },
 ]
 
 export interface DimensionMeta {
@@ -252,6 +252,10 @@ export const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   {
     q: 'What is the PSL-style structural index?',
     a: 'A secondary readout built from the six structure dimensions. It is inspired by internet looksmaxxing culture, not by science, and it is not the overall score.',
+  },
+  {
+    q: 'What do the ranks mean?',
+    a: 'They are looksmaxxing-culture ranks, not medical or clinical categories. Sub-3 to Sub-5 are the lower tiers. LTN, MTN and HTN are the normal tiers. Above that are Chadlite and Chad.',
   },
   {
     q: 'What is the hair halo?',

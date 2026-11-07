@@ -38,9 +38,9 @@ export function influenceLabel(influence: string): string {
 }
 
 export function levelLabel(level: string): string {
-  if (level === 'low') return 'Lower in band'
-  if (level === 'high') return 'Upper in band'
-  return 'Mid band'
+  if (level === 'low') return 'Low'
+  if (level === 'high') return 'High'
+  return 'Mid'
 }
 
 export function titleCase(value: string): string {

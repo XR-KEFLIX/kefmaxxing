@@ -95,14 +95,14 @@ const STRUCTURE_WEIGHT = CATEGORY_META.filter((meta) => meta.group === 'structur
 )
 
 const BANDS = [
-  { min: 9.0, label: 'Exceptional', note: 'A rare, highly cohesive read with several standout features.' },
-  { min: 8.0, label: 'Very attractive', note: 'A striking face that reads as distinctive in most settings.' },
-  { min: 7.0, label: 'Attractive', note: 'Clearly stands out. Strong features and few visible weaknesses.' },
-  { min: 6.0, label: 'Above average', note: 'Several dimensions are working well. Noticeably better than the middle.' },
-  { min: 5.0, label: 'Average', note: 'The population midpoint. Balanced, normal, and responsive to presentation changes.' },
-  { min: 4.0, label: 'Slightly below average', note: 'A normal face with a few dimensions that pull the read down.' },
-  { min: 3.0, label: 'Below average', note: 'Multiple visible features are working against the read. Presentation can change a lot here.' },
-  { min: 1.0, label: 'Very low', note: 'Several dimensions sit outside common aesthetic ranges. A structured, non-surgical plan matters most.' },
+  { min: 9.0, label: 'Chad', note: 'Elite tier. Everything works together and reads instantly as distinctive.' },
+  { min: 8.0, label: 'Chadlite', note: 'Well above HTN. Distinctively attractive with very few weaknesses.' },
+  { min: 7.0, label: 'HTN', note: 'High Tier Normal. Clearly above average, strong features, few drags.' },
+  { min: 6.0, label: 'MTN', note: 'Mid Tier Normal. A few things work clearly in your favour.' },
+  { min: 5.0, label: 'LTN', note: 'Low Tier Normal. The population midpoint, responsive to presentation changes.' },
+  { min: 4.0, label: 'Sub-5', note: 'Several visible deficits pulling the read down.' },
+  { min: 3.0, label: 'Sub-4', note: 'Several visible problems. Presentation can still change a lot.' },
+  { min: 1.0, label: 'Sub-3', note: 'Multiple features sit outside common ranges. A structured plan matters most.' },
 ]
 
 const RETRY_DELAYS_MS = []

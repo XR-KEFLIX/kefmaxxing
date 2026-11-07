@@ -81,7 +81,7 @@ export function MethodSection() {
               },
               {
                 title: 'What the scale means',
-                body: '5 is the midpoint most faces land on. 6 is clearly above average. 7 is attractive. 8 and above is rare. Descriptive bands, not clinical categories.',
+                body: '5 is LTN. 6 is MTN. 7 is HTN. 8 is Chadlite. 9+ is Chad. Sub-5 and below are the lower tiers. Descriptive ranks from looksmaxxing culture, not clinical categories.',
               },
               {
                 title: 'A secondary structural index',
@@ -142,9 +142,9 @@ export function MethodSection() {
         <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line px-5 py-4 sm:px-6">
           <div>
             <h3 className="text-[15px] font-medium text-ink">The 10-point scale</h3>
-            <p className="mt-0.5 text-[12px] text-ink2">Descriptive bands, not clinical categories.</p>
+            <p className="mt-0.5 text-[12px] text-ink2">Ranks from Sub-3 to Chad.</p>
           </div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">5.0 = population average</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">5.0 = LTN</span>
         </div>
         <div className="divide-y divide-line">
           {SCORE_BANDS.map((band, index) => {
