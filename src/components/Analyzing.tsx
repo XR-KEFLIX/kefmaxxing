@@ -34,7 +34,7 @@ export function Analyzing({ photo, onCancel }: { photo: string; onCancel: () => 
               <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">processed once</span>
             </div>
             <div className="mt-3 overflow-hidden rounded-[6px] border border-line bg-sunken">
-              <img src={photo} alt="Photo being analysed" className="block max-h-[480px] w-full object-contain" />
+              <img src={photo} alt="Photo being analyzed" className="block max-h-[480px] w-full object-contain" />
             </div>
             <div className="mt-3 h-1 overflow-hidden rounded-full bg-sunken">
               <div className="h-full w-1/3 animate-indeterminate rounded-full bg-accent" />
@@ -77,7 +77,7 @@ export function Analyzing({ photo, onCancel }: { photo: string; onCancel: () => 
                             : 'border-lineStrong text-ink3',
                       )}
                     >
-                      {done ? '✓' : index + 1}
+                      {done ? String(index + 1) : index + 1}
                     </span>
                     {item.title}
                     {active && <span className="h-1 w-1 rounded-full bg-accent" aria-hidden="true" />}

@@ -67,7 +67,7 @@ export function AnalyzerSection({
 
           <div className="mb-3 flex items-center justify-between gap-4">
             <p className="eyebrow">Photo</p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">JPEG Â· PNG Â· WEBP Â· 15 MB</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">JPEG - PNG - WEBP - 15 MB</p>
           </div>
 
           <div
@@ -96,7 +96,7 @@ export function AnalyzerSection({
               <div className="relative w-full">
                 <img src={photo} alt="Your uploaded photo" className="max-h-[430px] w-full object-contain" />
                 <span className="absolute bottom-3 left-3 rounded-[4px] border border-line bg-raised/95 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-ink2">
-                  ready to analyse
+                  ready to analyze
                 </span>
               </div>
             ) : (

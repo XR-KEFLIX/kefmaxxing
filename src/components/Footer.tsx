@@ -37,7 +37,7 @@ export function Footer() {
 
         <div className="flex flex-col items-start md:items-end">
           <p className="mt-auto font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">
-            © {new Date().getFullYear()} Kefmaxxing
+            (C) {(new Date()).getFullYear()} Kefmaxxing
           </p>
         </div>
       </div>

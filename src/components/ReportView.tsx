@@ -252,7 +252,7 @@ function DimensionLedger({ report }: { report: RatingReport }) {
                         <InfluenceTag influence={category.influence} />
                       </div>
                       <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">
-                        Weight {formatWeight(category.weight)} ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· contributes {formatScore(category.score * category.weight)} pts
+                        Weight {formatWeight(category.weight)} - contributes {formatScore(category.score * category.weight)} pts
                       </p>
                     </div>
                     <div className="flex items-baseline gap-1.5">
@@ -324,7 +324,7 @@ function DetailedAnalysis({ report }: { report: RatingReport }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-[15px] font-medium text-ink">The full analysis</h3>
         <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-ink3">
-          {titleCase(report.band)} ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· {levelLabel(report.level)}
+          {titleCase(report.band)} - {levelLabel(report.level)}
         </span>
       </div>
       <p className="mt-4 text-[14px] leading-[1.75] text-ink2">

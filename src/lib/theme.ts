@@ -5,7 +5,7 @@ export const THEMES: Theme[] = ['light', 'dark', 'void']
 export const THEME_META: Record<Theme, { label: string; themeColor: string; title: string }> = {
   light: { label: 'Light', themeColor: '#F6F3EC', title: 'White mode' },
   dark: { label: 'Dark', themeColor: '#10110F', title: 'Dark mode' },
-  void: { label: 'Void', themeColor: '#050605', title: 'Void — experimental' },
+  void: { label: 'Void', themeColor: '#050605', title: 'Void - experimental' },
 }
 
 const KEY = 'kef-theme'

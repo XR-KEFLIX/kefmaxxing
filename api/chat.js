@@ -7,7 +7,7 @@ const MAX_REPORT_JSON = 14000
 
 function stripDashes(value) {
   return String(value)
-    .replace(/\s*[–—]\s*/g, ', ')
+    .replace(/\s*[--]\s*/g, ', ')
     .replace(/\s+-\s+/g, ', ')
     .replace(/\s{2,}/g, ' ')
     .trim()

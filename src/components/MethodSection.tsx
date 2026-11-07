@@ -126,7 +126,7 @@ export function MethodSection() {
                   {group.keys
                     .map((key) => DIMENSIONS.find((dimension) => dimension.key === key)?.name)
                     .filter(Boolean)
-                    .join(' Â· ')}
+                    .join(' - ')}
                 </p>
               </div>
             ))}

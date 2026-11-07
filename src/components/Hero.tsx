@@ -110,7 +110,7 @@ export function Hero({
                     {group.keys
                       .map((key) => DIMENSIONS.find((dimension) => dimension.key === key)?.name)
                       .filter(Boolean)
-                      .join(' · ')}
+                      .join(' - ')}
                   </p>
                 </div>
               ))}
