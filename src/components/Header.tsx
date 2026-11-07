@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ArrowRight, Menu, MessageSquare, X } from 'lucide-react'
+import { ArrowRight, FlaskConical, Menu, MessageSquare, Moon, Sun, X } from 'lucide-react'
+import { getTheme, setTheme, THEME_META, THEMES, type Theme } from '../lib/theme'
 
 const NAV = [
   { href: '#analysis', label: 'Analysis' },
@@ -8,23 +9,54 @@ const NAV = [
   { href: '#faq', label: 'FAQ' },
 ]
 
+const THEME_ICONS: Record<Theme, typeof Sun> = {
+  light: Sun,
+  dark: Moon,
+  void: FlaskConical,
+}
+
 function LogoMark() {
   return (
-    <svg
-      viewBox="0 0 28 28"
-      className="h-7 w-7 shrink-0 text-accent"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.6}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
+    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-line bg-raised">
+      <img src="/blackpill.svg" alt="" width={20} height={20} className="h-5 w-5" />
+    </span>
+  )
+}
+
+function ThemeToggle() {
+  const [theme, setThemeState] = useState<Theme>(() => getTheme())
+
+  const select = (next: Theme) => {
+    setThemeState(next)
+    setTheme(next)
+  }
+
+  return (
+    <div
+      className="flex items-center gap-0.5 rounded-button border border-line bg-sunken p-0.5"
+      role="group"
+      aria-label="Colour scheme"
     >
-      <rect x="2.5" y="2.5" width="23" height="23" rx="2.5" />
-      <path d="M9 8v12" />
-      <path d="M9 14.5 16 8.5" />
-      <path d="M11.5 12.5 19 20" />
-    </svg>
+      {THEMES.map((option) => {
+        const Icon = THEME_ICONS[option]
+        const active = theme === option
+        return (
+          <button
+            key={option}
+            type="button"
+            onClick={() => select(option)}
+            title={THEME_META[option].title}
+            aria-label={THEME_META[option].title}
+            aria-pressed={active}
+            className={`grid h-7 w-7 place-items-center rounded-[5px] transition-colors duration-150 ${
+              active ? 'bg-raised text-ink shadow-card' : 'text-ink3 hover:text-ink'
+            }`}
+          >
+            <Icon className="h-3.5 w-3.5" strokeWidth={1.8} />
+          </button>
+        )
+      })}
+    </div>
   )
 }
 
@@ -53,7 +85,8 @@ export function Header({ onOpenChat, onStart }: { onOpenChat: () => void; onStar
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-3 lg:flex">
+          <ThemeToggle />
           <button type="button" onClick={onOpenChat} className="btn btn-ghost btn-sm">
             <MessageSquare className="h-4 w-4" strokeWidth={1.7} />
             Ask Kef
@@ -65,6 +98,7 @@ export function Header({ onOpenChat, onStart }: { onOpenChat: () => void; onStar
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
           <button type="button" onClick={onOpenChat} className="btn btn-ghost btn-sm px-3" aria-label="Ask Kef">
             <MessageSquare className="h-4 w-4" strokeWidth={1.7} />
             <span className="hidden sm:inline">Ask Kef</span>

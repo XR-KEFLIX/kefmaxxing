@@ -14,6 +14,7 @@
   --accent: 30 92 76;
   --accent-strong: 21 71 58;
   --accent-soft: 226 237 231;
+  --accent-ink: 255 255 255;
   --clay: 152 76 45;
   --clay-soft: 244 231 222;
   --good: 39 105 76;
@@ -22,6 +23,55 @@
   --warn-soft: 246 237 219;
   --bad: 153 56 46;
   --bad-soft: 249 231 227;
+  --shadow-color: 28 30 26;
+}
+
+[data-theme='dark'] {
+  --paper: 16 17 15;
+  --paper-raised: 23 24 21;
+  --paper-sunken: 10 11 9;
+  --ink: 231 230 223;
+  --ink-2: 175 174 165;
+  --ink-3: 128 127 119;
+  --line: 43 44 39;
+  --line-strong: 63 64 58;
+  --accent: 98 187 141;
+  --accent-strong: 74 166 117;
+  --accent-soft: 28 44 34;
+  --accent-ink: 9 12 10;
+  --clay: 226 148 105;
+  --clay-soft: 46 31 23;
+  --good: 99 201 142;
+  --good-soft: 24 42 31;
+  --warn: 229 181 96;
+  --warn-soft: 45 38 21;
+  --bad: 233 127 116;
+  --bad-soft: 47 27 24;
+  --shadow-color: 0 0 0;
+}
+
+[data-theme='void'] {
+  --paper: 5 6 5;
+  --paper-raised: 12 13 11;
+  --paper-sunken: 1 1 1;
+  --ink: 233 242 226;
+  --ink-2: 173 184 166;
+  --ink-3: 114 124 108;
+  --line: 27 29 24;
+  --line-strong: 49 51 43;
+  --accent: 199 255 62;
+  --accent-strong: 158 229 33;
+  --accent-soft: 26 35 12;
+  --accent-ink: 8 10 6;
+  --clay: 255 176 102;
+  --clay-soft: 42 27 15;
+  --good: 122 255 140;
+  --good-soft: 13 37 19;
+  --warn: 255 221 92;
+  --warn-soft: 42 35 13;
+  --bad: 255 106 100;
+  --bad-soft: 43 14 12;
+  --shadow-color: 0 0 0;
 }
 
 @layer base {
@@ -29,6 +79,17 @@
     color-scheme: light;
     scroll-behavior: smooth;
     scrollbar-gutter: stable;
+  }
+
+  html[data-theme='dark'],
+  html[data-theme='void'] {
+    color-scheme: dark;
+  }
+
+  html[data-theme='void'] body {
+    background-image:
+      radial-gradient(1100px 500px at 50% -10%, rgb(var(--accent) / 0.09), transparent 65%),
+      radial-gradient(700px 500px at 85% 110%, rgb(var(--accent) / 0.05), transparent 60%);
   }
 
   body {
@@ -85,7 +146,7 @@
   }
 
   .btn-primary {
-    @apply btn bg-accent text-white hover:bg-accentStrong;
+    @apply btn bg-accent text-onAccent hover:bg-accentStrong;
   }
 
   .btn-secondary {

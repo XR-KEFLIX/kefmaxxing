@@ -147,7 +147,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
       <button
         type="button"
         onClick={onOpen}
-        className="fixed bottom-5 right-5 z-40 flex h-11 w-11 items-center justify-center gap-2 rounded-button bg-accent text-[13px] font-medium text-white shadow-lift transition-colors hover:bg-accentStrong sm:bottom-6 sm:right-6 sm:w-auto sm:px-4"
+        className="fixed bottom-5 right-5 z-40 flex h-11 w-11 items-center justify-center gap-2 rounded-button bg-accent text-[13px] font-medium text-onAccent shadow-lift transition-colors hover:bg-accentStrong sm:bottom-6 sm:right-6 sm:w-auto sm:px-4"
         aria-label="Open the Kef chat"
       >
         <MessageSquare className="h-4 w-4" strokeWidth={1.8} />
@@ -169,7 +169,7 @@ export function ChatDock({ open, onOpen, onClose, report, gender, seed, onSeedCo
       >
         <div className="flex items-start justify-between gap-3 border-b border-line px-4 py-4">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-[5px] bg-accent font-mono text-[11px] font-semibold text-white">
+            <span className="flex h-8 w-8 items-center justify-center rounded-[5px] bg-accent font-mono text-[11px] font-semibold text-onAccent">
               K
             </span>
             <div>

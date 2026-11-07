@@ -3,8 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#F6F3EC" />
+    <script>
+      (function () {
+        try {
+          var theme = window.localStorage.getItem('kef-theme')
+          if (theme !== 'light' && theme !== 'dark' && theme !== 'void') theme = 'light'
+          document.documentElement.dataset.theme = theme
+          var colors = { light: '#F6F3EC', dark: '#10110F', void: '#050605' }
+          document.documentElement.style.background = colors[theme]
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (meta) meta.setAttribute('content', colors[theme])
+        } catch (error) {
+          // default light theme, no-op
+        }
+      })()
+    </script>
     <meta
       name="description"
       content="Kefmaxxing is a multi-dimensional facial aesthetics analysis. One photo in, a transparent 10-point assessment across structure, skin, hair, grooming and overall appeal, plus a realistic improvement plan. Photos are not stored by this app."
@@ -15,16 +29,8 @@
       content="A transparent 10-point facial assessment across structure, presentation and overall appeal. Not a single internet score."
     />
     <meta property="og:type" content="website" />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231E5C4C'/%3E%3Cg fill='none' stroke='%23F6F3EC' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 9v14'/%3E%3Cpath d='M9 16l7-6'/%3E%3Cpath d='M12 14l8 9'/%3E%3C/g%3E%3C/svg%3E"
-    />
+    <link rel="icon" type="image/svg+xml" href="/blackpill.svg" />
     <title>Kefmaxxing — Facial aesthetics, measured honestly</title>
-    <style>
-      html {
-        background: #f6f3ec;
-      }
-    </style>
   </head>
   <body>
     <div id="root"></div>

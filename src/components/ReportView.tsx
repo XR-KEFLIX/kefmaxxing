@@ -662,11 +662,11 @@ function ChatCta({ onOpenChat }: { onOpenChat: (seed?: string) => void }) {
     <div className="rounded-card bg-accent p-6 sm:p-8">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-white/80">Ask Kef</p>
-          <h3 className="mt-2 font-display text-[26px] leading-tight tracking-[-0.02em] text-white">
+          <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-onAccent/80">Ask Kef</p>
+          <h3 className="mt-2 font-display text-[26px] leading-tight tracking-[-0.02em] text-onAccent">
             Have a question about your report?
           </h3>
-          <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-white/80">
+          <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-onAccent/80">
             Ask about a score, your plan, hair, skin, grooming or what is genetic. The assistant has this report in
             front of it.
           </p>

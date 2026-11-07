@@ -15,6 +15,7 @@ export default {
         accent: 'rgb(var(--accent) / <alpha-value>)',
         accentStrong: 'rgb(var(--accent-strong) / <alpha-value>)',
         accentSoft: 'rgb(var(--accent-soft) / <alpha-value>)',
+        onAccent: 'rgb(var(--accent-ink) / <alpha-value>)',
         clay: 'rgb(var(--clay) / <alpha-value>)',
         claySoft: 'rgb(var(--clay-soft) / <alpha-value>)',
         good: 'rgb(var(--good) / <alpha-value>)',
@@ -39,8 +40,8 @@ export default {
         button: '6px',
       },
       boxShadow: {
-        card: '0 1px 2px rgb(28 30 26 / 0.04), 0 18px 40px -32px rgb(28 30 26 / 0.28)',
-        lift: '0 2px 4px rgb(28 30 26 / 0.05), 0 28px 60px -40px rgb(28 30 26 / 0.3)',
+        card: '0 1px 2px rgb(var(--shadow-color) / 0.05), 0 18px 40px -32px rgb(var(--shadow-color) / 0.55)',
+        lift: '0 2px 4px rgb(var(--shadow-color) / 0.06), 0 28px 60px -40px rgb(var(--shadow-color) / 0.6)',
       },
       keyframes: {
         'fade-in': {

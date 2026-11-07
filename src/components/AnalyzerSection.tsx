@@ -144,7 +144,7 @@ export function AnalyzerSection({
                   aria-pressed={gender === option}
                   className={cn(
                     'rounded-[4px] px-4 py-1.5 text-[13px] font-medium capitalize transition-colors',
-                    gender === option ? 'bg-accent text-white' : 'text-ink2 hover:text-ink',
+                    gender === option ? 'bg-accent text-onAccent' : 'text-ink2 hover:text-ink',
                   )}
                 >
                   {option}
