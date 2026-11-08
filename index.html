@@ -3,19 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#F6F3EC" />
+    <meta name="theme-color" content="#10110F" />
     <script>
       (function () {
         try {
           var theme = window.localStorage.getItem('kef-theme')
-          if (theme !== 'light' && theme !== 'dark' && theme !== 'void') theme = 'light'
+          if (theme !== 'light' && theme !== 'dark' && theme !== 'void') theme = 'dark'
           document.documentElement.dataset.theme = theme
           var colors = { light: '#F6F3EC', dark: '#10110F', void: '#050605' }
           document.documentElement.style.background = colors[theme]
           var meta = document.querySelector('meta[name="theme-color"]')
           if (meta) meta.setAttribute('content', colors[theme])
         } catch (error) {
-          // default light theme, no-op
+          // default dark theme, no-op
         }
       })()
     </script>

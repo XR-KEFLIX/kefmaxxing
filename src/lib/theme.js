@@ -13,14 +13,14 @@ export function isTheme(value) {
 }
 
 export function getTheme() {
-  if (typeof window === 'undefined') return 'light'
+  if (typeof window === 'undefined') return 'dark'
   try {
     const stored = window.localStorage.getItem(KEY)
     if (isTheme(stored)) return stored
   } catch {
     // ignore
   }
-  return 'light'
+  return 'dark'
 }
 
 export function setTheme(theme) {
