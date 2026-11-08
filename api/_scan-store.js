@@ -41,7 +41,7 @@ async function writeMeta(name, meta) {
   }
 }
 
-async function readMeta(name) {
+async function readMeta(name, knownUrl) {
   // Disk first
   try {
     const raw = await fs.readFile(metaPathFor(name), 'utf8')
@@ -50,12 +50,15 @@ async function readMeta(name) {
   // Blob
   if (BLOB_TOKEN) {
     try {
-      const { list } = await import('@vercel/blob')
-      const metaName = name.replace(/\.jpg$/i, '.json')
-      const res = await list({ token: BLOB_TOKEN, prefix: `scans/${metaName}`, limit: 5 })
-      const hit = (res.blobs || []).find((b) => String(b.pathname || '').endsWith(metaName))
-      if (hit) {
-        const r = await fetch(hit.url)
+      let url = knownUrl
+      if (!url) {
+        const { head } = await import('@vercel/blob')
+        const metaName = name.replace(/\.jpg$/i, '.json')
+        const blob = await head(`scans/${metaName}`, { token: BLOB_TOKEN })
+        url = blob && blob.url
+      }
+      if (url) {
+        const r = await fetch(url)
         if (r.ok) return await r.json()
       }
     } catch {}
@@ -139,19 +142,25 @@ export async function listScans({ includeMeta = true } = {}) {
   } catch {}
 
   // Blob (deployed persistent storage)
+  const metaUrls = new Map()
   if (BLOB_TOKEN) {
     try {
       const { list } = await import('@vercel/blob')
-      const res = await list({ token: BLOB_TOKEN, prefix: 'scans/', limit: 200 })
+      const res = await list({ token: BLOB_TOKEN, prefix: 'scans/', limit: 1000 })
       for (const b of res.blobs || []) {
         const pathname = b.pathname || b.url || ''
         const baseName = pathname.split('/').pop()
-        if (!/^scan-.*\.jpg$/i.test(baseName || '')) continue
+        if (!baseName) continue
+        if (/^scan-.*\.json$/i.test(baseName)) {
+          metaUrls.set(baseName.replace(/\.json$/i, '.jpg'), b.url)
+          continue
+        }
+        if (!/^scan-.*\.jpg$/i.test(baseName)) continue
         if (out.some((s) => s.name === baseName)) continue
         out.push({
           name: baseName,
           pathname: pathname || baseName,
-          url: b.url || `/api/scans?file=${encodeURIComponent(pathname || baseName)}`,
+          url: `/api/scans?file=${encodeURIComponent(pathname || baseName)}`,
           source: 'blob',
           size: b.size,
           uploadedAt: b.uploadedAt,
@@ -170,7 +179,19 @@ export async function listScans({ includeMeta = true } = {}) {
   })
 
   if (includeMeta) {
-    await Promise.all(out.map(async (s) => { try { s.meta = await readMeta(s.name) } catch { s.meta = null } }))
+    // Fetch metadata with bounded concurrency so a large history stays fast.
+    const queue = out.slice()
+    const workers = Array.from({ length: Math.min(8, queue.length) }, async () => {
+      while (queue.length) {
+        const scan = queue.shift()
+        try {
+          scan.meta = await readMeta(scan.name, metaUrls.get(scan.name))
+        } catch {
+          scan.meta = null
+        }
+      }
+    })
+    await Promise.all(workers)
   }
 
   return out
@@ -190,10 +211,15 @@ export async function getScan(file) {
   // Then blob (deployed persistent)
   if (BLOB_TOKEN) {
     try {
-      const { list } = await import('@vercel/blob')
-      const res = await list({ token: BLOB_TOKEN, prefix: 'scans/', limit: 200 })
-      const hit = (res.blobs || []).find((b) => String(b.pathname || b.url || '').endsWith(baseName))
-      if (hit && hit.url) return { buffer: null, filename: baseName, url: hit.url }
+      const { head } = await import('@vercel/blob')
+      const blob = await head(`scans/${baseName}`, { token: BLOB_TOKEN })
+      if (blob && blob.url) {
+        const r = await fetch(blob.url)
+        if (r.ok) {
+          const buffer = Buffer.from(await r.arrayBuffer())
+          return { buffer, filename: baseName, url: blob.url }
+        }
+      }
     } catch (e) {
       console.error('[scan-store] blob get failed', e && e.message)
     }

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Header } from './components/Header'
 import { Hero } from './components/Hero'
 import { AnalyzerSection } from './components/AnalyzerSection'
@@ -13,18 +13,6 @@ import { requestRating } from './lib/api'
 export default function App() {
   const [photo, setPhoto] = useState(null)
 
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible')
-          observer.unobserve(entry.target)
-        }
-      })
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' })
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
   const [gender, setGender] = useState('male')
   const [status, setStatus] = useState('idle')
   const [report, setReport] = useState(null)
@@ -112,6 +100,39 @@ export default function App() {
   const consumeSeed = useCallback(() => setChatSeed(null), [])
 
   const showAnalyzer = status === 'idle' || status === 'error' || (status === 'done' && !report)
+
+  // Reveal sections as they enter the viewport. Re-runs when conditional
+  // sections mount (e.g. the analyzer) so they never stay hidden.
+  useEffect(() => {
+    const targets = Array.from(document.querySelectorAll('.reveal:not(.is-visible)'))
+    if (!targets.length) return
+
+    if (typeof IntersectionObserver === 'undefined') {
+      targets.forEach((el) => el.classList.add('is-visible'))
+      return
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' })
+
+    targets.forEach((el) => observer.observe(el))
+
+    // Safety net: never leave content invisible if the observer misses it.
+    const fallback = window.setTimeout(() => {
+      targets.forEach((el) => el.classList.add('is-visible'))
+    }, 1800)
+
+    return () => {
+      observer.disconnect()
+      window.clearTimeout(fallback)
+    }
+  }, [status, report])
 
   return (
     <div id="top" className="min-h-dvh bg-paper">

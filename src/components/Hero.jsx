@@ -66,7 +66,8 @@ export function Hero({ onStart, onOpenChat, onAsk, className }) {
           </dl>
         </div>
 
-        <div className="min-w-0">
+        <div className="relative min-w-0">
+          <div aria-hidden="true" className="hero-glow pointer-events-none absolute -inset-6 -z-10 rounded-[28px] blur-2xl" />
           <div className="card overflow-hidden">
             <div className="border-b border-line p-4 sm:p-5">
               <div className="flex items-center justify-between gap-3">

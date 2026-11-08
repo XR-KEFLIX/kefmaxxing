@@ -158,6 +158,28 @@
     mask-repeat: repeat;
   }
 
+  .hero-glow {
+    background:
+      radial-gradient(60% 55% at 62% 42%, rgb(var(--accent) / 0.16), transparent 70%),
+      radial-gradient(45% 45% at 30% 65%, rgb(var(--clay) / 0.1), transparent 72%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .card-lift,
+    .btn-press {
+      transition: none;
+    }
+    .card-lift:hover {
+      transform: none;
+    }
+  }
+
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
