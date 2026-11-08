@@ -194,10 +194,14 @@ function buildSystemPrompt(gender) {
     ``,
     `CALIBRATION:`,
     `- 5.0 is a true population average. Most faces fall between 3.8 and 5.8. Be conservative.`,
+    `- In a random group of 100 people, roughly 50 score below 5.0, 30 score 5.0 to 5.9, 15 score 6.0 to 6.9, 4 score 7.0 to 7.9, and 1 scores 8.0 or above. Use that distribution.`,
     `- 5.5 is slightly above average. 6.0 is clearly above average and requires noticeable strengths. 7.0 is attractive and uncommon. 8.0 is very attractive and rare. 9.0+ is exceptional.`,
     `- Do not inflate. Err on the lower side when uncertain. Use one decimal.`,
     `- A face with no standout features is around 4.2 to 5.0, not 5.5 or 6.0.`,
     `- If a feature is merely ordinary, score it near 4.5–5.2. Reserve 6.5+ for clearly positive features.`,
+    `- Do not give 6.0 or higher unless you can name at least three clearly strong features in the photo. Do not give 7.0 or higher unless the face would stand out in the top few percent.`,
+    `- If you are torn between two values, choose the lower one. If the face looks average, say 4.8 or 5.0, not 5.5.`,
+    `- Do not state a numeric overall score in summary or analysis. The app computes the overall from your category scores.`,
     `- Visible soft-tissue fullness can lower definition-based scores, but do not guess body fat percentage.`,
     ``,
     `EVIDENCE AND LIMITS:`,
@@ -298,6 +302,33 @@ function clampScore(value, fallback = 5) {
   const n = typeof value === 'number' ? value : parseFloat(value)
   if (!Number.isFinite(n)) return fallback
   return Math.min(10, Math.max(1, round1(n)))
+}
+
+// Models tend to read faces optimistically above the midpoint. Map their raw
+// score onto a distribution that matches how faces actually spread: most sit
+// near 5.0, and 6.0+ stays uncommon. The curve is monotonic, so ordering holds.
+function calibrateScore(value) {
+  const s = clampScore(value, 5)
+  if (s <= 5) {
+    const gap = 5 - s
+    return clampScore(5 - 0.88 * Math.pow(gap, 0.9))
+  }
+  const gap = s - 5
+  return clampScore(5 + 0.6 * Math.pow(gap, 0.88))
+}
+
+// A high overall needs support from the individual dimensions. One strong
+// feature cannot carry the whole face into the next band.
+function capOverall(overall, categories) {
+  const scores = categories.map((cat) => cat.score)
+  const strong = scores.filter((s) => s >= 6.0).length
+  const excellent = scores.filter((s) => s >= 7.0).length
+  let cap = 5.9
+  if (strong >= 3) cap = 6.5
+  if (strong >= 5) cap = 7.0
+  if (excellent >= 3) cap = 7.4
+  if (excellent >= 5) cap = 8.0
+  return Math.min(overall, cap)
 }
 
 function clampConfidence(value) {
@@ -624,7 +655,7 @@ function sanitizeReport(raw, gender) {
       group: meta.group,
       weight: meta.weight,
       influence: meta.influence,
-      score: clampScore(cat.score, 5),
+      score: calibrateScore(cat.score),
       note: trimText(cat.note, 520),
     }
   })
@@ -636,15 +667,15 @@ function sanitizeReport(raw, gender) {
   // A strong hair-face match gives a small bump; keep it modest to avoid inflating the overall read.
   const rawHairHalo = clampScore(raw.hairHalo, scoreByKey.hair)
   const hairHalo = rawHairHalo
-  const hairBonus = hairHalo >= 9.0 ? 0.35 : hairHalo >= 8.0 ? 0.15 : 0
-  const overall = clampScore(weighted + hairBonus, 5)
+  const hairBonus = hairHalo >= 9.0 ? 0.2 : hairHalo >= 8.0 ? 0.1 : 0
+  const overall = clampScore(capOverall(weighted + hairBonus, categories), 5)
   const structureScore = categories
     .filter((cat) => cat.group === 'structure')
     .reduce((sum, cat) => sum + cat.score * cat.weight, 0)
   const structuralIndex = clampScore(structureScore / STRUCTURE_WEIGHT, overall)
   const appealIndex = scoreByKey.appeal
-  const rawPotential = clampScore(raw.potential, overall)
-  const potential = round1(Math.min(9.8, Math.max(overall, rawPotential), overall + 2.2))
+  const rawPotential = calibrateScore(raw.potential)
+  const potential = round1(Math.min(8.6, Math.max(overall + 0.3, rawPotential), overall + 1.4))
 
   const { band, bandNote, level } = bandFor(overall)
   const scoreBreakdown = categories.map((cat) => ({
