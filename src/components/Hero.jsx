@@ -131,6 +131,17 @@ export function Hero({ onStart, onOpenChat, onAsk, className }) {
           </p>
         </div>
       </div>
+
+      <div className="marquee-mask overflow-hidden border-t border-line py-3" aria-hidden="true">
+        <div className="marquee flex w-max items-center gap-7 font-mono text-[10px] uppercase tracking-[0.16em] text-ink3">
+          {[...DIMENSIONS, ...DIMENSIONS].map((dimension, index) => (
+            <span key={`${dimension.key}-${index}`} className="flex items-center gap-3 whitespace-nowrap">
+              <span className="h-1 w-1 rounded-full bg-accent/70" />
+              {dimension.name}
+            </span>
+          ))}
+        </div>
+      </div>
     </section>
   )
 }
