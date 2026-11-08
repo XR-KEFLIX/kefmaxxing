@@ -142,14 +142,24 @@
     background-clip: text;
   }
 
+  /* Content is visible by default; the observer only adds a short entrance
+     animation. This keeps the page usable if JS or the observer is delayed. */
   .reveal {
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 500ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    opacity: 1;
+    transform: none;
   }
   .reveal.is-visible {
-    opacity: 1;
-    transform: translateY(0);
+    animation: reveal-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .dot-grid {
@@ -170,6 +180,7 @@
       opacity: 1;
       transform: none;
       transition: none;
+      animation: none;
     }
     .card-lift,
     .btn-press {
