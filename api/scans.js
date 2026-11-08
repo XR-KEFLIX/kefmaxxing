@@ -11,6 +11,7 @@ export default async function handler(req, res) {
         res.statusCode = 200
         res.setHeader('Content-Type', 'image/jpeg')
         res.setHeader('Content-Disposition', `inline; filename="${filename}"`)
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
         return res.end(buffer)
       } catch (e) {
         return sendJson(res, e.code || 404, { error: e.message })
@@ -19,6 +20,7 @@ export default async function handler(req, res) {
 
     try {
       const scans = await listScans()
+      res.setHeader('Cache-Control', 'no-store')
       return sendJson(res, 200, { count: scans.length, scans })
     } catch (e) {
       return sendJson(res, 500, { error: e.message })

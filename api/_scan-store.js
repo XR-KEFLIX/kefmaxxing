@@ -2,7 +2,16 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 const SCAN_DIR = process.env.SCAN_DIR || (process.env.VERCEL ? '/tmp/scans' : path.join(process.cwd(), 'scans'))
-const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN || ''
+
+// Private GitHub repo used as persistent scan storage when deployed.
+// Local development keeps writing to the scans/ folder instead.
+const GH_TOKEN = process.env.GITHUB_SCANS_TOKEN || ''
+const GH_REPO = process.env.GITHUB_SCANS_REPO || ''
+const GH_BRANCH = process.env.GITHUB_SCANS_BRANCH || 'main'
+const GH_API = 'https://api.github.com'
+const USE_GITHUB = Boolean(GH_TOKEN && GH_REPO) && (Boolean(process.env.VERCEL) || process.env.FORCE_GITHUB === '1')
+
+const INDEX_PATH = 'scans/index.json'
 
 function scanFilename() {
   return `scan-${new Date().toISOString().replace(/[:.]/g, '-')}-${Math.random().toString(36).slice(2, 8)}.jpg`
@@ -16,54 +25,113 @@ function metaPathFor(name) {
   return diskFilePath(name).replace(/\.jpg$/i, '.json')
 }
 
+function safeName(name) {
+  const base = String(name || '').split('/').pop()
+  if (!/^scan-[A-Za-z0-9._-]+\.jpg$/i.test(base)) {
+    throw Object.assign(new Error('Bad filename'), { code: 400 })
+  }
+  return base
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function ghRequest(endpoint, options = {}) {
+  const res = await fetch(`${GH_API}${endpoint}`, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${GH_TOKEN}`,
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'User-Agent': 'kefmaxxing',
+      ...(options.headers || {}),
+    },
+  })
+  return res
+}
+
+async function ghGetRaw(repoPath) {
+  const res = await ghRequest(`/repos/${GH_REPO}/contents/${repoPath}?ref=${GH_BRANCH}`, {
+    headers: { Accept: 'application/vnd.github.raw' },
+  })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`GitHub read failed (${res.status})`)
+  return Buffer.from(await res.arrayBuffer())
+}
+
+async function ghGetJson(repoPath) {
+  const res = await ghRequest(`/repos/${GH_REPO}/contents/${repoPath}?ref=${GH_BRANCH}`)
+  if (res.status === 404) return { data: null, sha: null }
+  if (!res.ok) throw new Error(`GitHub read failed (${res.status})`)
+  const json = await res.json()
+  const raw = Buffer.from(json.content || '', 'base64').toString('utf8')
+  return { data: raw ? JSON.parse(raw) : null, sha: json.sha || null }
+}
+
+async function ghPut(repoPath, buffer, message, sha) {
+  const body = {
+    message,
+    content: Buffer.from(buffer).toString('base64'),
+    branch: GH_BRANCH,
+  }
+  if (sha) body.sha = sha
+  const res = await ghRequest(`/repos/${GH_REPO}/contents/${repoPath}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`GitHub write failed (${res.status}) ${text.slice(0, 180)}`)
+  }
+  return res.json()
+}
+
+// Serialise index updates with retries so concurrent scans do not drop entries.
+async function updateIndex(mutator) {
+  let lastError = null
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const { data, sha } = await ghGetJson(INDEX_PATH)
+    const current = Array.isArray(data) ? data : []
+    const next = mutator(current) || current
+    try {
+      await ghPut(INDEX_PATH, Buffer.from(JSON.stringify(next, null, 2), 'utf8'), 'Update scan index', sha)
+      return next
+    } catch (error) {
+      lastError = error
+      await sleep(150 * (attempt + 1))
+    }
+  }
+  throw lastError || new Error('Could not update scan index')
+}
+
 async function writeMeta(name, meta) {
   if (!meta || typeof meta !== 'object') return
   const payload = JSON.stringify(meta, null, 2)
-  // Disk
   try {
     await fs.mkdir(SCAN_DIR, { recursive: true })
     await fs.writeFile(metaPathFor(name), payload, 'utf8')
   } catch {}
-  // Blob
-  if (BLOB_TOKEN) {
-    try {
-      const { put } = await import('@vercel/blob')
-      await put(`scans/${name.replace(/\.jpg$/i, '.json')}`, Buffer.from(payload, 'utf8'), {
-        access: 'public',
-        contentType: 'application/json',
-        token: BLOB_TOKEN,
-        addRandomSuffix: false,
-        allowOverwrite: true,
-      })
-    } catch (e) {
-      console.error('[scan-store] meta blob save failed', e && e.message)
-    }
-  }
 }
 
-async function readMeta(name, knownUrl) {
-  // Disk first
+async function readDiskMeta(name) {
   try {
     const raw = await fs.readFile(metaPathFor(name), 'utf8')
     return JSON.parse(raw)
-  } catch {}
-  // Blob
-  if (BLOB_TOKEN) {
-    try {
-      let url = knownUrl
-      if (!url) {
-        const { head } = await import('@vercel/blob')
-        const metaName = name.replace(/\.jpg$/i, '.json')
-        const blob = await head(`scans/${metaName}`, { token: BLOB_TOKEN })
-        url = blob && blob.url
-      }
-      if (url) {
-        const r = await fetch(url)
-        if (r.ok) return await r.json()
-      }
-    } catch {}
+  } catch {
+    return null
   }
-  return null
+}
+
+function indexEntry(name, size, meta) {
+  return {
+    name,
+    pathname: name,
+    size,
+    uploadedAt: (meta && (meta.savedAt || meta.sentAt)) || new Date().toISOString(),
+    meta: meta || null,
+  }
 }
 
 export async function saveScan(image, meta) {
@@ -72,27 +140,20 @@ export async function saveScan(image, meta) {
     const buffer = Buffer.from(base64, 'base64')
     if (!buffer.length) return null
     const filename = scanFilename()
-    const metaPayload = { filename, savedAt: new Date().toISOString(), ...(meta && typeof meta === 'object' ? meta : {}) }
+    const metaPayload = {
+      filename,
+      savedAt: new Date().toISOString(),
+      ...(meta && typeof meta === 'object' ? meta : {}),
+    }
 
-    // Prefer persistent Blob storage when deployed
-    if (BLOB_TOKEN) {
+    if (USE_GITHUB) {
       try {
-        const { put } = await import('@vercel/blob')
-        const blob = await put(`scans/${filename}`, buffer, {
-          access: 'public',
-          contentType: 'image/jpeg',
-          token: BLOB_TOKEN,
-          addRandomSuffix: false,
-        })
-        await writeMeta(filename, metaPayload)
-        // Also write locally in dev so /scans folder stays populated
-        if (!process.env.VERCEL) {
-          await fs.mkdir(SCAN_DIR, { recursive: true })
-          await fs.writeFile(diskFilePath(filename), buffer)
-        }
-        return { filename, pathname: blob.pathname || `scans/${filename}`, url: blob.url || null }
-      } catch (e) {
-        console.error('[scan-store] blob save failed, falling back to disk', e && e.message)
+        await ghPut(`scans/${filename}`, buffer, `Add scan ${filename}`)
+        const entry = indexEntry(filename, buffer.length, metaPayload)
+        await updateIndex((list) => [entry, ...list.filter((item) => item && item.name !== filename)])
+        return { filename, pathname: filename, url: null }
+      } catch (error) {
+        console.error('[scan-store] github save failed, falling back to disk', error && error.message)
       }
     }
 
@@ -100,34 +161,78 @@ export async function saveScan(image, meta) {
     await fs.writeFile(diskFilePath(filename), buffer)
     await writeMeta(filename, metaPayload)
     return { filename, pathname: filename, url: null }
-  } catch (e) {
-    console.error('[scan-store] scan save failed', e && e.message)
+  } catch (error) {
+    console.error('[scan-store] scan save failed', error && error.message)
     return null
   }
 }
 
 export async function updateScanMeta(filename, patch) {
   try {
-    const name = String(filename || '').split('/').pop()
-    if (!/^scan-[A-Za-z0-9._-]+\.jpg$/i.test(name)) return null
-    const existing = (await readMeta(name)) || { filename: name }
-    const next = { ...existing, ...(patch && typeof patch === 'object' ? patch : {}), updatedAt: new Date().toISOString() }
+    const name = safeName(filename)
+    const merged = { ...(patch && typeof patch === 'object' ? patch : {}), updatedAt: new Date().toISOString() }
+
+    if (USE_GITHUB) {
+      try {
+        await updateIndex((list) => {
+          let found = false
+          const next = list.map((item) => {
+            if (!item || item.name !== name) return item
+            found = true
+            return { ...item, meta: { ...(item.meta || {}), ...merged } }
+          })
+          if (!found) next.unshift(indexEntry(name, null, merged))
+          return next
+        })
+        return { filename: name, ...merged }
+      } catch (error) {
+        console.error('[scan-store] github meta update failed', error && error.message)
+      }
+    }
+
+    const existing = (await readDiskMeta(name)) || { filename: name }
+    const next = { ...existing, ...merged }
     await writeMeta(name, next)
     return next
-  } catch (e) {
-    console.error('[scan-store] meta update failed', e && e.message)
+  } catch (error) {
+    console.error('[scan-store] meta update failed', error && error.message)
     return null
   }
 }
 
 export async function listScans({ includeMeta = true } = {}) {
-  const out = [] // [{name, pathname, url, source, meta?}]
+  const out = []
+
+  if (USE_GITHUB) {
+    try {
+      const { data } = await ghGetJson(INDEX_PATH)
+      if (Array.isArray(data)) {
+        for (const item of data) {
+          if (!item || !item.name) continue
+          const name = String(item.name).split('/').pop()
+          if (!/^scan-.*\.jpg$/i.test(name)) continue
+          out.push({
+            name,
+            pathname: name,
+            url: `/api/scans?file=${encodeURIComponent(name)}`,
+            source: 'github',
+            size: item.size,
+            uploadedAt: item.uploadedAt,
+            meta: includeMeta ? item.meta || null : undefined,
+          })
+        }
+      }
+    } catch (error) {
+      console.error('[scan-store] github list failed', error && error.message)
+    }
+  }
 
   // Local disk (dev + /tmp fallback)
   try {
     await fs.mkdir(SCAN_DIR, { recursive: true })
     const entries = await fs.readdir(SCAN_DIR).catch(() => [])
-    for (const name of entries.filter((n) => /^scan-.*\.jpg$/i.test(n)).sort().reverse()) {
+    for (const name of entries.filter((entry) => /^scan-.*\.jpg$/i.test(entry)).sort().reverse()) {
+      if (out.some((scan) => scan.name === name)) continue
       try {
         const stat = await fs.stat(diskFilePath(name))
         out.push({
@@ -136,92 +241,37 @@ export async function listScans({ includeMeta = true } = {}) {
           url: `/api/scans?file=${encodeURIComponent(name)}`,
           source: 'disk',
           size: stat.size,
+          meta: includeMeta ? await readDiskMeta(name) : undefined,
         })
       } catch {}
     }
   } catch {}
 
-  // Blob (deployed persistent storage)
-  const metaUrls = new Map()
-  if (BLOB_TOKEN) {
-    try {
-      const { list } = await import('@vercel/blob')
-      const res = await list({ token: BLOB_TOKEN, prefix: 'scans/', limit: 1000 })
-      for (const b of res.blobs || []) {
-        const pathname = b.pathname || b.url || ''
-        const baseName = pathname.split('/').pop()
-        if (!baseName) continue
-        if (/^scan-.*\.json$/i.test(baseName)) {
-          metaUrls.set(baseName.replace(/\.json$/i, '.jpg'), b.url)
-          continue
-        }
-        if (!/^scan-.*\.jpg$/i.test(baseName)) continue
-        if (out.some((s) => s.name === baseName)) continue
-        out.push({
-          name: baseName,
-          pathname: pathname || baseName,
-          url: `/api/scans?file=${encodeURIComponent(pathname || baseName)}`,
-          source: 'blob',
-          size: b.size,
-          uploadedAt: b.uploadedAt,
-        })
-      }
-    } catch (e) {
-      console.error('[scan-store] blob list failed', e && e.message)
-    }
-  }
-
-  // Newest first
   out.sort((a, b) => {
-    const da = a.uploadedAt ? new Date(a.uploadedAt).getTime() : (a.name.match(/scan-(\d{4}-\d{2}-\d{2}T[\d-:]+)/) || [null, a.name])[1]
-    const db = b.uploadedAt ? new Date(b.uploadedAt).getTime() : (b.name.match(/scan-(\d{4}-\d{2}-\d{2}T[\d-:]+)/) || [null, b.name])[1]
-    return String(db) > String(da) ? 1 : -1
+    const da = a.uploadedAt ? new Date(a.uploadedAt).getTime() : 0
+    const db = b.uploadedAt ? new Date(b.uploadedAt).getTime() : 0
+    if (da !== db) return db - da
+    return String(b.name).localeCompare(String(a.name))
   })
-
-  if (includeMeta) {
-    // Fetch metadata with bounded concurrency so a large history stays fast.
-    const queue = out.slice()
-    const workers = Array.from({ length: Math.min(8, queue.length) }, async () => {
-      while (queue.length) {
-        const scan = queue.shift()
-        try {
-          scan.meta = await readMeta(scan.name, metaUrls.get(scan.name))
-        } catch {
-          scan.meta = null
-        }
-      }
-    })
-    await Promise.all(workers)
-  }
 
   return out
 }
 
 export async function getScan(file) {
-  // file may be a bare filename or a blob pathname like scans/scan-….jpg
-  const baseName = String(file || '').split('/').pop()
-  if (!/^scan-[A-Za-z0-9._-]+\.jpg$/i.test(baseName)) throw Object.assign(new Error('Bad filename'), { code: 400 })
+  const baseName = safeName(file)
 
-  // Try disk first (dev + /tmp)
+  // Disk first (dev + /tmp)
   try {
     const buffer = await fs.readFile(diskFilePath(baseName))
     return { buffer, filename: baseName }
   } catch {}
 
-  // Then blob (deployed persistent)
-  if (BLOB_TOKEN) {
+  if (USE_GITHUB) {
     try {
-      const { head } = await import('@vercel/blob')
-      const blob = await head(`scans/${baseName}`, { token: BLOB_TOKEN })
-      if (blob && blob.url) {
-        const r = await fetch(blob.url)
-        if (r.ok) {
-          const buffer = Buffer.from(await r.arrayBuffer())
-          return { buffer, filename: baseName, url: blob.url }
-        }
-      }
-    } catch (e) {
-      console.error('[scan-store] blob get failed', e && e.message)
+      const buffer = await ghGetRaw(`scans/${baseName}`)
+      if (buffer) return { buffer, filename: baseName }
+    } catch (error) {
+      console.error('[scan-store] github get failed', error && error.message)
     }
   }
 
@@ -236,11 +286,4 @@ export function sendJson(res, code, obj) {
     return res
   }
   return res.status(code).json(obj)
-}
-
-function sendBuffer(res, code, headers = {}, buffer, filename) {
-  res.statusCode = code
-  for (const [k, v] of Object.entries(headers)) res.setHeader(k, v)
-  res.setHeader('Content-Disposition', `inline; filename="${filename || 'scan.jpg'}"`)
-  res.end(buffer)
 }
