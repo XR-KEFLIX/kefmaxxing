@@ -191,9 +191,19 @@
       <div class="sub" id="subtitle">Loading scans…</div>
     </div>
     <div class="actions">
+      <button id="signout" type="button" class="hidden">Sign out</button>
       <button id="refresh" class="btn-accent" type="button">Refresh</button>
     </div>
   </header>
+
+  <div class="box hidden" id="auth" style="margin-bottom:14px;max-width:560px">
+    <div class="eyebrow" style="margin-bottom:8px">Admin access</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Enter the admin token to load scans. Set <code>ADMIN_SCANS_TOKEN</code> in Vercel env vars. Local dev without that env var stays open.</div>
+    <form id="auth-form" style="display:flex;gap:8px;flex-wrap:wrap">
+      <input id="auth-token" type="password" autocomplete="current-password" placeholder="Admin token" style="flex:1;min-width:220px" />
+      <button class="btn-accent" type="submit">Unlock</button>
+    </form>
+  </div>
 
   <div class="stats" id="stats"></div>
 
@@ -226,7 +236,7 @@
     <div class="modal-head">
       <div class="modal-title mono" id="m-title"></div>
       <div class="actions">
-        <a class="btn" id="m-download" href="#" download>Download</a>
+        <button class="btn" id="m-download" type="button">Download</button>
         <button id="m-close" type="button">Close</button>
       </div>
     </div>
@@ -239,6 +249,7 @@
 
 <script>
 (function () {
+  const TOKEN_KEY = 'kef_admin_token'
   const grid = document.getElementById('grid')
   const empty = document.getElementById('empty')
   const errorEl = document.getElementById('error')
@@ -253,12 +264,34 @@
   const mImg = document.getElementById('m-img')
   const mInfo = document.getElementById('m-info')
   const mDownload = document.getElementById('m-download')
+  const authBox = document.getElementById('auth')
+  const authForm = document.getElementById('auth-form')
+  const authToken = document.getElementById('auth-token')
+  const signout = document.getElementById('signout')
   let all = []
+  let objectUrls = []
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])) }
   function showError(msg){ errorEl.classList.remove('hidden'); errorEl.textContent = msg }
   function hideError(){ errorEl.classList.add('hidden'); errorEl.textContent = '' }
   function num(v){ const n = Number(v); return Number.isFinite(n) ? n : null }
+  function getToken(){ try { return sessionStorage.getItem(TOKEN_KEY) || '' } catch { return '' } }
+  function setToken(v){ try { if(v) sessionStorage.setItem(TOKEN_KEY, v); else sessionStorage.removeItem(TOKEN_KEY) } catch {} }
+  function authHeaders(){ const t = getToken(); return t ? { Authorization: 'Bearer ' + t } : {} }
+  async function apiFetch(path, opts){
+    const res = await fetch(path, { cache: 'no-store', ...(opts||{}), headers: { ...(opts && opts.headers || {}), ...authHeaders() } })
+    if (res.status === 401) throw Object.assign(new Error('Unauthorized'), { code: 401 })
+    return res
+  }
+  function filePath(obj){ return '/api/scans?file=' + encodeURIComponent(obj.name || obj.pathname || '') }
+  async function blobUrlFor(obj){
+    const res = await apiFetch(filePath(obj))
+    if (!res.ok) throw new Error('Image failed: ' + res.status)
+    const url = URL.createObjectURL(await res.blob())
+    objectUrls.push(url)
+    return url
+  }
+  function revokeUrls(){ for(const u of objectUrls) try { URL.revokeObjectURL(u) } catch {} ; objectUrls = [] }
   function timeOf(obj){
     const m = obj && obj.meta
     const t = (m && (m.sentAt || m.capturedAt || m.at)) || obj.uploadedAt
@@ -301,6 +334,7 @@
   }
   function section(title, inner){ return `<div class="section"><h3>${esc(title)}</h3><div class="box">${inner}</div></div>` }
   function resOf(obj){ return obj && obj.meta && obj.meta.result ? obj.meta.result : null }
+  function normalize(item){ return typeof item === 'string' ? { name: item } : item }
 
   function renderStats(items){
     const scored = items.filter(o => resOf(o) && resOf(o).ok && num(resOf(o).overall) != null)
@@ -318,10 +352,6 @@
       { k:'Latest', v: latest ? relTime(latest) : '—', s: latest ? latest.toLocaleString() : '—' },
     ]
     statsEl.innerHTML = cards.map(c=>`<div class="stat"><div class="k">${esc(c.k)}</div><div class="v">${esc(c.v)}</div><div class="s">${esc(c.s)}</div></div>`).join('')
-  }
-
-  function normalize(item){
-    return typeof item === 'string' ? { name: item, url: '/api/scans?file=' + encodeURIComponent(item) } : item
   }
 
   function haystack(obj){
@@ -383,39 +413,46 @@
     }
 
     const deviceSummary = dev.summary || [dev.uaModel && String(dev.uaModel).replace(/"/g,''), dev.platform && String(dev.platform).replace(/"/g,''), /Mobile/i.test(String(dev.userAgent||''))||dev.mobile==='?1'?'Mobile':'Desktop'].filter(Boolean).join(' · ')
-    const loc = [geo.city, geo.region, geo.country].filter(Boolean).join(', ') + (geo.latitude && geo.longitude ? ` (${geo.latitude}, ${geo.longitude})` : '')
+    const loc = [geo.city, geo.region, geo.country].filter(Boolean).join(', ')
     const parts = []
     parts.push(section('Score', scoreHtml))
     parts.push(section('Sent time', sent ? kv({ sentAt: sent.iso, epochMs: sent.epochMs, utc: sent.utc, local: sent.local }) : '<div class="muted">No exact sent time recorded.</div>'))
     parts.push(section('Device', kv({ device: deviceSummary, platform: dev.platform, mobile: dev.mobile, model: dev.uaModel, ua: dev.ua, uaFullVersionList: dev.uaFullVersionList, platformVersion: dev.uaPlatformVersion, userAgent: dev.userAgent, language: dev.language, viewport: dev.viewportWidth, dpr: dev.dpr, deviceMemory: dev.deviceMemory, connection: dev.ect || dev.downlink ? (dev.ect||'') + (dev.downlink?(' '+dev.downlink+'Mbps'):'') : undefined })))
-    parts.push(section('Location', kv({ location: loc || undefined, country: geo.country, region: geo.region, city: geo.city, latitude: geo.latitude, longitude: geo.longitude, timezone: geo.timezone, continent: geo.continent, ip: net.ip, xForwardedFor: net.xForwardedFor })))
-    parts.push(section('Source', kv({ referer: up.referer, origin: up.origin, host: up.host, requestUrl: up.url, fullUrl: up.fullUrl, method: up.method, vercelId: up.vercelId, deploymentUrl: up.vercelDeploymentUrl })))
+    parts.push(section('Location', kv({ location: loc || undefined, country: geo.country, region: geo.region, city: geo.city, timezone: geo.timezone, continent: geo.continent })))
+    parts.push(section('Source', kv({ referer: up.referer, origin: up.origin, host: up.host, requestUrl: up.url, method: up.method, vercelId: up.vercelId })))
     parts.push(section('File', kv({ name: obj.name, pathname: obj.pathname, source: obj.source, size: obj.size, uploadedAt: obj.uploadedAt })))
-    if(m){
-      parts.push(`<div class="section"><div class="box"><details class="raw"><summary>Raw metadata</summary><pre>${esc(JSON.stringify(m,null,2))}</pre></details></div></div>`)
-    } else {
-      parts.push(section('Metadata', '<div class="muted">No metadata recorded for this scan.</div>'))
-    }
+    if(m){ parts.push(`<div class="section"><div class="box"><details class="raw"><summary>Raw metadata</summary><pre>${esc(JSON.stringify(m,null,2))}</pre></details></div></div>`) }
+    else { parts.push(section('Metadata', '<div class="muted">No metadata recorded for this scan.</div>')) }
     return parts.join('')
   }
 
-  function openModal(obj) {
-    const src = obj.url || ('/api/scans?file=' + encodeURIComponent(obj.name || obj.pathname || ''))
+  async function downloadScan(obj){
+    const name = obj.name || (obj.pathname || '').split('/').pop() || 'scan.jpg'
+    try {
+      const res = await apiFetch(filePath(obj))
+      if (!res.ok) throw new Error(res.status)
+      const url = URL.createObjectURL(await res.blob())
+      const a = document.createElement('a'); a.href = url; a.download = name; a.click()
+      setTimeout(()=>URL.revokeObjectURL(url), 1000)
+    } catch (e) { showError('Download failed: ' + e.message) }
+  }
+
+  async function openModal(obj) {
     const name = obj.name || (obj.pathname || '').split('/').pop() || 'scan'
     mTitle.textContent = name
-    mImg.src = src
+    mImg.removeAttribute('src')
     mImg.alt = name
-    mDownload.href = src
-    mDownload.download = name
     mInfo.innerHTML = renderDetail(obj)
     modal.classList.add('open')
     modal.setAttribute('aria-hidden', 'false')
     document.body.style.overflow = 'hidden'
+    mDownload.onclick = () => downloadScan(obj)
+    try { mImg.src = await blobUrlFor(obj) } catch (e) { if (e.code !== 401) showError('Image load failed: ' + e.message) }
   }
   function closeModal() {
     modal.classList.remove('open')
     modal.setAttribute('aria-hidden', 'true')
-    mImg.src = ''
+    mImg.removeAttribute('src')
     document.body.style.overflow = ''
   }
   document.getElementById('m-close').addEventListener('click', closeModal)
@@ -423,10 +460,12 @@
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal() })
 
   function render(){
+    revokeUrls()
     renderStats(all)
     const items = filtered()
     grid.innerHTML = ''
     countEl.textContent = items.length + ' shown'
+    signout.classList.toggle('hidden', !getToken() && !!process.env) // toggled properly below
     if (!all.length) { empty.classList.remove('hidden'); return }
     empty.classList.add('hidden')
     if (!items.length) {
@@ -434,7 +473,6 @@
       return
     }
     for (const obj of items) {
-      const src = obj.url || ('/api/scans?file=' + encodeURIComponent(obj.name || obj.pathname || ''))
       const name = obj.name || (obj.pathname || '').split('/').pop() || 'scan'
       const r = resOf(obj) || {}
       const m = obj.meta || {}
@@ -448,7 +486,7 @@
       card.setAttribute('role','button')
       card.innerHTML = `
         <div class="thumb">
-          <img src="${esc(src)}" alt="${esc(name)}" loading="lazy" decoding="async" />
+          <img data-scan="${esc(name)}" alt="${esc(name)}" loading="lazy" decoding="async" />
           ${r.ok && overall != null ? `<div class="score-badge" style="color:${bandColor(r.band)}"><span>${overall.toFixed(1)}</span><span class="band">${esc(r.band||'')}</span></div>` : (r.error ? `<div class="score-badge" style="color:var(--bad)"><span>!</span><span class="band">failed</span></div>` : '')}
         </div>
         <div class="card-body">
@@ -465,29 +503,41 @@
         </div>`
       card.addEventListener('click', () => openModal(obj))
       card.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); openModal(obj) } })
+      const img = card.querySelector('img')
+      blobUrlFor(obj).then(u => { img.src = u }).catch(() => { img.alt = 'Protected' })
       grid.appendChild(card)
     }
   }
 
+  function showAuth(on){
+    authBox.classList.toggle('hidden', !on)
+    signout.classList.toggle('hidden', on || !getToken())
+    if(on){ subtitle.textContent = 'Admin token required.'; statsEl.innerHTML=''; grid.innerHTML=''; countEl.textContent=''; empty.classList.add('hidden') }
+  }
+
   async function load() {
     hideError()
+    showAuth(false)
     subtitle.textContent = 'Loading scans…'
     try {
-      const res = await fetch('/api/scans', { cache: 'no-store' })
+      const res = await apiFetch('/api/scans')
       if (!res.ok) throw new Error('Failed to load: ' + res.status)
       const data = await res.json()
       all = (data.scans || []).map(normalize)
-      subtitle.textContent = data.count + ' scan' + (data.count === 1 ? '' : 's') + ' · click a card for score, device, location, and source'
+      subtitle.textContent = data.count + ' scan' + (data.count === 1 ? '' : 's') + ' · protected admin view'
+      signout.classList.toggle('hidden', !getToken())
       render()
     } catch (err) {
+      if (err.code === 401) { showAuth(true); return }
       showError('Could not load scans: ' + err.message)
       subtitle.textContent = 'Could not load scans'
-      statsEl.innerHTML = ''
-      grid.innerHTML = ''
-      countEl.textContent = ''
+      statsEl.innerHTML = ''; grid.innerHTML = ''; countEl.textContent = ''
+      signout.classList.toggle('hidden', !getToken())
     }
   }
 
+  authForm.addEventListener('submit', (e) => { e.preventDefault(); setToken(authToken.value.trim()); authToken.value=''; load() })
+  signout.addEventListener('click', () => { setToken(''); all=[]; render(); showAuth(true) })
   qEl.addEventListener('input', render)
   bandEl.addEventListener('change', render)
   sortEl.addEventListener('change', render)

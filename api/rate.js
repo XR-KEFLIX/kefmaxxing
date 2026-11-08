@@ -148,17 +148,10 @@ function collectRequestMeta(req) {
       vercelId: get('x-vercel-id'),
       vercelDeploymentUrl: get('x-vercel-deployment-url'),
     },
-    network: {
-      ip: get('x-forwarded-for') || get('x-real-ip') || get('x-vercel-forwarded-for') || (req && req.socket && req.socket.remoteAddress) || undefined,
-      xForwardedFor: get('x-forwarded-for'),
-      vercelProxiedFor: get('x-vercel-proxied-for'),
-    },
     geo: {
       country: get('x-vercel-ip-country'),
       region: get('x-vercel-ip-country-region'),
       city: get('x-vercel-ip-city'),
-      latitude: get('x-vercel-ip-latitude'),
-      longitude: get('x-vercel-ip-longitude'),
       timezone: get('x-vercel-ip-timezone'),
       continent: get('x-vercel-ip-continent'),
     },
