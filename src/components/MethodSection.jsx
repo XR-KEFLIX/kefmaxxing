@@ -23,8 +23,8 @@ export function MethodSection({ className }) {
               { title: 'Ten dimensions', body: 'Six scores for structure, three for presentation and one for overall appeal. Each comes with a note on what drove it.' },
               { title: 'Weighted composite', body: 'Structure carries 59%, presentation 23%, appeal 18%. Fixed weights, so one feature cannot hijack the headline.' },
               { title: 'Hair halo bonus', body: 'If your hair halo hits 9.0 or higher, meaning the cut genuinely suits your face, the overall score gets at least two subtiers (about 0.7) added. A hair halo of 8.0 or higher adds one subtier. A strong haircut on the wrong face adds nothing.' },
-              { title: 'What the scale means', body: '5 is LTN. 6 is MTN. 7 is HTN. 8 is Chadlite. 9+ is Chad. Sub-5 and below are the lower tiers. Ranks from looksmaxxing culture.' },
-              { title: 'A secondary structural index', body: 'The PSL-style index reads only the six structure dimensions. It is internet looksmaxxing culture translated into numbers, not a medical tool and not the overall score.' },
+              { title: 'What the scale means', body: '5.0 is average. 6.0 is above average. 7.0 is attractive and uncommon. 8.0 is very attractive and rare. 9.0+ is exceptional. Scores below 5.0 indicate visible factors pulling the read down.' },
+              { title: 'A secondary structural index', body: 'The structural index reads only the six structure dimensions. It is a secondary readout, not a medical tool and not the overall score.' },
             ].map((step, index) => (
               <li key={step.title} className="flex gap-4">
                 <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-[4px] border border-lineStrong bg-paper font-mono text-[10px] text-ink2">{String(index + 1).padStart(2, '0')}</span>
@@ -64,9 +64,9 @@ export function MethodSection({ className }) {
         <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line px-5 py-4 sm:px-6">
           <div>
             <h3 className="text-[15px] font-medium text-ink">The 10-point scale</h3>
-            <p className="mt-0.5 text-[12px] text-ink2">Ranks from Sub-3 to Chad.</p>
+            <p className="mt-0.5 text-[12px] text-ink2">Where the overall score sits on the scale.</p>
           </div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">5.0 = LTN</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">5.0 = average</span>
         </div>
         <div className="divide-y divide-line">
           {SCORE_BANDS.map((band, index) => {

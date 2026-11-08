@@ -1,12 +1,12 @@
 export const SCORE_BANDS = [
-  { min: 9.0, label: 'Chad', note: 'Elite tier. Everything works together and reads instantly as distinctive.' },
-  { min: 8.0, label: 'Chadlite', note: 'Well above HTN. Distinctively attractive with very few weaknesses.' },
-  { min: 7.0, label: 'HTN', note: 'High Tier Normie. Clearly above average, strong features, few drags.' },
-  { min: 6.0, label: 'MTN', note: 'Mid Tier Normie. A few things work clearly in your favour.' },
-  { min: 5.0, label: 'LTN', note: 'Low Tier Normie. The population midpoint, responsive to presentation changes.' },
-  { min: 4.0, label: 'Sub-5', note: 'Several visible deficits pulling the read down.' },
-  { min: 3.0, label: 'Sub-4', note: 'Several visible problems. Presentation can still change a lot.' },
-  { min: 1.0, label: 'Sub-3', note: 'Multiple features sit outside common ranges. A structured plan matters most.' },
+  { min: 9.0, label: 'Exceptional', note: 'Everything works together and reads as highly distinctive.' },
+  { min: 8.0, label: 'Very attractive', note: 'Clearly strong overall with very few visible drags.' },
+  { min: 7.0, label: 'Attractive', note: 'Noticeably above average, with clear strengths.' },
+  { min: 6.0, label: 'Above average', note: 'A few features work clearly in your favour.' },
+  { min: 5.0, label: 'Average', note: 'Around the population midpoint. Presentation changes can move the read.' },
+  { min: 4.0, label: 'Below average', note: 'Several visible factors pull the read down.' },
+  { min: 3.0, label: 'Well below average', note: 'Several visible problems are present. Presentation can still change a lot.' },
+  { min: 1.0, label: 'Far below average', note: 'Multiple features sit outside common ranges. A structured plan matters most.' },
 ]
 
 export const DIMENSIONS = [
@@ -66,7 +66,7 @@ export const FAQ_ITEMS = [
   { q: 'Is the score objective?', a: 'No. It is an estimate from one photo. The method is consistent, but different photos, lighting and models can produce different readings.' },
   { q: 'Why does my score change between photos?', a: 'Perspective, light, expression, compression and filters can shift the read by a meaningful amount. If you want to track progress, use the same camera, distance, room and light each time.' },
   { q: 'What is the PSL-style structural index?', a: 'A secondary readout built from the six structure dimensions. It is inspired by internet looksmaxxing culture, not by science, and it is not the overall score.' },
-  { q: 'What do the ranks mean?', a: 'They are looksmaxxing-culture ranks. Sub-3 to Sub-5 are the lower tiers. LTN, MTN and HTN are the normal tiers. Above that are Chadlite and Chad.' },
+  { q: 'What do the score bands mean?', a: 'The bands describe where the overall score sits: Far below average, Well below average, Below average, Average, Above average, Attractive, Very attractive, and Exceptional. They are photo-based estimates, not labels for a person.' },
   { q: 'What is the hair halo?', a: 'A separate score for how well your current hair and cut suit your specific face. A hair halo of 9.0 or above adds at least two subtiers to the overall score. Great hair on the wrong face does not count.' },
   { q: 'Can I change my bone structure?', a: 'Not after growth, short of surgery. Body composition, skin, hair and grooming change how your existing structure reads. Be sceptical of anyone selling non-surgical bone change.' },
   { q: 'Does mewing work?', a: 'There is no good evidence it reshapes adult bone. It may help some people with oral posture or nasal breathing. It is not a substitute for orthodontic or medical care.' },

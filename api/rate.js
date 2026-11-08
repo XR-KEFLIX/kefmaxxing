@@ -96,14 +96,14 @@ const STRUCTURE_WEIGHT = CATEGORY_META.filter((meta) => meta.group === 'structur
 )
 
 const BANDS = [
-  { min: 9.0, label: 'Chad', note: 'Elite tier. Everything works together and reads instantly as distinctive.' },
-  { min: 8.0, label: 'Chadlite', note: 'Well above HTN. Distinctively attractive with very few weaknesses.' },
-  { min: 7.0, label: 'HTN', note: 'High Tier Normie. Clearly above average, strong features, few drags.' },
-  { min: 6.0, label: 'MTN', note: 'Mid Tier Normie. A few things work clearly in your favour.' },
-  { min: 5.0, label: 'LTN', note: 'Low Tier Normie. The population midpoint, responsive to presentation changes.' },
-  { min: 4.0, label: 'Sub-5', note: 'Several visible deficits pulling the read down.' },
-  { min: 3.0, label: 'Sub-4', note: 'Several visible problems. Presentation can still change a lot.' },
-  { min: 1.0, label: 'Sub-3', note: 'Multiple features sit outside common ranges. A structured plan matters most.' },
+  { min: 9.0, label: 'Exceptional', note: 'Everything works together and reads as highly distinctive.' },
+  { min: 8.0, label: 'Very attractive', note: 'Clearly strong overall with very few visible drags.' },
+  { min: 7.0, label: 'Attractive', note: 'Noticeably above average, with clear strengths.' },
+  { min: 6.0, label: 'Above average', note: 'A few features work clearly in your favour.' },
+  { min: 5.0, label: 'Average', note: 'Around the population midpoint. Presentation changes can move the read.' },
+  { min: 4.0, label: 'Below average', note: 'Several visible factors pull the read down.' },
+  { min: 3.0, label: 'Well below average', note: 'Several visible problems are present. Presentation can still change a lot.' },
+  { min: 1.0, label: 'Far below average', note: 'Multiple features sit outside common ranges. A structured plan matters most.' },
 ]
 
 const RETRY_DELAYS_MS = []
@@ -272,7 +272,7 @@ function buildSystemPrompt(gender) {
     ``,
     `POTENTIAL: a separate estimate of the realistic overall score after 6 to 12 months of consistent non-surgical improvement. Use the same 1 to 10 calibration. It should usually be 0.3 to 1.5 above where the current face would land. Never below the current read. Do not promise a transformation.`,
     ``,
-    `WRITING STYLE: sound like a careful analyst, not a chatbot. Short sentences. Plain words. Specific details. Write like an experienced person talking to one other person. Use contractions. Never use: "delve", "elevate", "unlock", "journey", "game-changer", "it's not just X, it's Y", "remember that", "at the end of the day". Never use em dashes. No hype, no motivational fluff, no hedging, no moralizing. Never insult. Never mention race or ethnicity. No slurs. No medical claims.`,
+    `WRITING STYLE: sound like a careful analyst, not a chatbot. Short sentences. Plain words. Specific details. Write like an experienced person talking to one other person. Use contractions. Never use: "delve", "elevate", "unlock", "journey", "game-changer", "it's not just X, it's Y", "remember that", "at the end of the day". Never use em dashes. No hype, no motivational fluff, no hedging, no moralizing. Never insult. Never mention race or ethnicity. No slurs. No medical claims. Do not use looksmaxxing rank slang in any text (no Chad, Chadlite, HTN, MTN, LTN, Sub-5, mogging, or similar terms).`,
     ``,
     `If the image does not show exactly one clearly visible human face, respond ONLY with {"error":"no_face","message":"..."}.`,
     ``,

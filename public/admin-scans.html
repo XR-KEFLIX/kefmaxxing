@@ -174,11 +174,11 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; max-height: 420px; overflow: auto;
   }
   .muted { color: var(--dim); font-size: 12px; }
-  .b-chad, .b-chadlite { color: #8cf0b8; }
-  .b-htn { color: #7ce2c3; }
-  .b-mtn { color: #b8ddb0; }
-  .b-ltn { color: #e5d08a; }
-  .b-sub-5, .b-sub-4, .b-sub-3 { color: #f0a892; }
+  .b-exceptional, .b-very-attractive, .b-chad, .b-chadlite { color: #8cf0b8; }
+  .b-attractive, .b-htn { color: #7ce2c3; }
+  .b-above-average, .b-mtn { color: #b8ddb0; }
+  .b-average, .b-ltn { color: #e5d08a; }
+  .b-below-average, .b-well-below-average, .b-far-below-average, .b-sub-5, .b-sub-4, .b-sub-3 { color: #f0a892; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
@@ -201,7 +201,7 @@
     <input type="search" id="q" placeholder="Search device, location, band, file…" autocomplete="off" />
     <select id="bandFilter" aria-label="Filter by band">
       <option value="">All bands</option>
-      <option>Chad</option><option>Chadlite</option><option>HTN</option><option>MTN</option><option>LTN</option><option>Sub-5</option><option>Sub-4</option><option>Sub-3</option><option value="__none">No result</option>
+      <option>Exceptional</option><option>Very attractive</option><option>Attractive</option><option>Above average</option><option>Average</option><option>Below average</option><option>Well below average</option><option>Far below average</option><option value="__none">No result</option>
     </select>
     <select id="sort" aria-label="Sort">
       <option value="newest">Newest first</option>
@@ -287,11 +287,11 @@
   }
   function bandColor(band){
     const b = String(band || '').toLowerCase()
-    if(b === 'chad' || b === 'chadlite') return '#62bb8d'
-    if(b === 'htn') return '#5fd0b0'
-    if(b === 'mtn') return '#a8d08d'
-    if(b === 'ltn') return '#d7c46a'
-    if(/^sub/.test(b)) return '#e59b7a'
+    if(b === 'exceptional' || b === 'very attractive' || b === 'chad' || b === 'chadlite') return '#62bb8d'
+    if(b === 'attractive' || b === 'htn') return '#5fd0b0'
+    if(b === 'above average' || b === 'mtn') return '#a8d08d'
+    if(b === 'average' || b === 'ltn') return '#d7c46a'
+    if(b === 'below average' || b === 'well below average' || b === 'far below average' || /^sub/.test(b)) return '#e59b7a'
     return '#62bb8d'
   }
   function kv(obj){
