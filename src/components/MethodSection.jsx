@@ -1,4 +1,4 @@
-import { DIMENSIONS, EVIDENCE_LEVERS, FAQ_ITEMS, FRAMEWORK_GROUPS, REFERENCES, SCORE_BANDS } from '../lib/content'
+import { DIMENSIONS, EVIDENCE_LEVERS, FAQ_ITEMS, FRAMEWORK_GROUPS, SCORE_BANDS } from '../lib/content'
 import { cn, formatWeight } from '../lib/utils'
 import { SectionHeading, Tag } from './ui'
 
@@ -112,21 +112,6 @@ export function MethodSection({ className }) {
               <p className="mt-1.5 max-w-4xl text-[12.5px] leading-relaxed text-ink2">{lever.body}</p>
             </div>
           ))}
-        </div>
-
-        <div className="card mt-6 p-5 sm:p-7">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="text-[15px] font-medium text-ink">Selected reading</h3>
-            <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-ink3">context, not proof</p>
-          </div>
-          <p className="mt-1 max-w-3xl text-[12px] leading-relaxed text-ink2">Good entry points into attractiveness research. Nothing here shows that one ratio decides attractiveness, and none of it is a diagnosis.</p>
-          <ul className="mt-4 divide-y divide-line border-t border-line">
-            {REFERENCES.map((reference) => (
-              <li key={`${reference.authors}-${reference.year}-${reference.title}`} className="py-3">
-                <p className="text-[12.5px] leading-relaxed text-ink2"><span className="text-ink">{reference.authors}</span> ({reference.year}).{' '}<span className="italic">{reference.title}</span>. {reference.source}.</p>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
 

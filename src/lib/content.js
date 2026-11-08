@@ -76,19 +76,6 @@ export const FAQ_ITEMS = [
   { q: 'Is a low score an insult?', a: 'No. The score describes one photo against a chosen reference. The plan focuses on the parts you can actually change.' },
 ]
 
-export const REFERENCES = [
-  { authors: 'Langlois, J. H., & Roggman, L. A.', year: '1990', title: 'Attractive faces are only average', source: 'Psychological Science, 1(2), 115-121' },
-  { authors: 'Perrett, D. I., et al.', year: '1998', title: 'Effects of sexual dimorphism on facial attractiveness', source: 'Nature, 394, 884-887' },
-  { authors: 'Rhodes, G.', year: '2006', title: 'The evolutionary psychology of facial beauty', source: 'Annual Review of Psychology, 57, 199-226' },
-  { authors: 'Little, A. C., Jones, B. C., & DeBruine, L. M.', year: '2011', title: 'Facial attractiveness: evolutionary based research', source: 'Philosophical Transactions of the Royal Society B, 366, 1638-1659' },
-  { authors: 'Fink, B., Grammer, K., & Matts, P. J.', year: '2006', title: 'Visible skin color distribution plays a role in the perception of age, attractiveness, and health in female faces', source: 'Evolution and Human Behavior, 27(6), 433-442' },
-  { authors: 'Samson, N., Fink, B., & Matts, P. J.', year: '2010', title: 'Visible skin condition and perception of human facial appearance', source: 'International Journal of Cosmetic Science, 32(3), 167-184' },
-  { authors: 'Coetzee, V., Perrett, D. I., & Stephen, I. D.', year: '2010', title: 'Facial adiposity: a cue to health?', source: 'Perception, 39(4), 542-551' },
-  { authors: 'Axelsson, J., et al.', year: '2010', title: 'Beauty sleep: experimental study on the perceived health and attractiveness of sleep deprived people', source: 'BMJ, 341, c6614' },
-  { authors: 'Naini, F. B.', year: '2011', title: 'Facial Aesthetics: Concepts and Clinical Diagnosis', source: 'Wiley-Blackwell' },
-  { authors: 'Bashour, M.', year: '2006', title: 'History and current concepts in the analysis of facial attractiveness', source: 'Plastic and Reconstructive Surgery, 118(3), 741-756' },
-]
-
 export const CHAT_STARTERS_WITH_REPORT = [
   'What should I improve first?',
   'What haircut suits my face?',
