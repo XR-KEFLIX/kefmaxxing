@@ -5,6 +5,9 @@ const MAX_IMAGE_CHARS = 5_200_000
 const TOTAL_BUDGET_MS = 150000
 const PER_MODEL_TIMEOUT_MS = 40000
 const MAX_ATTEMPTS = 12
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
+const RATE_LIMIT_MAX = 12
+const rateLimit = new Map()
 
 const CATEGORY_META = [
   {
@@ -783,9 +786,31 @@ async function callModel(entry, systemPrompt, image, deadline) {
   }
 }
 
+function clientIp(req) {
+  const h = (req && req.headers) || {}
+  const raw = h['x-forwarded-for'] || h['x-real-ip'] || h['x-vercel-forwarded-for'] || (req && req.socket && req.socket.remoteAddress) || 'unknown'
+  return String(Array.isArray(raw) ? raw[0] : raw).split(',')[0].trim() || 'unknown'
+}
+
+function hitRateLimit(ip, max = RATE_LIMIT_MAX) {
+  const now = Date.now()
+  const entry = rateLimit.get(ip)
+  if (!entry || now > entry.reset) {
+    rateLimit.set(ip, { count: 1, reset: now + RATE_LIMIT_WINDOW_MS })
+    return false
+  }
+  entry.count += 1
+  return entry.count > max
+}
+
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store')
+  res.setHeader('X-Content-Type-Options', 'nosniff')
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed', message: 'POST only.' })
+  }
+  if (hitRateLimit(clientIp(req))) {
+    return res.status(429).json({ error: 'Too many requests', message: 'Too many scan requests right now. Try again in a few minutes.' })
   }
 
   const chain = providerChain({ vision: true })

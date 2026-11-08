@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex,nofollow" />
-<title>Scans</title>
+<title>Access</title>
 <style>
   :root {
     --bg: #0c0d0b;
@@ -183,6 +183,15 @@
 </style>
 </head>
 <body>
+<div id="lock" style="min-height:100vh;display:grid;place-items:center;padding:24px;background:#0c0d0b">
+  <form id="lock-form" style="width:min(360px,100%);display:grid;gap:10px">
+    <input id="lock-token" type="password" autocomplete="current-password" aria-label="Access code" placeholder="Access code" style="width:100%;background:#161715;color:#eceae3;border:1px solid #282923;border-radius:10px;padding:12px 14px;font:inherit;font-size:14px" />
+    <button class="btn-accent" type="submit" style="background:rgba(98,187,141,.12);color:#dff7ea;border:1px solid rgba(98,187,141,.28);border-radius:10px;padding:11px 14px;font:inherit;font-size:14px;cursor:pointer">Continue</button>
+    <div id="lock-error" style="color:#f0b0a8;font-size:12px;min-height:18px"></div>
+  </form>
+</div>
+
+<div id="app" class="hidden">
 <div class="wrap">
   <header>
     <div>
@@ -195,15 +204,6 @@
       <button id="refresh" class="btn-accent" type="button">Refresh</button>
     </div>
   </header>
-
-  <div class="box hidden" id="auth" style="margin-bottom:14px;max-width:560px">
-    <div class="eyebrow" style="margin-bottom:8px">Admin access</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Enter the admin token to load scans. Set <code>ADMIN_SCANS_TOKEN</code> in Vercel env vars. Local dev without that env var stays open.</div>
-    <form id="auth-form" style="display:flex;gap:8px;flex-wrap:wrap">
-      <input id="auth-token" type="password" autocomplete="current-password" placeholder="Admin token" style="flex:1;min-width:220px" />
-      <button class="btn-accent" type="submit">Unlock</button>
-    </form>
-  </div>
 
   <div class="stats" id="stats"></div>
 
@@ -229,6 +229,7 @@
     <div style="font-size:15px;color:var(--text);margin-bottom:6px">No scans yet</div>
     <div style="font-size:13px;max-width:520px;margin:0 auto">New scans are stored in the private GitHub scans repo and appear here after analysis. Local dev writes to <code>scans/</code>.</div>
   </div>
+</div>
 </div>
 
 <div class="backdrop" id="modal" aria-hidden="true">
@@ -264,12 +265,15 @@
   const mImg = document.getElementById('m-img')
   const mInfo = document.getElementById('m-info')
   const mDownload = document.getElementById('m-download')
-  const authBox = document.getElementById('auth')
-  const authForm = document.getElementById('auth-form')
-  const authToken = document.getElementById('auth-token')
+  const lock = document.getElementById('lock')
+  const lockForm = document.getElementById('lock-form')
+  const lockToken = document.getElementById('lock-token')
+  const lockError = document.getElementById('lock-error')
+  const app = document.getElementById('app')
   const signout = document.getElementById('signout')
   let all = []
   let objectUrls = []
+  let unlocked = false
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])) }
   function showError(msg){ errorEl.classList.remove('hidden'); errorEl.textContent = msg }
@@ -509,40 +513,59 @@
     }
   }
 
-  function showAuth(on){
-    authBox.classList.toggle('hidden', !on)
-    signout.classList.toggle('hidden', on || !getToken())
-    if(on){ subtitle.textContent = 'Admin token required.'; statsEl.innerHTML=''; grid.innerHTML=''; countEl.textContent=''; empty.classList.add('hidden') }
+  function showLock(msg){
+    unlocked = false
+    app.classList.add('hidden')
+    lock.classList.remove('hidden')
+    lock.style.display = ''
+    lockError.textContent = msg || ''
+    subtitle.textContent = ''
+    statsEl.innerHTML = ''; grid.innerHTML = ''; countEl.textContent = ''
+    all = []; revokeUrls()
   }
 
-  async function load() {
+  function showApp(){
+    unlocked = true
+    lock.classList.add('hidden')
+    lock.style.display = 'none'
+    app.classList.remove('hidden')
+  }
+
+  async function load(silent) {
     hideError()
-    showAuth(false)
-    subtitle.textContent = 'Loading scans…'
+    if (!silent) subtitle.textContent = 'Loading…'
     try {
       const res = await apiFetch('/api/scans')
       if (!res.ok) throw new Error('Failed to load: ' + res.status)
       const data = await res.json()
+      showApp()
       all = (data.scans || []).map(normalize)
-      subtitle.textContent = data.count + ' scan' + (data.count === 1 ? '' : 's') + ' · protected admin view'
-      signout.classList.toggle('hidden', !getToken())
+      subtitle.textContent = data.count + ' scan' + (data.count === 1 ? '' : 's')
       render()
     } catch (err) {
-      if (err.code === 401) { showAuth(true); return }
+      if (err.code === 401) { setToken(''); showLock(silent ? '' : 'Incorrect access code.'); return }
+      if (!unlocked) { showLock('Could not verify access.'); return }
       showError('Could not load scans: ' + err.message)
       subtitle.textContent = 'Could not load scans'
       statsEl.innerHTML = ''; grid.innerHTML = ''; countEl.textContent = ''
-      signout.classList.toggle('hidden', !getToken())
     }
   }
 
-  authForm.addEventListener('submit', (e) => { e.preventDefault(); setToken(authToken.value.trim()); authToken.value=''; load() })
-  signout.addEventListener('click', () => { setToken(''); all=[]; render(); showAuth(true) })
+  lockForm.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    lockError.textContent = ''
+    const t = lockToken.value.trim()
+    if (!t) return
+    setToken(t)
+    lockToken.value = ''
+    await load()
+  })
+  signout.addEventListener('click', () => { setToken(''); showLock('') })
   qEl.addEventListener('input', render)
   bandEl.addEventListener('change', render)
   sortEl.addEventListener('change', render)
-  document.getElementById('refresh').addEventListener('click', load)
-  load()
+  document.getElementById('refresh').addEventListener('click', () => load())
+  if (getToken()) load(true); else showLock('')
 })()
 </script>
 </body>

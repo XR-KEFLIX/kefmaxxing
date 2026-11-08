@@ -3,6 +3,9 @@
 const MAX_QUESTION = 500
 const MAX_HISTORY = 10
 const MAX_REPORT_JSON = 14000
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
+const RATE_LIMIT_MAX = 30
+const rateLimit = new Map()
 
 function stripDashes(value) {
   return String(value)
@@ -54,9 +57,31 @@ function buildSystem(report, gender) {
   return lines.join('\n')
 }
 
+function clientIp(req) {
+  const h = (req && req.headers) || {}
+  const raw = h['x-forwarded-for'] || h['x-real-ip'] || (req && req.socket && req.socket.remoteAddress) || 'unknown'
+  return String(Array.isArray(raw) ? raw[0] : raw).split(',')[0].trim() || 'unknown'
+}
+
+function hitRateLimit(ip, max = RATE_LIMIT_MAX) {
+  const now = Date.now()
+  const entry = rateLimit.get(ip)
+  if (!entry || now > entry.reset) {
+    rateLimit.set(ip, { count: 1, reset: now + RATE_LIMIT_WINDOW_MS })
+    return false
+  }
+  entry.count += 1
+  return entry.count > max
+}
+
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store')
+  res.setHeader('X-Content-Type-Options', 'nosniff')
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed', message: 'POST only.' })
+  }
+  if (hitRateLimit(clientIp(req))) {
+    return res.status(429).json({ error: 'Too many requests', message: 'Too many requests right now. Try again in a few minutes.' })
   }
 
   const body = req.body || {}
