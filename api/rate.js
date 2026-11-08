@@ -186,14 +186,14 @@ function buildSystemPrompt(gender) {
     `REFERENCE: The user chose ${reference} reference standards. Compare visible features to that reference. Do not infer identity, sexuality, race or ethnicity. Never mention race or ethnicity.`,
     ``,
     `CALIBRATION:`,
-    `- 5.0 is a true population average. Most faces fall between 3.8 and 5.8. Be conservative.`,
-    `- In a random group of 100 people, roughly 50 score below 5.0, 30 score 5.0 to 5.9, 15 score 6.0 to 6.9, 4 score 7.0 to 7.9, and 1 scores 8.0 or above. Use that distribution.`,
-    `- 5.5 is slightly above average. 6.0 is clearly above average and requires noticeable strengths. 7.0 is attractive and uncommon. 8.0 is very attractive and rare. 9.0+ is exceptional.`,
-    `- Do not inflate. Err on the lower side when uncertain. Use one decimal.`,
-    `- A face with no standout features is around 4.2 to 5.0, not 5.5 or 6.0.`,
-    `- If a feature is merely ordinary, score it near 4.5–5.2. Reserve 6.5+ for clearly positive features.`,
-    `- Do not give 6.0 or higher unless you can name at least three clearly strong features in the photo. Do not give 7.0 or higher unless the face would stand out in the top few percent.`,
-    `- If you are torn between two values, choose the lower one. If the face looks average, say 4.8 or 5.0, not 5.5.`,
+    `- 5.0 is a true population average. Most faces fall between 3.8 and 5.8.`,
+    `- In a random group of 100 people, roughly 45 to 55 score below 5.0, 25 to 35 score 5.0 to 5.9, 10 to 18 score 6.0 to 6.9, 3 to 6 score 7.0 to 7.9, and about 1 scores 8.0 or above. Use that distribution as a guide, not a rigid quota.`,
+    `- 5.5 is slightly above average. 6.0 is clearly above average and needs noticeable strengths. 7.0 is attractive and uncommon. 8.0 is very attractive and rare. 9.0+ is exceptional.`,
+    `- Be accurate, not harsh and not lenient. Score what you can actually see.`,
+    `- A face with no standout features is around 4.3 to 5.2, not automatically 6.0.`,
+    `- If a feature is ordinary, score it near 4.6 to 5.3. Reserve 6.5+ for clearly positive features and 7.5+ for unusually strong features.`,
+    `- Do not give 6.0 or higher overall-level category reads without visible strengths. Do give 7.0+ when multiple features are clearly attractive in the photo.`,
+    `- If you are torn between two close values, pick the one that best matches the evidence. Do not default low out of caution.`,
     `- Do not state a numeric overall score in summary or analysis. The app computes the overall from your category scores.`,
     `- Visible soft-tissue fullness can lower definition-based scores, but do not guess body fat percentage.`,
     ``,
@@ -267,7 +267,9 @@ function buildSystemPrompt(gender) {
     ``,
     `WRITING STYLE: sound like a careful analyst, not a chatbot. Short sentences. Plain words. Specific details. Write like an experienced person talking to one other person. Use contractions. Never use: "delve", "elevate", "unlock", "journey", "game-changer", "it's not just X, it's Y", "remember that", "at the end of the day". Never use em dashes. No hype, no motivational fluff, no hedging, no moralizing. Never insult. Never mention race or ethnicity. No slurs. No medical claims. Do not use looksmaxxing rank slang in any text (no Chad, Chadlite, HTN, MTN, LTN, Sub-5, mogging, or similar terms).`,
     ``,
-    `If the image does not show exactly one clearly visible human face, respond ONLY with {"error":"no_face","message":"..."}.`,
+    `Only analyze a real photograph of exactly one clearly visible human face.`,
+    `If the image is not a real human photo, or shows an illustration, anime/cartoon/comic, painting, CGI/animated character, game/avatar render, statue, doll, toy, mask, or any fictional character, respond ONLY with {"error":"not_real_face","message":"Use a real photo of a person. Drawings, anime, cartoons, CGI, and fictional characters can't be scanned."}.`,
+    `If the image does not show exactly one clearly visible real human face, respond ONLY with {"error":"no_face","message":"..."}.`,
     ``,
     `Otherwise respond with ONLY one minified JSON object, no markdown, no backticks, exactly this shape. The values below are placeholders that show the field types only: never copy them and never let them influence your scores.`,
     `{"confidence":0.7,"faceShape":"oval","archetype":"structured","summary":"2-3 sentences.","analysis":"4-6 sentences.","categories":[{"key":"harmony","score":5.0,"note":"..."},{"key":"proportions","score":5.0,"note":"..."},{"key":"eyeArea","score":5.0,"note":"..."},{"key":"midface","score":5.0,"note":"..."},{"key":"jawline","score":5.0,"note":"..."},{"key":"cheekbones","score":5.0,"note":"..."},{"key":"skin","score":5.0,"note":"..."},{"key":"hair","score":5.0,"note":"..."},{"key":"grooming","score":5.0,"note":"..."},{"key":"appeal","score":5.0,"note":"..."}],"hairHalo":5.0,"strengths":[{"name":"feature","category":"harmony","influence":"structural","note":"..."}],"improvements":[{"name":"feature","category":"jawline","influence":"mixed","note":"..."}],"plan":[{"action":"short imperative","category":"skin","impact":"High","effort":"Low","evidence":"strong","timeframe":"2-4 weeks","detail":"2-3 sentences with specifics.","addresses":"feature"}],"roadmap":[{"phase":"Next 2 weeks","focus":"one sentence","actions":["short step","short step"]}],"hair":{"faceShape":"oval","direction":"one sentence","styles":["style","style"],"avoid":["style","style"],"note":"one sentence"},"skincare":{"am":["step","step"],"pm":["step","step"],"ingredients":["ingredient","ingredient"],"note":"one sentence"},"grooming":{"brows":"one sentence","facialHair":"one sentence","general":["item","item"],"note":"one sentence"},"geneticVsModifiable":{"genetic":["trait","trait"],"modifiable":["change","change"],"note":"one sentence"},"potential":6.0,"photoNotes":"1-2 sentences."}`,
@@ -297,30 +299,29 @@ function clampScore(value, fallback = 5) {
   return Math.min(10, Math.max(1, round1(n)))
 }
 
-// Models tend to read faces optimistically above the midpoint. Map their raw
-// score onto a distribution that matches how faces actually spread: most sit
-// near 5.0, and 6.0+ stays uncommon. The curve is monotonic, so ordering holds.
+// Keep scores close to the model's evidence-based read while smoothing small
+// inconsistencies. The curve is monotonic, so ordering holds.
 function calibrateScore(value) {
   const s = clampScore(value, 5)
   if (s <= 5) {
     const gap = 5 - s
-    return clampScore(5 - 0.88 * Math.pow(gap, 0.9))
+    return clampScore(5 - 0.92 * Math.pow(gap, 0.96))
   }
   const gap = s - 5
-  return clampScore(5 + 0.6 * Math.pow(gap, 0.88))
+  return clampScore(5 + 0.97 * Math.pow(gap, 0.99))
 }
 
-// A high overall needs support from the individual dimensions. One strong
-// feature cannot carry the whole face into the next band.
+// A very high overall still needs support from multiple features.
 function capOverall(overall, categories) {
   const scores = categories.map((cat) => cat.score)
   const strong = scores.filter((s) => s >= 6.0).length
   const excellent = scores.filter((s) => s >= 7.0).length
-  let cap = 5.9
-  if (strong >= 3) cap = 6.5
-  if (strong >= 5) cap = 7.0
-  if (excellent >= 3) cap = 7.4
-  if (excellent >= 5) cap = 8.0
+  let cap = 6.8
+  if (strong >= 2) cap = 7.1
+  if (strong >= 3) cap = 7.5
+  if (strong >= 5) cap = 8.0
+  if (excellent >= 3) cap = 8.4
+  if (excellent >= 5) cap = 9.0
   return Math.min(overall, cap)
 }
 
