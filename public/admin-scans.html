@@ -3,82 +3,236 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Scans — Admin</title>
+<meta name="robots" content="noindex,nofollow" />
+<title>Scans</title>
 <style>
+  :root {
+    --bg: #0c0d0b;
+    --bg-2: #121311;
+    --panel: #161715;
+    --panel-2: #1c1d1a;
+    --line: #282923;
+    --line-2: #353631;
+    --text: #eceae3;
+    --muted: #9b9991;
+    --dim: #6d6c65;
+    --accent: #62bb8d;
+    --accent-2: #4aa675;
+    --accent-bg: rgba(98,187,141,.12);
+    --warn: #e5b560;
+    --bad: #e97f74;
+    --good: #63c98e;
+    --shadow: 0 18px 50px rgba(0,0,0,.35);
+    --radius: 14px;
+    color-scheme: dark;
+  }
   * { box-sizing: border-box; }
-  body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: #101110; color: #e8e6e1; }
-  header { padding: 20px 24px; border-bottom: 1px solid #2a2b29; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  h1 { font-size: 18px; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
-  .meta { color: #9a9790; font-size: 13px; margin-top: 4px; font-family: ui-monospace, monospace; }
-  button, .btn { background: #1c1d1b; color: #e8e6e1; border: 1px solid #2f302e; border-radius: 6px; padding: 8px 14px; font-size: 13px; cursor: pointer; text-decoration: none; display: inline-block; }
-  button:hover, .btn:hover { background: #242523; }
-  main { padding: 24px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-  .card { background: #161716; border: 1px solid #2a2b29; border-radius: 8px; overflow: hidden; }
-  .card img { width: 100%; height: auto; display: block; background: #0a0a0a; cursor: pointer; }
-  .card .row { padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .name { font-size: 11px; font-family: ui-monospace, monospace; color: #9a9790; word-break: break-all; }
-  .empty { color: #9a9790; padding: 48px 24px; text-align: center; font-size: 14px; }
-  .error { color: #f0a08a; padding: 12px 24px; font-size: 13px; }
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.72); display: none; align-items: flex-start; justify-content: center; padding: 24px; overflow: auto; z-index: 50; }
-  .modal-backdrop.open { display: flex; }
-  .modal { width: min(1180px, 100%); background: #141514; border: 1px solid #2a2b29; border-radius: 10px; overflow: hidden; }
-  .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #2a2b29; }
-  .modal-head .title { font-size: 13px; font-family: ui-monospace, monospace; color: #cfcac0; word-break: break-all; }
-  .modal-body { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(360px, 1.15fr); }
-  @media (max-width: 880px) { .modal-body { grid-template-columns: 1fr; } }
-  .modal-img { padding: 16px; border-right: 1px solid #2a2b29; background: #0d0d0c; display: flex; align-items: flex-start; justify-content: center; }
-  @media (max-width: 880px) { .modal-img { border-right: 0; border-bottom: 1px solid #2a2b29; } }
-  .modal-img img { max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #232422; }
-  .modal-info { padding: 16px; max-height: 78vh; overflow: auto; }
-  .section { margin-bottom: 14px; }
-  .section h3 { margin: 0 0 8px; font-size: 11px; color: #9a9790; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
-  .cardish { background: #101110; border: 1px solid #232422; border-radius: 8px; padding: 10px 12px; }
-  .kv { display: grid; grid-template-columns: 150px 1fr; gap: 6px 12px; font-size: 12.5px; }
-  @media (max-width: 520px) { .kv { grid-template-columns: 1fr; } }
-  .k { color: #8f8c85; }
-  .v { color: #e2ded5; word-break: break-word; }
-  .score-big { font-size: 28px; font-weight: 700; color: #f2eee6; letter-spacing: -0.02em; }
-  .sub { color: #9a9790; font-size: 12px; margin-top: 2px; }
-  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #1c1d1b; border: 1px solid #2f302e; font-size: 11px; color: #cfcac0; margin-right: 6px; margin-top: 4px; }
-  details.raw { margin-top: 6px; }
-  details.raw summary { cursor: pointer; color: #8f8c85; font-size: 12px; }
-  pre { margin: 8px 0 0; padding: 10px 12px; background: #0d0d0c; border: 1px solid #232422; border-radius: 6px; font-size: 11px; line-height: 1.45; color: #cfc5b8; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-  .muted { color: #7a7872; font-size: 12px; }
-  .actions { display: flex; gap: 8px; align-items: center; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+    background:
+      radial-gradient(900px 420px at 10% -10%, rgba(98,187,141,.08), transparent 60%),
+      radial-gradient(700px 380px at 100% 0%, rgba(98,187,141,.05), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .wrap { max-width: 1480px; margin: 0 auto; padding: 20px 18px 40px; }
+  header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  h1 { margin: 0; font-size: clamp(24px, 4vw, 34px); font-weight: 600; letter-spacing: -.03em; }
+  .sub { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  button, .btn, select, input[type="search"] {
+    background: var(--panel); color: var(--text); border: 1px solid var(--line);
+    border-radius: 10px; padding: 9px 13px; font: inherit; font-size: 13px;
+  }
+  button, .btn { cursor: pointer; transition: background .15s, border-color .15s, transform .1s; }
+  button:hover, .btn:hover { background: var(--panel-2); border-color: var(--line-2); }
+  button:active, .btn:active { transform: translateY(1px); }
+  .btn-accent { background: var(--accent-bg); border-color: rgba(98,187,141,.28); color: #dff7ea; }
+  .btn-accent:hover { background: rgba(98,187,141,.18); }
+  input[type="search"], select { min-width: 0; }
+  input[type="search"] { width: min(280px, 100%); }
+  input[type="search"]::placeholder { color: var(--dim); }
+  .stats {
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px;
+  }
+  @media (max-width: 980px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 560px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    background: linear-gradient(180deg, rgba(255,255,255,.02), transparent), var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 14px 12px;
+    min-height: 84px;
+  }
+  .stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .stat .v { font-size: 26px; font-weight: 650; letter-spacing: -.03em; margin-top: 4px; }
+  .stat .s { font-size: 12px; color: var(--dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .toolbar {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;
+    padding: 12px; background: rgba(22,23,21,.7); border: 1px solid var(--line); border-radius: var(--radius);
+    backdrop-filter: blur(8px);
+  }
+  .toolbar .spacer { flex: 1; }
+  .count-pill { font-size: 12px; color: var(--muted); padding: 0 4px; }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px;
+  }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    cursor: pointer; position: relative;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--line-2); box-shadow: var(--shadow); }
+  .thumb { position: relative; aspect-ratio: 4 / 5; background: #090a08; overflow: hidden; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
+  .card:hover .thumb img { transform: scale(1.03); }
+  .score-badge {
+    position: absolute; top: 10px; left: 10px; display: flex; align-items: baseline; gap: 6px;
+    padding: 6px 10px; border-radius: 999px; background: rgba(12,13,11,.72);
+    border: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(10px);
+    font-weight: 650; font-size: 15px; letter-spacing: -.02em;
+  }
+  .score-badge .band { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .card-body { padding: 12px 12px 13px; }
+  .card-top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; margin-bottom: 6px; }
+  .card-band { font-size: 13px; font-weight: 600; }
+  .card-time { font-size: 11px; color: var(--dim); white-space: nowrap; }
+  .card-meta { font-size: 12px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-foot { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    font-size: 10px; color: var(--muted); border: 1px solid var(--line); background: rgba(255,255,255,.02);
+    padding: 2px 7px; border-radius: 999px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tag.accent { color: #c8f0da; border-color: rgba(98,187,141,.22); background: var(--accent-bg); }
+  .empty, .error {
+    border: 1px dashed var(--line-2); border-radius: var(--radius); padding: 42px 20px; text-align: center;
+    color: var(--muted); background: rgba(22,23,21,.45);
+  }
+  .error { border-style: solid; border-color: rgba(233,127,116,.25); color: #f0b0a8; }
+  .hidden { display: none !important; }
+  /* Modal */
+  .backdrop {
+    position: fixed; inset: 0; background: rgba(6,7,6,.78); backdrop-filter: blur(6px);
+    display: none; align-items: flex-start; justify-content: center; padding: 18px; overflow: auto; z-index: 100;
+  }
+  .backdrop.open { display: flex; }
+  .modal {
+    width: min(1280px, 100%); background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 18px; box-shadow: 0 30px 90px rgba(0,0,0,.55); overflow: hidden;
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    padding: 14px 16px; border-bottom: 1px solid var(--line); background: rgba(22,23,21,.9);
+    position: sticky; top: 0; z-index: 2;
+  }
+  .modal-title { font-size: 13px; color: var(--muted); word-break: break-all; }
+  .modal-body { display: grid; grid-template-columns: minmax(300px, .95fr) minmax(380px, 1.25fr); }
+  @media (max-width: 940px) { .modal-body { grid-template-columns: 1fr; } }
+  .modal-media { padding: 16px; background: #090a08; border-right: 1px solid var(--line); }
+  @media (max-width: 940px) { .modal-media { border-right: 0; border-bottom: 1px solid var(--line); } }
+  .modal-media img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .modal-info { padding: 16px; max-height: calc(100vh - 120px); overflow: auto; }
+  @media (max-width: 940px) { .modal-info { max-height: none; } }
+  .hero-score {
+    display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center;
+    padding: 14px; border-radius: 14px; border: 1px solid var(--line);
+    background: linear-gradient(135deg, rgba(98,187,141,.12), rgba(98,187,141,.02));
+    margin-bottom: 12px;
+  }
+  .ring {
+    width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center;
+    background: conic-gradient(var(--accent) calc(var(--p) * 1%), rgba(255,255,255,.08) 0);
+    position: relative;
+  }
+  .ring::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: #121412; }
+  .ring span { position: relative; font-size: 22px; font-weight: 700; letter-spacing: -.03em; }
+  .hero-band { font-size: 18px; font-weight: 650; letter-spacing: -.02em; }
+  .hero-sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
+  .cats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .cat { font-size: 11px; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,.04); border: 1px solid var(--line); color: #d8d6cf; }
+  .cat strong { color: var(--text); font-weight: 650; }
+  .section { margin-bottom: 12px; }
+  .section h3 {
+    margin: 0 0 8px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section h3::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+  .box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .kv { display: grid; grid-template-columns: 160px 1fr; gap: 7px 12px; font-size: 12.5px; }
+  @media (max-width: 560px) { .kv { grid-template-columns: 1fr; gap: 2px; } .kv .k { margin-top: 6px; } }
+  .k { color: var(--muted); }
+  .v { color: var(--text); word-break: break-word; }
+  details.raw summary { cursor: pointer; color: var(--muted); font-size: 12px; user-select: none; }
+  pre {
+    margin: 10px 0 0; padding: 12px; background: #0b0c0a; border: 1px solid var(--line); border-radius: 10px;
+    font-size: 11px; line-height: 1.5; color: #d0cdc4; white-space: pre-wrap; word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; max-height: 420px; overflow: auto;
+  }
+  .muted { color: var(--dim); font-size: 12px; }
+  .b-chad, .b-chadlite { color: #8cf0b8; }
+  .b-htn { color: #7ce2c3; }
+  .b-mtn { color: #b8ddb0; }
+  .b-ltn { color: #e5d08a; }
+  .b-sub-5, .b-sub-4, .b-sub-3 { color: #f0a892; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
-<header>
-  <div>
-    <h1>Scans</h1>
-    <div class="meta" id="meta">Loading…</div>
-  </div>
-  <button id="refresh">Refresh</button>
-</header>
-<div class="error" id="error" hidden></div>
-<main>
-  <div class="grid" id="grid"></div>
-  <div class="empty" id="empty" hidden>
-    <div style="margin-bottom:10px">No scans found.</div>
-    <div style="font-size:12px;color:#7a7872;line-height:1.5;max-width:520px;margin:0 auto">
-      On Vercel, scans persist via Blob (<code>BLOB_READ_WRITE_TOKEN</code>). Locally, scans save to the <code>scans/</code> folder when using <code>npm run dev</code>.
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Kefmaxxing</div>
+      <h1>Scan inbox</h1>
+      <div class="sub" id="subtitle">Loading scans…</div>
     </div>
-  </div>
-</main>
+    <div class="actions">
+      <button id="refresh" class="btn-accent" type="button">Refresh</button>
+    </div>
+  </header>
 
-<div class="modal-backdrop" id="modal" aria-hidden="true">
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <input type="search" id="q" placeholder="Search device, location, band, file…" autocomplete="off" />
+    <select id="bandFilter" aria-label="Filter by band">
+      <option value="">All bands</option>
+      <option>Chad</option><option>Chadlite</option><option>HTN</option><option>MTN</option><option>LTN</option><option>Sub-5</option><option>Sub-4</option><option>Sub-3</option><option value="__none">No result</option>
+    </select>
+    <select id="sort" aria-label="Sort">
+      <option value="newest">Newest first</option>
+      <option value="oldest">Oldest first</option>
+      <option value="score-desc">Score high to low</option>
+      <option value="score-asc">Score low to high</option>
+    </select>
+    <span class="spacer"></span>
+    <span class="count-pill mono" id="count"></span>
+  </div>
+
+  <div class="error hidden" id="error"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty hidden" id="empty">
+    <div style="font-size:15px;color:var(--text);margin-bottom:6px">No scans yet</div>
+    <div style="font-size:13px;max-width:520px;margin:0 auto">New scans are stored in the private GitHub scans repo and appear here after analysis. Local dev writes to <code>scans/</code>.</div>
+  </div>
+</div>
+
+<div class="backdrop" id="modal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Scan details">
     <div class="modal-head">
-      <div class="title" id="modal-title"></div>
+      <div class="modal-title mono" id="m-title"></div>
       <div class="actions">
-        <a class="btn" id="modal-download" href="#" download>Download</a>
-        <button id="modal-close" type="button">Close</button>
+        <a class="btn" id="m-download" href="#" download>Download</a>
+        <button id="m-close" type="button">Close</button>
       </div>
     </div>
     <div class="modal-body">
-      <div class="modal-img"><img id="modal-img" alt="" /></div>
-      <div class="modal-info" id="modal-info"></div>
+      <div class="modal-media"><img id="m-img" alt="" /></div>
+      <div class="modal-info" id="m-info"></div>
     </div>
   </div>
 </div>
@@ -87,29 +241,116 @@
 (function () {
   const grid = document.getElementById('grid')
   const empty = document.getElementById('empty')
-  const metaEl = document.getElementById('meta')
   const errorEl = document.getElementById('error')
+  const subtitle = document.getElementById('subtitle')
+  const statsEl = document.getElementById('stats')
+  const countEl = document.getElementById('count')
+  const qEl = document.getElementById('q')
+  const bandEl = document.getElementById('bandFilter')
+  const sortEl = document.getElementById('sort')
   const modal = document.getElementById('modal')
-  const modalTitle = document.getElementById('modal-title')
-  const modalImg = document.getElementById('modal-img')
-  const modalInfo = document.getElementById('modal-info')
-  const modalDownload = document.getElementById('modal-download')
-  const modalClose = document.getElementById('modal-close')
+  const mTitle = document.getElementById('m-title')
+  const mImg = document.getElementById('m-img')
+  const mInfo = document.getElementById('m-info')
+  const mDownload = document.getElementById('m-download')
+  let all = []
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])) }
-  function showError(msg){ errorEl.hidden = false; errorEl.textContent = msg }
+  function showError(msg){ errorEl.classList.remove('hidden'); errorEl.textContent = msg }
+  function hideError(){ errorEl.classList.add('hidden'); errorEl.textContent = '' }
+  function num(v){ const n = Number(v); return Number.isFinite(n) ? n : null }
+  function timeOf(obj){
+    const m = obj && obj.meta
+    const t = (m && (m.sentAt || m.capturedAt || m.at)) || obj.uploadedAt
+    const d = t ? new Date(t) : null
+    return d && !isNaN(d) ? d : null
+  }
+  function relTime(d){
+    if(!d) return ''
+    const s = Math.floor((Date.now() - d.getTime()) / 1000)
+    if(s < 60) return 'just now'
+    if(s < 3600) return Math.floor(s/60) + 'm ago'
+    if(s < 86400) return Math.floor(s/3600) + 'h ago'
+    if(s < 604800) return Math.floor(s/86400) + 'd ago'
+    return d.toLocaleDateString(undefined, { month:'short', day:'numeric' })
+  }
   function fmtTime(iso, epoch){
     if(!iso && !epoch) return null
     const d = new Date(iso || epoch)
     if(isNaN(d.getTime())) return { raw: iso || epoch }
     return { iso: iso || d.toISOString(), epochMs: epoch || d.getTime(), utc: d.toUTCString(), local: d.toString() }
   }
+  function bandClass(band){
+    const b = String(band || '').toLowerCase().replace(/\s+/g,'-')
+    if(!b) return ''
+    return 'b-' + b.replace(/[^a-z0-9-]/g,'')
+  }
+  function bandColor(band){
+    const b = String(band || '').toLowerCase()
+    if(b === 'chad' || b === 'chadlite') return '#62bb8d'
+    if(b === 'htn') return '#5fd0b0'
+    if(b === 'mtn') return '#a8d08d'
+    if(b === 'ltn') return '#d7c46a'
+    if(/^sub/.test(b)) return '#e59b7a'
+    return '#62bb8d'
+  }
   function kv(obj){
     const rows = Object.entries(obj || {}).filter(([,v])=>v !== undefined && v !== null && v !== '')
     if(!rows.length) return '<div class="muted">No data</div>'
-    return '<div class="kv">' + rows.map(([k,v])=>`<div class="k">${esc(k)}</div><div class="v">${esc(typeof v === 'object' ? JSON.stringify(v) : v)}</div>`).join('') + '</div>'
+    return '<div class="kv">' + rows.map(([k,v])=>`<div class="k">${esc(k)}</div><div class="v mono" style="font-size:12px">${esc(typeof v === 'object' ? JSON.stringify(v) : v)}</div>`).join('') + '</div>'
   }
-  function section(title, inner){ return `<div class="section"><h3>${esc(title)}</h3><div class="cardish">${inner}</div></div>` }
+  function section(title, inner){ return `<div class="section"><h3>${esc(title)}</h3><div class="box">${inner}</div></div>` }
+  function resOf(obj){ return obj && obj.meta && obj.meta.result ? obj.meta.result : null }
+
+  function renderStats(items){
+    const scored = items.filter(o => resOf(o) && resOf(o).ok && num(resOf(o).overall) != null)
+    const avg = scored.length ? (scored.reduce((s,o)=>s + num(resOf(o).overall), 0) / scored.length) : null
+    const bands = {}
+    for(const o of scored){ const b = resOf(o).band || 'Unknown'; bands[b] = (bands[b]||0)+1 }
+    const topBand = Object.entries(bands).sort((a,b)=>b[1]-a[1])[0]
+    const latest = items.map(timeOf).filter(Boolean).sort((a,b)=>b-a)[0]
+    const failed = items.filter(o => resOf(o) && !resOf(o).ok).length
+    const cards = [
+      { k:'Total scans', v: items.length, s: failed ? (failed + ' failed') : 'all captured' },
+      { k:'Scored', v: scored.length, s: items.length ? Math.round(scored.length/items.length*100) + '% with results' : '—' },
+      { k:'Average', v: avg == null ? '—' : avg.toFixed(1), s: avg == null ? 'no scores yet' : 'overall score' },
+      { k:'Most common', v: topBand ? topBand[0] : '—', s: topBand ? topBand[1] + ' scan' + (topBand[1]>1?'s':'') : 'no band data' },
+      { k:'Latest', v: latest ? relTime(latest) : '—', s: latest ? latest.toLocaleString() : '—' },
+    ]
+    statsEl.innerHTML = cards.map(c=>`<div class="stat"><div class="k">${esc(c.k)}</div><div class="v">${esc(c.v)}</div><div class="s">${esc(c.s)}</div></div>`).join('')
+  }
+
+  function normalize(item){
+    return typeof item === 'string' ? { name: item, url: '/api/scans?file=' + encodeURIComponent(item) } : item
+  }
+
+  function haystack(obj){
+    const r = resOf(obj) || {}
+    const m = (obj.meta || {})
+    const d = m.device || {}
+    const g = m.geo || {}
+    return [obj.name, r.band, r.gender, r.provider, r.model, d.summary, d.userAgent, d.platform, g.city, g.country, g.region, m.upload && m.upload.referer].filter(Boolean).join(' ').toLowerCase()
+  }
+
+  function filtered(){
+    const q = qEl.value.trim().toLowerCase()
+    const band = bandEl.value
+    let items = all.filter(o => {
+      if(q && !haystack(o).includes(q)) return false
+      const r = resOf(o)
+      if(band === '__none') return !(r && r.ok)
+      if(band && (!r || r.band !== band)) return false
+      return true
+    })
+    const sort = sortEl.value
+    items.sort((a,b) => {
+      if(sort === 'oldest') return (timeOf(a)||0) - (timeOf(b)||0)
+      if(sort === 'score-desc') return (num((resOf(b)||{}).overall)||-1) - (num((resOf(a)||{}).overall)||-1)
+      if(sort === 'score-asc') return (num((resOf(a)||{}).overall)||99) - (num((resOf(b)||{}).overall)||99)
+      return (timeOf(b)||0) - (timeOf(a)||0)
+    })
+    return items
+  }
 
   function renderDetail(obj){
     const m = obj.meta && typeof obj.meta === 'object' ? obj.meta : null
@@ -120,16 +361,22 @@
     const geo = m && m.geo ? m.geo : {}
     const up = m && m.upload ? m.upload : {}
 
-    let scoreHtml = '<div class="muted">No score recorded (scan saved before result logging, or analysis failed).</div>'
+    let scoreHtml = '<div class="muted">No score recorded. The scan was saved before result logging, or analysis failed.</div>'
     if(res && res.ok){
-      const cats = Array.isArray(res.categories) ? res.categories.map(c=>`<span class="pill">${esc(c.name)} ${esc(c.score)}</span>`).join('') : ''
+      const overall = num(res.overall)
+      const pct = overall == null ? 0 : Math.max(0, Math.min(100, overall * 10))
+      const cats = Array.isArray(res.categories) ? res.categories.map(c=>`<span class="cat"><strong>${esc(c.score)}</strong> ${esc(c.name)}</span>`).join('') : ''
       scoreHtml = `
-        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
-          <div class="score-big">${esc(res.overall)}</div>
-          <div><div style="font-weight:600;color:#f2eee6">${esc(res.band || '')} ${res.level ? '('+esc(res.level)+')' : ''}</div><div class="sub">Potential ${esc(res.potential)} · Confidence ${esc(res.confidence)} · Hair halo ${esc(res.hairHalo)}</div></div>
+        <div class="hero-score" style="--accent:${bandColor(res.band)}">
+          <div class="ring" style="--p:${pct};--accent:${bandColor(res.band)}"><span>${esc(overall == null ? '—' : overall.toFixed(1))}</span></div>
+          <div>
+            <div class="hero-band ${bandClass(res.band)}">${esc(res.band || 'Scored')} ${res.level ? '<span style="color:var(--muted);font-weight:500;font-size:13px">· '+esc(res.level)+'</span>' : ''}</div>
+            <div class="hero-sub">Potential ${esc(res.potential)} · Confidence ${esc(res.confidence)} · Hair halo ${esc(res.hairHalo)}</div>
+            <div class="hero-sub mono" style="margin-top:5px">${esc(res.gender || '')} · ${esc(res.provider || '')}/${esc(res.model || '')}</div>
+          </div>
         </div>
-        <div class="sub" style="margin-top:8px">Gender: ${esc(res.gender)} · Model: ${esc(res.provider)}/${esc(res.model)} · Structural ${esc(res.structuralIndex)} · Appeal ${esc(res.appealIndex)}</div>
-        ${cats ? `<div style="margin-top:8px">${cats}</div>` : ''}
+        <div class="hero-sub" style="margin:-2px 0 10px">Structural ${esc(res.structuralIndex)} · Appeal ${esc(res.appealIndex)}</div>
+        ${cats ? `<div class="cats">${cats}</div>` : ''}
       `
     } else if (res && !res.ok) {
       scoreHtml = `<div class="muted">Result: ${esc(res.error || 'failed')}${res.message ? ' — '+esc(res.message) : ''}</div>`
@@ -137,19 +384,17 @@
 
     const deviceSummary = dev.summary || [dev.uaModel && String(dev.uaModel).replace(/"/g,''), dev.platform && String(dev.platform).replace(/"/g,''), /Mobile/i.test(String(dev.userAgent||''))||dev.mobile==='?1'?'Mobile':'Desktop'].filter(Boolean).join(' · ')
     const loc = [geo.city, geo.region, geo.country].filter(Boolean).join(', ') + (geo.latitude && geo.longitude ? ` (${geo.latitude}, ${geo.longitude})` : '')
-    const where = [up.referer, up.origin, up.fullUrl || (up.host && up.url ? (up.forwardedProto||'https')+'://'+up.host+up.url : '')].find(Boolean)
-
     const parts = []
     parts.push(section('Score', scoreHtml))
-    parts.push(section('Sent time (exact)', sent ? kv({ sentAt: sent.iso, epochMs: sent.epochMs, utc: sent.utc, local: sent.local }) : '<div class="muted">No exact sent time recorded (saved before timestamp logging).</div>'))
-    parts.push(section('Device / Phone', kv({ device: deviceSummary, platform: dev.platform, mobile: dev.mobile, model: dev.uaModel, ua: dev.ua, uaFullVersionList: dev.uaFullVersionList, platformVersion: dev.uaPlatformVersion, userAgent: dev.userAgent, language: dev.language, viewport: dev.viewportWidth, dpr: dev.dpr, deviceMemory: dev.deviceMemory, connection: dev.ect || dev.downlink ? (dev.ect||'') + (dev.downlink?(' '+dev.downlink+'Mbps'):'') : undefined })))
+    parts.push(section('Sent time', sent ? kv({ sentAt: sent.iso, epochMs: sent.epochMs, utc: sent.utc, local: sent.local }) : '<div class="muted">No exact sent time recorded.</div>'))
+    parts.push(section('Device', kv({ device: deviceSummary, platform: dev.platform, mobile: dev.mobile, model: dev.uaModel, ua: dev.ua, uaFullVersionList: dev.uaFullVersionList, platformVersion: dev.uaPlatformVersion, userAgent: dev.userAgent, language: dev.language, viewport: dev.viewportWidth, dpr: dev.dpr, deviceMemory: dev.deviceMemory, connection: dev.ect || dev.downlink ? (dev.ect||'') + (dev.downlink?(' '+dev.downlink+'Mbps'):'') : undefined })))
     parts.push(section('Location', kv({ location: loc || undefined, country: geo.country, region: geo.region, city: geo.city, latitude: geo.latitude, longitude: geo.longitude, timezone: geo.timezone, continent: geo.continent, ip: net.ip, xForwardedFor: net.xForwardedFor })))
-    parts.push(section('Upload source (where it came from)', kv({ referer: up.referer, origin: up.origin, host: up.host, requestUrl: up.url, fullUrl: up.fullUrl, method: up.method, vercelId: up.vercelId, deploymentUrl: up.vercelDeploymentUrl })))
-    parts.push(section('Scan', kv({ name: obj.name, pathname: obj.pathname, source: obj.source, size: obj.size, uploadedAt: obj.uploadedAt })))
+    parts.push(section('Source', kv({ referer: up.referer, origin: up.origin, host: up.host, requestUrl: up.url, fullUrl: up.fullUrl, method: up.method, vercelId: up.vercelId, deploymentUrl: up.vercelDeploymentUrl })))
+    parts.push(section('File', kv({ name: obj.name, pathname: obj.pathname, source: obj.source, size: obj.size, uploadedAt: obj.uploadedAt })))
     if(m){
-      parts.push(`<div class="section"><div class="cardish"><details class="raw"><summary>Raw metadata (all captured)</summary><pre>${esc(JSON.stringify(m,null,2))}</pre></details></div></div>`)
+      parts.push(`<div class="section"><div class="box"><details class="raw"><summary>Raw metadata</summary><pre>${esc(JSON.stringify(m,null,2))}</pre></details></div></div>`)
     } else {
-      parts.push(section('Metadata', '<div class="muted">No metadata recorded for this scan (saved before logging was enabled).</div>'))
+      parts.push(section('Metadata', '<div class="muted">No metadata recorded for this scan.</div>'))
     }
     return parts.join('')
   }
@@ -157,63 +402,95 @@
   function openModal(obj) {
     const src = obj.url || ('/api/scans?file=' + encodeURIComponent(obj.name || obj.pathname || ''))
     const name = obj.name || (obj.pathname || '').split('/').pop() || 'scan'
-    modalTitle.textContent = name
-    modalImg.src = src
-    modalImg.alt = name
-    modalDownload.href = src
-    modalDownload.download = name
-    modalInfo.innerHTML = renderDetail(obj)
+    mTitle.textContent = name
+    mImg.src = src
+    mImg.alt = name
+    mDownload.href = src
+    mDownload.download = name
+    mInfo.innerHTML = renderDetail(obj)
     modal.classList.add('open')
     modal.setAttribute('aria-hidden', 'false')
+    document.body.style.overflow = 'hidden'
   }
-
   function closeModal() {
     modal.classList.remove('open')
     modal.setAttribute('aria-hidden', 'true')
-    modalImg.src = ''
+    mImg.src = ''
+    document.body.style.overflow = ''
   }
-
-  modalClose.addEventListener('click', closeModal)
+  document.getElementById('m-close').addEventListener('click', closeModal)
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal() })
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal() })
 
-  async function load() {
-    errorEl.hidden = true
+  function render(){
+    renderStats(all)
+    const items = filtered()
     grid.innerHTML = ''
-    try {
-      const res = await fetch('/api/scans')
-      if (!res.ok) throw new Error('Failed to load: ' + res.status)
-      const data = await res.json()
-      metaEl.textContent = data.count + ' scan' + (data.count === 1 ? '' : 's') + ' — click an image for score, device, location, source & exact time'
-      if (!data.scans.length) { empty.hidden = false; return }
-      empty.hidden = true
-      for (const item of data.scans) {
-        const obj = typeof item === 'string' ? { name: item, url: '/api/scans?file=' + encodeURIComponent(item) } : item
-        const src = obj.url || ('/api/scans?file=' + encodeURIComponent(obj.name || obj.pathname || ''))
-        const name = obj.name || (obj.pathname || '').split('/').pop() || 'scan'
-        const card = document.createElement('div')
-        card.className = 'card'
-        const img = document.createElement('img')
-        img.src = src; img.alt = name; img.loading = 'lazy'; img.title = 'Click to view details'
-        img.addEventListener('click', () => openModal(obj))
-        const row = document.createElement('div')
-        row.className = 'row'
-        const span = document.createElement('div')
-        span.className = 'name'
-        span.textContent = name
-        const btn = document.createElement('button')
-        btn.textContent = 'Details'; btn.type = 'button'
-        btn.addEventListener('click', () => openModal(obj))
-        row.appendChild(span); row.appendChild(btn)
-        card.appendChild(img); card.appendChild(row)
-        grid.appendChild(card)
-      }
-    } catch (err) {
-      showError('Could not load scans: ' + err.message)
-      metaEl.textContent = '—'
+    countEl.textContent = items.length + ' shown'
+    if (!all.length) { empty.classList.remove('hidden'); return }
+    empty.classList.add('hidden')
+    if (!items.length) {
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No scans match the current filters.</div>'
+      return
+    }
+    for (const obj of items) {
+      const src = obj.url || ('/api/scans?file=' + encodeURIComponent(obj.name || obj.pathname || ''))
+      const name = obj.name || (obj.pathname || '').split('/').pop() || 'scan'
+      const r = resOf(obj) || {}
+      const m = obj.meta || {}
+      const d = (m.device && m.device.summary) || ''
+      const g = [m.geo && m.geo.city, m.geo && m.geo.country].filter(Boolean).join(', ')
+      const t = timeOf(obj)
+      const overall = num(r.overall)
+      const card = document.createElement('article')
+      card.className = 'card'
+      card.tabIndex = 0
+      card.setAttribute('role','button')
+      card.innerHTML = `
+        <div class="thumb">
+          <img src="${esc(src)}" alt="${esc(name)}" loading="lazy" decoding="async" />
+          ${r.ok && overall != null ? `<div class="score-badge" style="color:${bandColor(r.band)}"><span>${overall.toFixed(1)}</span><span class="band">${esc(r.band||'')}</span></div>` : (r.error ? `<div class="score-badge" style="color:var(--bad)"><span>!</span><span class="band">failed</span></div>` : '')}
+        </div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-band ${bandClass(r.band)}">${esc(r.ok ? (r.band || 'Scored') : (r.error ? 'Analysis failed' : 'Pending'))}</div>
+            <div class="card-time mono">${esc(t ? relTime(t) : '')}</div>
+          </div>
+          <div class="card-meta">${esc([d, g].filter(Boolean).join(' · ') || name)}</div>
+          <div class="card-foot">
+            ${r.ok && r.gender ? `<span class="tag">${esc(r.gender)}</span>` : ''}
+            ${obj.source ? `<span class="tag">${esc(obj.source)}</span>` : ''}
+            ${t ? `<span class="tag mono">${esc(t.toLocaleString())}</span>` : `<span class="tag mono">${esc(name)}</span>`}
+          </div>
+        </div>`
+      card.addEventListener('click', () => openModal(obj))
+      card.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' ') { e.preventDefault(); openModal(obj) } })
+      grid.appendChild(card)
     }
   }
 
+  async function load() {
+    hideError()
+    subtitle.textContent = 'Loading scans…'
+    try {
+      const res = await fetch('/api/scans', { cache: 'no-store' })
+      if (!res.ok) throw new Error('Failed to load: ' + res.status)
+      const data = await res.json()
+      all = (data.scans || []).map(normalize)
+      subtitle.textContent = data.count + ' scan' + (data.count === 1 ? '' : 's') + ' · click a card for score, device, location, and source'
+      render()
+    } catch (err) {
+      showError('Could not load scans: ' + err.message)
+      subtitle.textContent = 'Could not load scans'
+      statsEl.innerHTML = ''
+      grid.innerHTML = ''
+      countEl.textContent = ''
+    }
+  }
+
+  qEl.addEventListener('input', render)
+  bandEl.addEventListener('change', render)
+  sortEl.addEventListener('change', render)
   document.getElementById('refresh').addEventListener('click', load)
   load()
 })()
