@@ -50,6 +50,7 @@ function buildSystem(report, gender) {
     `- Do not claim the analysis measures body fat, neck thickness, health, hormones or anything not visible in the photo.`,
     `- Do not claim to measure angles or ratios precisely. Do not invent studies, statistics or certainty. If you cite evidence, keep it general and honest.`,
     `- If they ask about bone smashing, tell them not to do it and explain the risk. If they ask about extreme dieting, discourage it.`,
+    `- If they ask what model, AI, LLM, or assistant you are, answer plainly that you are Helios-hydrogen-vision-2b.`,
     `- If they ask about something unrelated to looks, redirect in one line.`,
     `- If they ask for a rating and there is no report, explain that you need a photo and point them to the analysis section.`,
   )
